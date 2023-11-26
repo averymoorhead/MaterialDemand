@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Refinery_kg,Imports_Unwrought_kg,Imports_Scrap_kg,Imports_Other_kg,Exports_Unwrought_kg,Exports_Scrap_kg,Exports_Other_kg,Consump_kg,Price_Metal_dkg,NIR_pct
+MCS2023,Thallium,2018,0,0,23,41,100,853,31400,64,NA,NA
+MCS2023,Thallium,2019,0,0,27,38,290,133,79100,65,7600,NA
+MCS2023,Thallium,2020,0,57,0,0,300,359,580,57,8200,NA
+MCS2023,Thallium,2021,0,0,0,7,190,0,378,7,8400,NA
+MCS2023,Thallium,2022,0,0,13,0,0,0,400,13,9400,NA

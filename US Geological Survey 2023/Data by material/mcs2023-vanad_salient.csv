@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Primary_t,USprod_Secondary_t,Imports_Al-V_t,Imports_Residue_t,Imports_FeV_t,Imports_Oxide_t,Imports_Chem_t,Imports_Metal_t,Imports_Ore_t,Imports_V2O5_t,Exports_Al-V_t,Exports_Residue_t,Exports_FeV_t,Exports_Oxide_t,Exports_Metal_t,Exports_Ore_t,Exports_V2O5_t,Consump_Apprnt_t,Consump_Rprtd_t,Price_V2O5_dlb,Stocks_t,NIR_pct
+MCS2023,Vanadium,2018,0,2600,281,2810,2970,98,992,28,330,4600,90,1430,575,53,39,48,563,11900,9280,16.4,250,78
+MCS2023,Vanadium,2019,460,3000,222,2120,2280,105,733,45,108,3620,29,1280,295,750,27,95,423,9790,9900,12.17,257,65
+MCS2023,Vanadium,2020,17,2900,101,1550,1360,67,942,Less than ½ unit.,2,1670,13,503,210,51,1,92,50,7670,7920,6.68,269,62
+MCS2023,Vanadium,2021,0,3200,35,1680,2170,69,957,1,4,1740,72,930,173,235,4,81,17,8340,8030,8.17,271,62
+MCS2023,Vanadium,2022,0,4400,30,1800,2700,100,790,2,67,1500,40,910,220,400,10,140,170,9500,8400,9.2,270,54

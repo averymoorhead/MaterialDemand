@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,Bauxite_Mine_kt,Bauxite_Imports_kt,Bauxite_Exports_kt,Bauxite_Stocks_kt,Bauxite_Consump_Apprnt_kt,Bauxite_Consump_Rprtd_kt,Bauxite_Price_dt,Bauxite_NIR_pct,Alumina_Refinery_kt,Alumina_Imports_kt,Alumina_Exports_kt,Alumina_Stocks_kt,Alumina_Apparent_kt,Alumina_Price_dt,Alumina_NIR_pct
+MCS2023,Bauxite and Alumina,2018,W,3980,16,600,W,4460,31,>75,1570,1530,288,275,2800,592,44
+MCS2023,Bauxite and Alumina,2019,W,4620,15,300,W,3680,32,>75,1410,1930,200,275,3140,472,55
+MCS2023,Bauxite and Alumina,2020,W,3760,15,250,W,3330,30,>75,1340,1340,153,234,2570,394,48
+MCS2023,Bauxite and Alumina,2021,W,3880,12,200,W,2790,31,>75,1180,1550,180,202,2580,462,54
+MCS2023,Bauxite and Alumina,2022,W,3600,12,200,W,2900,30,>75,1200,2000,160,300,2900,550,59

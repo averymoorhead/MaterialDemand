@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Ball_kt,USprod_Bentonite_kt,USprod_Common_kt,USprod_Fire_kt,USprod_Fullers_kt,USprod_Kaolin_kt,USprod_Total_kt,Imports_Artificial_kt,Imports_Kaolin_kt,Imports_Other_kt,Imports_Total_kt,Exports_Artificial_kt,Exports_Ball_kt,Exports_Bentonite_kt,Exports_Clays_NEC_kt,Exports_Fire_kt,Exports_Fullers_kt,Exports_Kaolin_kt,Exports_Total_kt,Consump_kt,Price_Ball_dt,Price_Bentonite_dt,Price_Common_dt,Price_Fire_dt,Price_Fullers_dt,Price_Kaolin_dt,Employment_Mine_num,Employment_Mill_num,NIR_pct
+MCS2023,Clays,2018,1110,4570,13300,567,1880,5350,26800,23,330,68,421,149,90,845,244,250,70,2390,4030,23200,55,98,17,12,88,160,1110,4310,E
+MCS2023,Clays,2019,1060,4520,13300,603,1990,5060,26500,31,293,66,389,138,85,906,204,194,73,2280,3880,23000,56,98,18,14,88,162,1110,4310,E
+MCS2023,Clays,2020,1090,4250,13000,635,1980,4570,25500,31,224,28,284,127,68,728,185,190,77,1990,3360,22400,58,97,17,12,89,160,1060,4260,E
+MCS2023,Clays,2021,1200,4590,12800,675,2130,4300,25700,41,149,47,237,140,139,862,186,210,83,2340,3960,22000,58,100,17,12,88,154,1060,4240,E
+MCS2023,Clays,2022,1200,4500,13000,720,2100,4600,26000,59,170,61,290,130,170,890,200,180,84,2100,3800,22000,58,97,17,12,92,160,1100,4300,E

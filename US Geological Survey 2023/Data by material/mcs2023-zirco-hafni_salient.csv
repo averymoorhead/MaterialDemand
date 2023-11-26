@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_ZrO2_t,Imports_ZrO2_t,Imports_Zr_unwrought_t,Imports_Zr_wrought_t,Imports_Hf_unwrought_t,Imports_Hf_wrought_t,Exports_Zr_ore_t,Exports_Zr_unwrought_t,Exports_Zr_wrought_t,Consump_ZrO2_content_t,Price_Zircon_premium_CIF_CN_dt,Price_Zircon_imported_dt,Price_Zircon_sponge_CN_dkg,Price_Hf_unwrought_dkg,NIR_Zr_ore_pct,NIR_Hf_pct
+MCS2023,Zirconium and Hafnium,2018,100000,26400,1880,282,42,NA,77500,556,1150,100000,1948,1290,35,838,E,NA
+MCS2023,Zirconium and Hafnium,2019,"<100,000",22600,1820,289,32,NA,40500,897,816,"<100,000",1933,1490,33,775,E,NA
+MCS2023,Zirconium and Hafnium,2020,"<100,000",15600,2030,302,16,NA,12200,664,838,"<100,000",1843,1380,21,750,<25,NA
+MCS2023,Zirconium and Hafnium,2021,"<100,000",18500,746,265,23,NA,10000,589,966,"<100,000",2025,1380,31,950,<25,NA
+MCS2023,Zirconium and Hafnium,2022,"<100,000",35000,290,300,33,2,14000,1200,820,"<100,000",2270,1950,29,1900,<50,NA

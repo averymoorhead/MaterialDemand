@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,Bort_USprod_Manufactured_mct,Bort_USprod_Secondary_mct,Bort_Imports_mct,Bort_Exports_mct,Bort_Consump_mct,Bort_Price_Imports_dct,Bort_NIR_pct,Stones_USprod_Manufactured_mct,Stones_USprod_Secondary_mct,Stones_Imports_mct,Stones_Exports_mct,Stones_Consump_mct,Stones_Price_Imports_dct,Stones_NIR_pct
+MCS2023,Diamond (Industrial),2018,184,32,574,139,652,0.12,67,0,0.13,2.52,0,2.65,2.96,95
+MCS2023,Diamond (Industrial),2019,114,36,310,114,347,0.14,57,0,0.1,1.07,0,1.17,5.82,91
+MCS2023,Diamond (Industrial),2020,130,35,190,90,265,0.19,38,0,0.1,0.51,0.02,0.59,8.41,83
+MCS2023,Diamond (Industrial),2021,132,1.2,261,99,295,0.18,55,0,0.08,0.33,0,0.41,13,81
+MCS2023,Diamond (Industrial),2022,150,1.2,340,100,390,0.19,62,0,0.08,0.64,Less than 500 carats.,0.71,10,89

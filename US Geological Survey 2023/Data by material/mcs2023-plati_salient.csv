@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Palladium_kg,USprod_Platinum_kg,Imports_Palladium_kg,Imports_Platinum_kg,Imports_PGM_Scrap_kg,Imports_Iridium_kg,Imports_Osmium_kg,Imports_Rhodium_kg,Imports_Ruthenium_kg,Exports_Palladium_kg,Exports_Platinum_kg,Exports_PGM_Scrap_kg,Exports_Rhodium_kg,Exports_Other PGMs_kg,Consump_Palladium_kg,Consump_Platinum_kg,Price_Palladium_dto,Price_Platinum_dto,Price_Iridium_dto,Price_Rhodium_dto,Price_Ruthenium_dto,Employment_num,NIR_Palladium_pct,NIR_Platinum_pct
+MCS2023,Platinum-Group Metals,2018,14300,4160,92900,58500,40700,1020,25,14500,17900,52900,18900,31700,2010,2500,96300,53700,1036.43,882.66,1293.27,2225.3,244.41,1242,42,74
+MCS2023,Platinum-Group Metals,2019,14300,4150,84300,42300,35200,875,Less than 1/2 unit.,15000,11200,55500,17400,20800,1210,1330,85100,37000,1544.31,866.94,1485.8,3918.78,262.59,1379,34,67
+MCS2023,Platinum-Group Metals,2020,14600,4200,76400,64800,185000,1620,1,20700,13900,48600,28900,33200,1480,1440,80300,48200,2205.27,886.02,1633.51,11205.06,271.83,1475,35,75
+MCS2023,Platinum-Group Metals,2021,13700,4020,72600,67900,185000,2310,1,16500,18000,43900,29400,37800,1350,2180,81400,53500,2419.18,1094.31,5158.4,20254.1,576.12,1598,35,72
+MCS2023,Platinum-Group Metals,2022,11000,3300,63000,56000,49000,1700,0,13000,15000,45000,28000,38000,720,1200,68000,42000,2200,980,4700,17000,600,1600,26,66

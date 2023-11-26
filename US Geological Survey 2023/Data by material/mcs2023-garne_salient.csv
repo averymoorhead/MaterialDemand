@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Crude_t,USprod_Refined_t,Imports_t,Exports_t,Consump_t,Price_Import_dt,Employment_Mine_Mill_num,NIR_pct
+MCS2023,Garnet (Industrial),2018,101000,166000,265000,18900,347000,215,170,71
+MCS2023,Garnet (Industrial),2019,104000,147000,208000,16700,296000,214,160,65
+MCS2023,Garnet (Industrial),2020,101000,146000,115000,18200,198000,250,130,49
+MCS2023,Garnet (Industrial),2021,81700,127000,144000,20300,205000,280,120,60
+MCS2023,Garnet (Industrial),2022,76000,120000,190000,24000,240000,200,110,69

@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Mine_t,USprod_Secondary_t,Imports_t,Exports_t,Shipments_Gov_t,Consump_t,Price_Ta2O5_dkg,NIR_pct
+MCS2023,Tantalum,2018,0,NA,1660,681,0,975,214,100
+MCS2023,Tantalum,2019,0,NA,1380,423,0,956,161,100
+MCS2023,Tantalum,2020,0,NA,1230,417,−16,814,158,100
+MCS2023,Tantalum,2021,0,NA,1380,628,−10,740,158,100
+MCS2023,Tantalum,2022,0,NA,1700,480,0,1200,150,100

@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Feldspar_kt,Imports_Feldspar_kt,Imports_Nepheline_syenite_kt,Exports_Feldspar_kt,Consump_Feldspar_kt,Consump_Felds-plus-neph_kt,Price_Feldspar_dt,Price_Nepheline_syenite_dt,Employment_num,NIR_Feldspar_pct,NIR_Nepheline_syenite_pct
+MCS2023,Feldspar and Nepheline Syenite,2018,550,181,1070,4,730,1800,97,76,240,24,>95
+MCS2023,Feldspar and Nepheline Syenite,2019,450,64,508,4,510,1000,107,156,240,12,>95
+MCS2023,Feldspar and Nepheline Syenite,2020,430,43,503,3,470,970,108,163,240,8,>95
+MCS2023,Feldspar and Nepheline Syenite,2021,340,169,529,4,510,1000,110,164,220,33,>95
+MCS2023,Feldspar and Nepheline Syenite,2022,420,270,500,3,690,1200,110,180,220,39,>95

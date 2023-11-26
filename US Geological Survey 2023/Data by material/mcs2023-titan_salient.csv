@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Sponge_t,Imports_Sponge_t,Exports_Sponge_t,Consump_Sponge_Apparent_t,Consump_Sponge_Reported_t,Price_Sponge_dkg,Stocks_Sponge_t,Employment_Sponge_t,NIR_Sponge_pct,USprod_Dioxide_t,Imports_Dioxide_t,Exports_Dioxide_t,Consump_Dioxide_t,Price_Dioxide_dt,Stocks_Dioxide_t,Employment_Dioxide_t,NIR_Dioxide_pct
+MCS2023,Titanium and Titanium Dioxide,2018,W,23700,533,W,35200,11,10700,150,>50,1150000,268000,528000,890000,2730,205,3050,E
+MCS2023,Titanium and Titanium Dioxide,2019,W,30000,869,W,W,11,W,150,>50,1000000,226000,401000,825000,2750,NA,3050,E
+MCS2023,Titanium and Titanium Dioxide,2020,W,19200,711,W,W,11,W,150,>50,1000000,262000,386000,876000,2710,NA,3100,E
+MCS2023,Titanium and Titanium Dioxide,2021,W,16000,117,16000,W,11,W,20,>95,1100000,251000,494000,857000,2920,NA,3200,E
+MCS2023,Titanium and Titanium Dioxide,2022,W,28000,120,28000,W,11,W,20,>95,1100000,260000,420000,940000,3400,NA,3200,E

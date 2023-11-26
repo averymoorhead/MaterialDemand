@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Mine_kg,Imports_Ore_kg,Imports_Compounds_kg,Exports_Ore_kg,Exports_Compounds_kg,Consump_Ore_kg,Consump_Compounds_kg,Price_India_dkg,Price_France_dkg,NIR_pct
+MCS2023,Thorium,2018,520000,1000,9000,520000,21000,1000,NA,72,29,NA
+MCS2023,Thorium,2019,1700000,0,3970,1700000,154000,0,NA,72,29,NA
+MCS2023,Thorium,2020,960000,3000,1920,960000,60000,3000,NA,NA,29,NA
+MCS2023,Thorium,2021,W,16000,5790,W,46000,W,NA,NA,29,NA
+MCS2023,Thorium,2022,W,0,2900,W ,31000,W,NA,NA,26,NA

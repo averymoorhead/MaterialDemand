@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Refinery_t,USprod_Scrap_t,Imports_Mtl_Alloy_and_Scrap_t,Exports_Mtl_Alloy_and_Scrap_t,Consump_Apprnt_t,Consump_Reported_t,Price_dlb,Stocks_t,NIR_Consump_pct,,
+MCS2023,Bismuth,2018,0,80,2470,653,2040,570,4.61,346,96,,
+MCS2023,Bismuth,2019,0,80,2340,636,1690,548,3.18,443,95,,
+MCS2023,Bismuth,2020,0,80,1650,699,1210,513,2.72,271,93,,
+MCS2023,Bismuth,2021,0,80,1980,1010,1030,597,3.74,297,92,,
+MCS2023,Bismuth,2022,0,80,2800,670,2000,600,3.9,500,96,,

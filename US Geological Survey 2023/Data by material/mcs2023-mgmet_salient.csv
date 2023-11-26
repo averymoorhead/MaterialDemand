@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Primary_kt,USprod_Secondary_kt,Imports_kt,Exports_kt,Consump_Reported_kt,Consump_Apparent_kt,Price_US_spot_dlb,Price_European_dt,Stocks_kt,Employment_num,NIR_pct
+MCS2023,Magnesium Metal,2018,W,109,47,12,56,W,2.17,2550,W,400,>25
+MCS2023,Magnesium Metal,2019,W,103,59,10,57,W,2.45,2425,W,400,>25
+MCS2023,Magnesium Metal,2020,W,95,61,15,54,W,2.49,2149,W,400,>25
+MCS2023,Magnesium Metal,2021,W,103,50,8,51,W,3.55,5008,W,400,>25
+MCS2023,Magnesium Metal,2022,W,120,97,5,50,W,7.6,5500,W,400,>50

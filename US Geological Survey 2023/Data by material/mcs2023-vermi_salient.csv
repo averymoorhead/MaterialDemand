@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_kt,Imports_kt,Exports_kt,Consump_Apparent_kt,Consump_Reported_kt,Price_Range_dt,Employment_num,NIR_pct
+MCS2023,Vermiculite,2018,100,37,13,120,79,140–575,70,20
+MCS2023,Vermiculite,2019,100,39,8,130,79,NA,70,20
+MCS2023,Vermiculite,2020,100,40,8,130,81,NA,70,20
+MCS2023,Vermiculite,2021,100,33,10,120,78,NA,70,20
+MCS2023,Vermiculite,2022,100,30,7,120,80,NA,50,20

@@ -1,0 +1,246 @@
+
+```{r}
+col_index <- which(names(capacities_all) == "model")
+
+# Rename the column at the found index
+names(capacities_all)[col_index] <- "Model"
+
+library(ggplot2)
+library(dplyr)
+
+
+# Subset your data
+plot_IRA <- subset(capacities_all, technology %in% "utility-scale solar pv")
+# Replace "2021.00000000000000000000" with "2021" in the "Model" column
+plot_IRA$Model[plot_IRA$Model == "2021.00000000000000000000"] <- "2021"
+
+# Convert year to a factor with a specific order
+plot_IRA$year <- factor(plot_IRA$year, levels = c(2021, 2025, 2030, 2035))
+barplot <- plot_IRA %>%
+  group_by(year, scenario) %>%
+  summarise(newval = mean(value), min = min(value), max = max(value))
+
+# Create the box plot
+boxplot <- barplot %>%
+  ggplot(aes(x = year, fill = scenario)) +
+  geom_boxplot(
+    stat = "identity",
+    aes(
+      lower = min,
+      upper = max,
+      middle = newval,
+      ymin = min,
+      ymax = max
+    ),
+) +
+  ggtitle("Utility-scale Solar") +
+  ylab("Capacity (GW)") + xlab("Year")+
+  scale_fill_manual(values = c("IRA" = "white", "Ref" = "grey"))+
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+combined_plot1 <- boxplot +
+  geom_jitter(data = plot_IRA, aes(x = as.numeric(year), y = value, color = Model, group = interaction(year, scenario)), 
+              position = position_dodge(width = 0.9), size = 3, alpha = 0.5)
+
+# Print the combined plot
+print(combined_plot1)
+# Get the legend colors from the first plot (combined_plot1)
+#legend_colors1 <- combined_plot1$data$fill
+
+# Get the legend colors from the second plot (combined_plot2)
+#legend_colors2 <- combined_plot2$data$fill
+
+# Print the legend colors
+#print(legend_colors1)
+
+```
+
+
+```{r}
+
+library(ggplot2)
+
+# Subset your data
+plot_IRA <- subset(capacities_all, technology %in% "onshore wind")
+# Replace "2021.00000000000000000000" with "2021" in the "Model" column
+plot_IRA$Model[plot_IRA$Model == "2021.00000000000000000000"] <- "2021"
+
+# Convert year to a factor with a specific order
+plot_IRA$year <- factor(plot_IRA$year, levels = c(2021, 2025, 2030, 2035))
+barplot <- plot_IRA %>%
+  group_by(year, scenario) %>%
+  summarise(newval = mean(value), min = min(value), max = max(value))
+
+# Create the box plot
+boxplot <- barplot %>%
+  ggplot(aes(x = year, fill = scenario)) +
+  geom_boxplot(
+    stat = "identity",
+    aes(
+      lower = min,
+      upper = max,
+      middle = newval,
+      ymin = min,
+      ymax = max
+    ),
+) +
+  ggtitle("Onshore Wind") +
+  ylab("") + xlab("")+
+  scale_fill_manual(values = c("IRA" = "white", "Ref" = "grey"))+
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+combined_plot2 <- boxplot +
+  geom_jitter(data = plot_IRA, aes(x = as.numeric(year), y = value, color = Model, group = interaction(year, scenario)), 
+              position = position_dodge(width = 0.9), size = 3, alpha = 0.5)
+
+# Print the combined plot
+print(combined_plot2)
+
+dashed_line <- subset(plot_IRA, year %in% "2021")
+ira_line <-subset(dashed_line, scenario %in% "IRA")
+ref_line <-subset(dashed_line, scenario %in% "Ref")
+
+
+combined_plot2 <- combined_plot2 +
+  geom_hline(aes(yintercept = ira_line$value, group = 1), linetype = "dashed", color = "red") +
+  geom_hline(aes(yintercept = ref_line$value, group = 2), linetype = "dashed", color = "blue")
+print(combined_plot2)
+
+```
+
+```{r}
+# Subset your data
+library(dplyr)
+
+
+#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
+plot_IRA <- capacities_all %>%
+  filter(technology == "utility-scale solar pv", value != 0)
+
+
+dashed_line <- subset(plot_IRA, year %in% "2021")
+solar_line <-subset(dashed_line, scenario %in% "IRA")
+ref_line <-subset(dashed_line, scenario %in% "Ref")
+
+plot_IRA <- subset(plot_IRA, !(year %in% "2021"))
+# Convert year to a factor with a specific order
+plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
+
+barplot <- plot_IRA %>%
+  group_by(year, scenario) %>%
+  summarise(newval = mean(value), min = min(value), max = max(value))
+
+# Create the box plot
+boxplot <- barplot %>%
+  ggplot(aes(x = year, fill = scenario)) +
+  geom_boxplot(
+    stat = "identity",
+    aes(
+      lower = min,
+      upper = max,
+      middle = newval,
+      ymin = min,
+      ymax = max
+    ),
+  ) +
+  ggtitle("Utility-Scale Solar") +
+  ylab("Capacity (GW)") + xlab("") +
+  scale_fill_manual(values = c("IRA" = "white", "Ref" = "grey")) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+combined_plot1 <- boxplot +
+  geom_jitter(data = plot_IRA, aes(x = as.numeric(year), y = value, color = Model, group = interaction(year, scenario)),
+              position = position_dodge(width = 0.9), size = 3, alpha = 0.5)
+
+
+# Print the updated combined plot
+combined_plot1 <- combined_plot1  +
+  geom_hline(aes(yintercept = solar_line$value, group = 2), linetype = "dashed", color = "blue", size = 1)
+print(combined_plot1)
+
+
+```
+```{r}
+# Subset your data
+library(dplyr)
+
+# Subset and filter the dataframe
+plot_IRA1 <- capacities_all %>%
+  filter(technology == "onshore wind", value != 0)
+
+dashed_line <- subset(plot_IRA1, year %in% "2021")
+ira_line <-subset(dashed_line, scenario %in% "IRA")
+ref_line <-subset(dashed_line, scenario %in% "Ref")
+
+plot_IRA1 <- subset(plot_IRA1, !(year %in% "2021"))
+
+# Convert year to a factor with a specific order
+plot_IRA1$year <- factor(plot_IRA1$year, levels = c("2025", "2030", "2035"))
+
+barplot <- plot_IRA1 %>%
+  group_by(year, scenario) %>%
+  summarise(newval = mean(value), min = min(value), max = max(value))
+
+# Create the box plot
+boxplot <- barplot %>%
+  ggplot(aes(x = year, fill = scenario)) +
+  geom_boxplot(
+    stat = "identity",
+    aes(
+      lower = min,
+      upper = max,
+      middle = newval,
+      ymin = min,
+      ymax = max
+    ),
+  ) +
+  ggtitle("Onshore Wind") +
+  ylab("Capacity (GW)") + xlab("") +
+  scale_fill_manual(values = c("IRA" = "white", "Ref" = "grey")) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+combined_plot2 <- boxplot +
+  geom_jitter(data = plot_IRA1, aes(x = as.numeric(year), y = value, color = Model, group = interaction(year, scenario)),
+              position = position_dodge(width = 0.9), size = 3, alpha = 0.5)
+
+# Print the updated combined plot
+combined_plot2 <- combined_plot2  +
+  geom_hline(aes(yintercept = ref_line$value, group = 2), linetype = "dashed", color = "blue", size = 1)
+print(combined_plot1)
+print(combined_plot2)
+
+
+```
+
+
+```{r}
+library(patchwork)
+combined_plot1
+combined_plot2
+combined_subplot <- combined_plot1 + combined_plot2 + plot_layout(guides = "collect")  # Add a single y-axis label
+
+# Print the combined subplot
+print(combined_subplot)
+
+
+
+```
+
+```
+

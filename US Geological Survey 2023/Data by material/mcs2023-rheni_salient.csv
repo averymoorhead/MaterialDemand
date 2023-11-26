@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_kg,Imports_unwrought_kg,Imports_NH4ReO4_kg,Exports_kg,Consump_kg,Price_Metal_dkg,Price_NH4ReO4_dkg,Employment_num,NIR_pct
+MCS2023,Rhenium,2018,8220,32000,7400,NA,47600,1470,1410,Small,83
+MCS2023,Rhenium,2019,8360,31500,12800,NA,52600,1300,1280,Small,84
+MCS2023,Rhenium,2020,8830,15900,9320,NA,34000,1030,1090,Small,74
+MCS2023,Rhenium,2021,9290,15900,6000,NA,31200,977,866,Small,70
+MCS2023,Rhenium,2022,9000,10000,10000,360,29000,1100,910,Small,69

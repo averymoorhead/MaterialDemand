@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_kt,Imports_Ore_kt,Imports_Ferro_kt,Imports_Silico_kt,Exports_Ore_kt,Exports_Ferro_kt,Exports_Silico_kt,Shipments_Ore_kt,Shipments_Ferro_Metal_kt,Consump_Reported_ore_kt,Consump_Reported_ferro_kt,Consump_Reported_silco_kt,Consump_Apparent_kt,Price_CN_CIF_dt,Stocks_Ore_kt,Stocks_Ferro_kt,Stocks_Silico_kt,NIR_pct
+MCS2023,Manganese,2018,0,440,427,412,3,10,4,0,13,369,348,139,796,7.16,191,27,21,100
+MCS2023,Manganese,2019,0,434,332,351,1,5,2,0,10,442,336,143,748,5.63,175,44,39,100
+MCS2023,Manganese,2020,0,367,223,269,1,5,2,0,54,378,325,229,621,4.59,143,35,31,100
+MCS2023,Manganese,2021,0,497,329,313,1,9,5,2,21,399,335,237,717,5.27,220,40,34,100
+MCS2023,Manganese,2022,0,650,330,420,1,2,4,0,11,370,340,240,890,6.5,230,40,34,100

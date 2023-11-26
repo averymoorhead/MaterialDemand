@@ -1,0 +1,6 @@
+﻿DataSource,Commodity,Year,USprod_Production_kt,USprod_Sold_used_kt,Imports_kt,Exports_kt,Consump_Apparent_kt,Consump_Reported_kt,Price_Vacuum_dt,Price_Solar_dt,Price_Rock_dt,Price_Brine_dt,Employment_num,NIR_pct,,,,,
+MCS2023,Salt,2018,43900,44200,17900,986,61100,53000,214,114,61,8,4100,28,,,,,
+MCS2023,Salt,2019,45000,45000,18700,1020,62500,51800,212,126,60,8,4100,28,,,,,
+MCS2023,Salt,2020,43000,43000,15800,1250,58000,49000,215,120,58,8,4000,25,,,,,
+MCS2023,Salt,2021,42000,42000,18100,1060,59000,50000,220,125,57,8,4100,29,,,,,
+MCS2023,Salt,2022,42000,42000,18000,700,59000,49000,230,130,60,9,4000,29,,,,,

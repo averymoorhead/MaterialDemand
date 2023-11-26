@@ -1,0 +1,552 @@
+---
+title: "Intensityplotoct21"
+output: html_document
+date: "2023-10-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+
+df <- subset(intensity, technology %in% c("onshore wind", "utility-scale solar pv", "Nuclear New"))
+df$Material[df$Material == "Cu"] <- "Copper"
+df$Material[df$Material == "Al"] <- "Aluminum"
+df$Material[df$Material == "Mn"] <- "Manganese"
+df$Material[df$Material == "In"] <- "Indium"
+df$Material[df$Material == "Nd"] <- "Neodymium"
+df$Material[df$Material == "Dy"] <- "Dysprosium"
+df$Material[df$Material == "Si"] <- "Silicon"
+df$Material[df$Material == "Ag"] <- "Silver"
+df$Material[df$Material == "Ga"] <- "Gallium"
+df$Material[df$Material == "Se"] <- "Selenium"
+df$Material[df$Material == "Ni"] <- "Nickel"
+df <- df[!(df$Material %in% c("Indium", "Selenium", "Gallium")), ]
+y_min_values <-   df %>% group_by(Material) %>% summarise(max = max(value)) #averaging the different model results 
+y_min_values <- (y_min_values$max)*-0.25
+
+count_numbers <- aggregate(value ~ Material + technology, data = df, FUN = function(x) sum(x >= 0))
+
+# Create a mapping for the x-axis labels with abbreviations
+x_label_mapping <- c("onshore wind" = "OW", "utility-scale solar pv" = "PV", "Nuclear New" = "NU")
+
+# Create a mapping for the y-axis label
+y_label_mapping <- "Material Intensity (tonnes/GW)"
+
+p <- ggplot(df, aes(x = technology, y = value, fill = technology)) +
+  geom_boxplot(data = subset(df, value > 0)) +  # Filter data for value > 0
+  geom_text(data = count_numbers, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")) , vjust = 1.5, size = 20) +
+  facet_wrap(~Material, scales = "free")+  scale_x_discrete(labels = x_label_mapping) +
+  labs(y = y_label_mapping) +
+  xlab(NULL) +  # Remove the x-axis label
+  theme_bw() +
+  theme(panel.border = element_rect(color = "black", fill = NA),
+        strip.background = element_rect(fill = "white"),
+        strip.text = element_text(size = 12),
+        legend.position = "none",  # Remove the legend
+        ylab = NULL+coord_cartesian(ylim = c(y_min_values[i], NA)))  # Remove the y-axis label
+p
+# Set the y-axis minimum to -100 for each subplot
+
+
+```
+```{r}
+library(ggplot2)
+library(dplyr)  # To load just dplyr
+
+
+# Sample data
+df <- subset(intensity, technology %in% c("onshore wind", "utility-scale solar pv", "Nuclear New"))
+df$Material[df$Material == "Cu"] <- "Copper"
+df$Material[df$Material == "Al"] <- "Aluminum"
+df$Material[df$Material == "Mn"] <- "Manganese"
+df$Material[df$Material == "In"] <- "Indium"
+df$Material[df$Material == "Nd"] <- "Neodymium"
+df$Material[df$Material == "Dy"] <- "Dysprosium"
+df$Material[df$Material == "Si"] <- "Silicon"
+df$Material[df$Material == "Ag"] <- "Silver"
+df$Material[df$Material == "Ga"] <- "Gallium"
+df$Material[df$Material == "Se"] <- "Selenium"
+df$Material[df$Material == "Ni"] <- "Nickel"
+df <- df[!(df$Material %in% c("Indium", "Selenium", "Gallium")), ]
+#y_min_values <-   df %>% group_by(Material) %>% summarise(max = max(value)) #averaging the different model results 
+#y_min_values <- (y_min_values$max)*-0.25
+
+
+# Sample data for y-axis minimum values
+#y_min_values <- c(-1100000, -50, -80, -120, -60, -90, -70, -40, -110, -30, -75)
+
+count_numbers <- aggregate(value ~ Material + technology, data = df, FUN = function(x) sum(x >= 0))
+
+# Create a mapping for the x-axis labels with abbreviations
+x_label_mapping <- c("onshore wind" = "OW", "utility-scale solar pv" = "PV", "Nuclear New" = "NU")
+
+# Create a mapping for the y-axis label
+y_label_mapping <- "Material Intensity (tonnes/GW)"
+
+# Create a list of data frames, one for each Material
+material_data_list <- split(df, df$Material)
+
+# Create separate plots for each Material
+plots <- lapply(seq_along(material_data_list), function(i) {
+  ggplot(material_data_list[[i]], aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_data_list[[i]], value > 0)) +
+    geom_text(data = count_numbers, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")),
+              vjust = 0, size = 5) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = y_label_mapping) +
+    xlab(NULL) +
+    theme_bw() +
+    theme(panel.border = element_rect(color = "black", fill = NA),
+          strip.background = element_rect(fill = "white"),
+          strip.text = element_text(size = 12),
+          legend.position = "none",
+          ylab = NULL) +
+    coord_cartesian(ylim = c(y_min_values[i], NA))
+})
+
+# Combine the plots into a single grid
+library(gridExtra)
+grid.arrange(grobs = plots, ncol = 3)  # Adjust the number of columns as needed
+
+```
+```{r}
+library(ggplot2)
+
+df <- subset(intensity, technology %in% c("onshore wind", "utility-scale solar pv", "Nuclear New"))
+df$Material[df$Material == "Cu"] <- "Copper"
+df$Material[df$Material == "Al"] <- "Aluminum"
+df$Material[df$Material == "Mn"] <- "Manganese"
+df$Material[df$Material == "In"] <- "Indium"
+df$Material[df$Material == "Nd"] <- "Neodymium"
+df$Material[df$Material == "Dy"] <- "Dysprosium"
+df$Material[df$Material == "Si"] <- "Silicon"
+df$Material[df$Material == "Ag"] <- "Silver"
+df$Material[df$Material == "Ga"] <- "Gallium"
+df$Material[df$Material == "Se"] <- "Selenium"
+df$Material[df$Material == "Ni"] <- "Nickel"
+df <- df[!(df$Material %in% c("Indium", "Selenium", "Gallium")), ]
+count_numbers <- aggregate(value ~ Material + technology, data = df, FUN = function(x) sum(x >= 0))
+
+# Create a mapping for the x-axis labels with abbreviations
+x_label_mapping <- c("onshore wind" = "OW", "utility-scale solar pv" = "PV", "Nuclear New" = "NU")
+
+# Create a mapping for the y-axis label
+y_label_mapping <- "Material Intensity (tonnes/GW)"
+
+p <- ggplot(df, aes(x = technology, y = value, fill = technology)) +
+  geom_boxplot(data = subset(df, value > 0)) +  # Filter data for value > 0
+  geom_text(data = count_numbers, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")) , vjust = 0, size = 20) +
+  facet_wrap(~Material, scales = "free")+  scale_x_discrete(labels = x_label_mapping) +
+  labs(y = y_label_mapping) +
+  xlab(NULL) +  # Remove the x-axis label
+  theme_bw() +
+  theme(panel.border = element_rect(color = "black", fill = NA),
+        strip.background = element_rect(fill = "white"),
+        strip.text = element_text(size = 12),
+        legend.position = "none",  # Remove the legend
+        ylab = NULL)  # Remove the y-axis label
+
+p
+library(ggplot2)
+library(gridExtra)
+
+# Create a data frame with ymin values for each Material
+ymin_df <- data.frame(
+  Material = unique(df$Material),
+  ymin = sample(seq(-100, -10000, length.out = 11))
+)
+
+# Create a list to store individual plots
+plot_list <- list()
+
+# Loop through each Material and create a plot with custom y-limits
+for (i in 1:nrow(ymin_df)) {
+  material_name <- ymin_df$Material[i]
+  y_min_limit <- ymin_df$ymin[i]
+  
+  material_df <- subset(df, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_text(data = count_numbers, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")), vjust = 0, size = 20) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = y_label_mapping, title = material_name) +  # Add subplot titles
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  plot_list[[i]] <- p
+}
+
+# Display individual plots with custom y-limits and subplot titles
+grid.arrange(grobs = plot_list, nrow = 4)
+
+
+
+```
+```{r}
+library(ggplot2)
+library(purrr)
+
+# Create a data frame with ymin values for each Material
+ymin_df <- data.frame(
+  Material = unique(df$Material),
+  ymin = sample(seq(-10, -10000, length.out = 11))
+)
+
+# Custom vjust values (vector with 11 different values)
+custom_vjust_values <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.8, 0.9, 0.9, 0.9)
+
+# Create a function to generate individual plots
+create_individual_plot <- function(material_name, y_min_limit, custom_vjust) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_text(data = count_numbers_material, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")), vjust = 0, size = 20) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = y_label_mapping, title = material_name) +
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, custom_vjust_values, create_individual_plot)
+
+# Display individual plots with custom y-min limits, subplot titles, and custom vjust
+library(gridExtra)
+grid.arrange(grobs = plot_list, nrow = 4)
+
+# Load the dplyr package if not already loaded
+library(dplyr)
+p
+```
+
+
+```{r}
+library(ggplot2)
+library(purrr)
+
+ymin_df <- df %>%
+  group_by(Material) %>%
+  summarise(max = max(value)) %>% # Calculate the maximum value for each Material
+  mutate(ymin = max * -0.25) %>% # Calculate ymin as a fraction of the maximum
+  select(-max) # Remove the 'max' column
+
+#ymin_df <- data.frame(
+#  Material = unique(df$Material),
+#  ymin = sample(seq(-10, -10000, length.out = 11))
+#)
+# Create a data frame with ymin values for each Material
+
+
+
+# Create a function to generate individual plots
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_text(data = count_numbers_material, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")), vjust = 1, size = 3) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = y_label_mapping, title = material_name) +
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Display individual plots with custom y-min limits and subplot titles
+library(gridExtra)
+grid.arrange(grobs = plot_list, nrow = 4)
+row_heights <- rep(1.5, 4)  # Assuming you have 4 rows
+
+# Create a grid with adjusted row heights
+grid.arrange(grobs = plot_list, nrow = 4, heights = row_heights)
+
+
+```
+```{r}
+library(ggplot2)
+library(patchwork)
+
+# Define a fixed width for each plot
+plot_width <- 4  # Adjust this value as needed
+
+# Create individual plot function
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_text(data = count_numbers_material, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")), vjust = 1.1, size = 3) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = y_label_mapping, title = material_name) +
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  # Set the plot width explicitly
+  p <- p + theme(plot.margin = margin(5.5, plot_width, 5.5, 5.5, "pt"))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Print or display the final plot
+final_plot
+
+```
+```{r}
+# Create individual plot function
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_text(data = count_numbers_material, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")), vjust = 1.1, size = 3) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = NULL, title = material_name) +  # Remove the y-axis label
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL,
+      plot.margin = margin(5.5, 5.5, 5.5, 5.5, "pt")  # Set uniform plot margins
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  return(p)
+}
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Print or display the final plot
+final_plot
+
+
+```
+
+```{r}
+library(ggplot2)
+library(patchwork)
+
+# Define a fixed width for each plot
+plot_width <- 4  # Adjust this value as needed
+
+# Create individual plot function
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_jitter(data = subset(material_df, value > 0), width = 0.2) +
+    geom_text(data = count_numbers_material, aes(x = technology, y = 0, label = ifelse(value > 0, value, "")), vjust = 1.1, size = 3) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = y_label_mapping, title = material_name) +
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  # Set the plot width explicitly
+  p <- p + theme(plot.margin = margin(5.5, plot_width, 5.5, 5.5, "pt"))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Print or display the final plot
+final_plot
+
+
+```
+
+```{r}
+library(ggplot2)
+library(patchwork)
+
+# Define a fixed width for each plot
+plot_width <- 4  # Adjust this value as needed
+
+# Create individual plot function
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_jitter(data = subset(material_df, value > 0), width = 0.2) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = NULL, title = material_name) +  # Remove y-axis title
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL,
+      axis.title.y = element_text(angle = 0, vjust = 0.5, hjust = 0)  # Add master y-axis title
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA))
+  
+  # Set the plot width explicitly
+  p <- p + theme(plot.margin = margin(5.5, plot_width, 5.5, 5.5, "pt"))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Print or display the final plot
+final_plot
+
+  
+```
+```{r}
+
+library(ggplot2)
+library(patchwork)
+
+# Define a fixed width for each plot
+plot_width <- 4  # Adjust this value as needed
+
+# Create a color scale for technologies
+tech_colors <- c("onshore wind" = "#00BA38", "Nuclear New" = "#F8766D", "utility-scale solar pv" = "#619CFF")
+
+# Create individual plot function
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_jitter(data = subset(material_df, value > 0), width = 0.2) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = NULL, title = material_name) +  # Remove y-axis title
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL,
+      axis.title.y = element_text(angle = 0, vjust = 0.5, hjust = 0),  # Add master y-axis title
+      plot.background = element_rect(fill = "white")  # Set plot background to white
+    ) +
+    coord_cartesian(ylim = c(y_min_limit, NA)) +
+    scale_fill_manual(values = tech_colors)  # Set colors manually
+  
+  # Set the plot width explicitly
+  p <- p + theme(plot.margin = margin(5.5, plot_width, 5.5, 5.5, "pt"))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Print or display the final plot
+final_plot
+
+
+```
+
+
+
+```
+
+
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
