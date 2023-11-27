@@ -12,7 +12,7 @@ options(scipen=999)
 options(digits=22)
 
 rm(list = ls())
-setwd("C:/Users/avery/OneDrive/Desktop/Material Demand")
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
 
 library(readxl)
 library(data.table)

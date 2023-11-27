@@ -1,0 +1,129 @@
+---
+title: "Material Intensity Plots"
+author: "Avery Moorhead" 
+output: html_document
+date: "2023-11-26"
+description: "Material intensity plot with jitters for methods section"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+```{r pressure, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+
+
+df <- subset(intensity, technology %in% c("onshore wind", "utility-scale solar pv", "Nuclear New"))
+df$Material[df$Material == "Cu"] <- "Copper"
+df$Material[df$Material == "Al"] <- "Aluminum"
+df$Material[df$Material == "Mn"] <- "Manganese"
+df$Material[df$Material == "In"] <- "Indium"
+df$Material[df$Material == "Nd"] <- "Neodymium"
+df$Material[df$Material == "Dy"] <- "Dysprosium"
+df$Material[df$Material == "Si"] <- "Silicon"
+df$Material[df$Material == "Ag"] <- "Silver"
+df$Material[df$Material == "Ga"] <- "Gallium"
+df$Material[df$Material == "Se"] <- "Selenium"
+df$Material[df$Material == "Ni"] <- "Nickel"
+df <- df[!(df$Material %in% c("Indium", "Selenium", "Gallium")), ]
+y_min_values <-   df %>% group_by(Material) %>% summarise(max = max(value)) #averaging the different model results 
+y_min_values <- (y_min_values$max)*-0.25
+ymin_df <- data.frame(
+  Material = unique(df$Material),
+  ymin = sample(seq(-100, -10000, length.out = 11))
+)
+
+count_numbers <- aggregate(value ~ Material + technology, data = df, FUN = function(x) sum(x >= 0))
+
+# Create a mapping for the x-axis labels with abbreviations
+x_label_mapping <- c("onshore wind" = "OW", "utility-scale solar pv" = "PV", "Nuclear New" = "NU")
+
+# Create a mapping for the y-axis label
+y_label_mapping <- "Material Intensity (tonnes/GW)"
+
+# Set the y-axis minimum to -100 for each subplot
+
+
+```
+
+
+```{r}
+
+library(ggplot2)
+library(patchwork)
+library(cowplot) 
+
+# Define a fixed width for each plot
+plot_width <- 4  # Adjust this value as needed
+
+# Create a color scale for technologies
+tech_colors <- c("onshore wind" = "#00BA38", "Nuclear New" = "#F8766D", "utility-scale solar pv" = "#619CFF")
+
+# Create individual plot function
+create_individual_plot <- function(material_name, y_min_limit) {
+  material_df <- subset(df, Material == material_name)
+  count_numbers_material <- subset(count_numbers, Material == material_name)
+  
+  p <- ggplot(material_df, aes(x = technology, y = value, fill = technology)) +
+    geom_boxplot(data = subset(material_df, value > 0)) +
+    geom_jitter(data = subset(material_df, value > 0), width = 0.2) +
+    scale_x_discrete(labels = x_label_mapping) +
+    labs(y = NULL, title = material_name) +  # Remove y-axis title
+    xlab(NULL) +
+    theme_bw() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(size = 12),
+      legend.position = "none",
+      ylab = NULL,
+      axis.title.y = element_text(angle = 0, vjust = 0.5, hjust = 0),  # Add master y-axis title
+      plot.background = element_rect(fill = "white")  # Set plot background to white
+    ) +
+    scale_fill_manual(values = tech_colors)  # Set colors manually
+  
+  # Set the plot width explicitly
+  p <- p + theme(plot.margin = margin(5.5, plot_width, 5.5, 5.5, "pt"))
+  
+  return(p)
+}
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Create individual plots using purrr::map2
+plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
+
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
+
+# Add a common y-axis title using cowplot
+common_y_axis_title <- ggdraw() +
+  draw_label("Material Intensity (tonnes/GW)", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
+
+# Combine the common y-axis title with the final plot
+final_plot_with_title <- cowplot::plot_grid(
+  common_y_axis_title,
+  final_plot + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
+  nrow = 1,
+  rel_widths = c(0.1, 0.9)
+)
+
+# Print or display the final plot with the common y-axis title
+final_plot_with_title
+
+
+```
+
+
+```
+
