@@ -1,0 +1,494 @@
+---
+title: "Material Demand Calculations"
+output: html_notebook
+date: 11/28/23
+author: Avery Moorhead 
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r warning=FALSE}
+rm(list = ls())
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
+library(readxl)
+library(data.table)
+library(dplyr)
+library(tidyverse)
+library(triangle)
+library(stringr)
+library(knitr)
+
+
+#uploading and proessing multi model IRA results 
+#CAP_IRA is the total capacity of each technology under IRA scenario 
+Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
+                      sheet = "Cap IRA", na="ND", range =  cell_rows(1:18), col_names= FALSE)
+
+#this is all data processing 
+Cap_IRA <- t(Cap_IRA)
+Cap_IRA <- as.data.frame(Cap_IRA)
+rownames(Cap_IRA)<-NULL
+new_colnames <- unlist(Cap_IRA[1, ])
+colnames(Cap_IRA) <- new_colnames
+Cap_IRA <- Cap_IRA[-1,]
+colnames(Cap_IRA)[1] ="model"
+colnames(Cap_IRA)[2] ="year"
+Cap_IRA$year[is.na(Cap_IRA$year)] <- "2021"
+Cap_IRA <-  Cap_IRA[(1:34),]
+Cap_IRA[is.na(Cap_IRA)] <- 0
+Cap_IRA[] <- lapply(Cap_IRA, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Cap_IRA <- as.data.frame(Cap_IRA)
+
+#made 2021 data into it's own df 
+initial_year <- subset(Cap_IRA, year %in% "2021")
+initial_year[is.na(initial_year)] <- '0'
+
+#more data processing 
+Cap_IRA = Cap_IRA[-1,]
+Cap_IRA[is.na(Cap_IRA)] <- '0'
+Cap_IRA <- rbind(Cap_IRA, initial_year)
+Cap_IRA <- melt(Cap_IRA, id = c("model","year")) 
+Cap_IRA$value <- as.numeric(unlist(Cap_IRA$value))
+Cap_IRA$scenario <- "IRA"
+
+#Y_Cap_IRA is the additional capacity between each time step 
+Y_Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
+                     sheet = "Cap IRA", na="ND", col_names= FALSE, range = cell_rows(28:45))
+
+#data processing (similar to CAP_IRA)
+Y_Cap_IRA <- t(Y_Cap_IRA)
+Y_Cap_IRA <- as.data.frame(Y_Cap_IRA)
+rownames(Y_Cap_IRA)<-NULL
+new_colnames <- unlist(Y_Cap_IRA[1, ])
+colnames(Y_Cap_IRA) <- new_colnames
+Y_Cap_IRA <- Y_Cap_IRA[-1,]
+colnames(Y_Cap_IRA)[1] ="model"
+colnames(Y_Cap_IRA)[2] ="year"
+Y_Cap_IRA$year[is.na(Y_Cap_IRA$year)] <- "2021"
+Y_Cap_IRA <-  Y_Cap_IRA[(1:34),]
+Y_Cap_IRA[is.na(Y_Cap_IRA)] <- 0
+Y_Cap_IRA[] <- lapply(Y_Cap_IRA, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Y_Cap_IRA <- as.data.frame(Y_Cap_IRA)
+Y_Cap_IRA[is.na(Y_Cap_IRA)] <- '0'
+Y_Cap_IRA <- melt(Y_Cap_IRA, id = c("model","year")) 
+Y_Cap_IRA$value <- as.numeric(unlist(Y_Cap_IRA$value))
+Y_Cap_IRA$scenario <- "IRA"
+Y_Cap_IRA$model[Y_Cap_IRA$model=='0']<-"2021"
+
+
+#Repeating what was done above for the reference scenario
+Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
+                     sheet = "Cap Ref", na="ND", range =  cell_rows(1:18), col_names= FALSE)
+#data processing
+Cap_Ref <- t(Cap_Ref)
+Cap_Ref <- as.data.frame(Cap_Ref)
+rownames(Cap_Ref)<-NULL
+new_colnames <- unlist(Cap_Ref[1, ])
+colnames(Cap_Ref) <- new_colnames
+Cap_Ref <- Cap_Ref[-1,]
+colnames(Cap_Ref)[1] ="model"
+colnames(Cap_Ref)[2] ="year"
+Cap_Ref$year[is.na(Cap_Ref$year)] <- "2021"
+Cap_Ref <-  Cap_Ref[(1:34),]
+Cap_Ref[is.na(Cap_Ref)] <- 0
+Cap_Ref[] <- lapply(Cap_Ref, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Cap_Ref <- as.data.frame(Cap_Ref)
+Cap_Ref = Cap_Ref[-1,]
+Cap_Ref[is.na(Cap_Ref)] <- '0'
+Cap_Ref <- rbind(Cap_Ref, initial_year)
+Cap_Ref <- melt(Cap_Ref, id = c("model","year")) 
+Cap_Ref$value <- as.numeric(unlist(Cap_Ref$value))
+Cap_Ref$scenario <- "Ref"
+
+#additional capacity per time step
+Y_Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
+                       sheet = "Cap Ref", na="ND", col_names= FALSE, range = cell_rows(28:45))
+
+#data processing 
+Y_Cap_Ref <- t(Y_Cap_Ref)
+Y_Cap_Ref <- as.data.frame(Y_Cap_Ref)
+rownames(Y_Cap_Ref)<-NULL
+new_colnames <- unlist(Y_Cap_Ref[1, ])
+colnames(Y_Cap_Ref) <- new_colnames
+Y_Cap_Ref <- Y_Cap_Ref[-1,]
+colnames(Y_Cap_Ref)[1] ="model"
+colnames(Y_Cap_Ref)[2] ="year"
+Y_Cap_Ref$year[is.na(Y_Cap_Ref$year)] <- "2021"
+Y_Cap_Ref <-  Y_Cap_Ref[(1:34),]
+Y_Cap_Ref[is.na(Y_Cap_Ref)] <- 0
+Y_Cap_Ref[] <- lapply(Y_Cap_Ref, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Y_Cap_Ref <- as.data.frame(Y_Cap_Ref)
+Y_Cap_Ref[is.na(Y_Cap_Ref)] <- '0'
+Y_Cap_Ref <- melt(Y_Cap_Ref, id = c("model","year")) 
+Y_Cap_Ref$value <- as.numeric(unlist(Y_Cap_Ref$value))
+Y_Cap_Ref$scenario <- "Ref"
+Y_Cap_Ref$model[Y_Cap_Ref$model=='0']<-"2021"
+
+
+#merging both scenarios in one df 
+#capacities all is the total capacity for each technology not added capacity per time step 
+#this is data processing
+capacities_all <- rbind(Cap_IRA,Cap_Ref)
+colnames(capacities_all)[3] ="technology"
+capacities_all$technology <- gsub("Wind", "onshore wind", capacities_all$technology)
+capacities_all$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_all$technology)
+capacities <- capacities_all[-1]
+capacities <-capacities %>% group_by(scenario,year,technology) %>% summarise(newval = mean(value), max = max(value),min = min(value)) #averaging the different model results 
+
+#capacities_y_all is the added capacity per time step combined df 
+capacities_y_all <- rbind(Y_Cap_IRA,Y_Cap_Ref)
+
+#putting the data on a per year basis 
+capacities_y_all$newval <- capacities_y_all$value
+capacities_y_all$newval[capacities_y_all$year == 2025] <- capacities_y_all$value[capacities_y_all$year == 2025] / 4
+capacities_y_all$newval[capacities_y_all$year == 2030] <- capacities_y_all$value[capacities_y_all$year == 2030] / 5
+capacities_y_all$newval[capacities_y_all$year == 2035] <- capacities_y_all$value[capacities_y_all$year == 2035] / 5
+#data processigng
+colnames(capacities_y_all)[3] ="technology"
+capacities_y_all$technology <- gsub("Wind", "onshore wind", capacities_y_all$technology)
+capacities_y <- capacities_y_all[c(-1,-4)]
+capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) #averaging the different model results 
+
+#pulling results for 2025,2030,2035
+temp_df_2025 <- capacities_y %>%
+  filter(year == 2025)
+duplicated_vector <- rep(1:nrow(temp_df_2025), each = 4)
+temp_df_2025 <- temp_df_2025[duplicated_vector, ]
+
+temp_df_2030 <- capacities_y %>%
+  filter(year == 2030)
+duplicated_vector <- rep(1:nrow(temp_df_2030), each = 5)
+temp_df_2030 <- temp_df_2030[duplicated_vector, ]
+num_rows <- nrow(temp_df_2030)
+
+temp_df_2035 <- capacities_y %>%
+  filter(year == 2035)
+duplicated_vector <- rep(1:nrow(temp_df_2035), each = 5)
+temp_df_2035 <- temp_df_2035[duplicated_vector, ]
+num_rows <- nrow(temp_df_2035)
+
+temp_df_2025 <- temp_df_2025 %>% group_by(technology,scenario)%>%
+  mutate(year = ifelse(row_number() %% 3 == 0, 2022, year)) %>% mutate(year = ifelse((row_number() - 1) %% 3 == 0 & row_number() != 1, 2023, year))%>% mutate(year = ifelse((row_number() - 2) %% 3 == 0 & row_number() != 1, 2024, year))
+
+temp_df_2030 <- temp_df_2030 %>% group_by(technology,scenario)%>%
+  mutate(year = ifelse(row_number() %% 4 == 0, 2029, year)) %>% mutate(year = ifelse((row_number() - 1) %% 4 == 0 & row_number() != 1, 2028, year))%>% mutate(year = ifelse((row_number() - 2) %% 4 == 0 & row_number() != 1, 2027, year))%>% mutate(year = ifelse((row_number() - 3) %% 4 == 0 & row_number() != 1, 2026, year))
+
+temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
+  mutate(year = ifelse(row_number() %% 4 == 0, 2034, year)) %>% mutate(year = ifelse((row_number() - 1) %% 4 == 0 & row_number() != 1, 2033, year))%>% mutate(year = ifelse((row_number() - 2) %% 4 == 0 & row_number() != 1, 2032, year))%>% mutate(year = ifelse((row_number() - 3) %% 4 == 0 & row_number() != 1, 2031, year))
+#combining years together 
+final_y_cap_IRA <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
+final_y_cap_IRA$technology <- ifelse(final_y_cap_IRA$technology == "wind", "onshore wind", final_y_cap_IRA$technology)
+final_y_cap_IRA["technology"][final_y_cap_IRA["technology"] == "Solar Utility"] <- "utility-scale solar pv"#check solar distributed vs utlity 
+
+#Import USGS historical material demand values
+input_usgs = read_excel("US Geological Survey 2023/Data by material/USGS_2023_IRA materials calculations.xlsx", 
+                        sheet = "Combined", range = cell_cols(1:5))
+usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export - US")
+
+#Import wang et al., material intensity values
+input_wang = read_excel("Combined Intensity Values.xlsx", sheet = "Sheet1", range = cell_cols(1:3))
+colnames(input_wang)[1] ="technology"
+colnames(input_wang)[3] ="value"
+
+#data processing, worth checking some of these 
+input_wang["technology"][input_wang["technology"] == "Nuclear"] <- "Nuclear New"
+input_wang["technology"][input_wang["technology"] == "Onshore_AG"] <- "onshore wind"
+input_wang["technology"][input_wang["technology"] == "Onshore_DD_PMG"] <- "onshore wind"
+input_wang["technology"][input_wang["technology"] == "Wind onshore"] <- "onshore wind"
+input_wang["technology"][input_wang["technology"] == "Wind Onshore"] <- "onshore wind"
+input_wang["technology"][input_wang["technology"] == "CSI_PV"] <- "utility-scale solar pv"
+input_wang = unique(input_wang)
+
+
+#Define the relevant materials 
+materials = c("Al", "Cement", "Steel", "Cu", "Si", "Glass", "In", "Nd", "Ag", "Dy", "Ga","Se", "Ni","Mn")
+
+#Define the REPEAT scenarios to be included
+scenarios = c("Ref", "IRA")
+
+#Define the REPEAT technologies to be included
+repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New")
+
+#Filtering of USGS data
+flow = subset(input_usgs, Variable %in%usgs_variables)
+
+```
+
+```{r eval=FALSE, include=FALSE}
+# setwd("C:/Users/avery/Downloads/Material demand data for Avery")
+# repeat_scenarios = c("baseline", "ira_mid")
+# input_capacities= read.csv("capacity_y.csv")
+# input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+# #input_capacities["tech..type"][input_capacities["tech..type"] == "thermal"] <- "new"#this allows nuclear to work; I'm not sure if I can do this
+# input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "nuclear"
+# #input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
+# 
+# 
+# input_capacities_delta = read.csv("capacity_delta_y.csv")
+# input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+# input_capacities_delta["tech..type"][input_capacities_delta["tech..type"] == "new nuclear"] <- "new"
+# input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "nuclear"
+# #input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
+# new = subset(input_capacities_delta,  type %in% "new")
+# new = unique(subset(new, select = c(tech..outputs_group_detailed, tech..outputs_group_aggregate)))
+# 
+# repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+# #colnames(capacities)[colnames(capacities) == "tech..outputs_group_detailed"] ="technology"
+# 
+# repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
+#   group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+# colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
+# 
+# repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
+# repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
+# repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
+# 
+# 
+
+```
+
+```{r}
+#Calculating material intensity 
+
+intensity = subset(input_wang, Material %in% materials)
+intensity = unique(intensity) #filtered out duplicates here - I'm not sure if this makes complete sense 
+as.numeric(intensity$value)
+
+
+#Check if all material/technology scenarios are present, if not add 0.
+for (material in materials) {
+  for (tech in repeat_technologies){  
+    check_empty_frame = subset(intensity, technology %in% tech & Material %in% material)
+    if (nrow(check_empty_frame)==0){
+      intensity[nrow(intensity) + 1,] <- list(tech, material, 0)
+    }
+  }
+}
+
+intensity_mean = intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
+intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo. 
+
+
+
+
+```
+
+```{r}
+#material demand calculation 
+
+capacities_new <- subset(final_y_cap_IRA, technology  %in% repeat_technologies)
+capacities_new<- subset(capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier for key years 
+i=1
+for (material in materials){
+  df_int = subset(intensity_mean, Material %in% material)
+  df_cap = capacities_new %>% left_join (df_int, by='technology') 
+  df_cap$totaldemand = df_cap$newval *df_cap$value
+  colnames(df_cap)[colnames(df_cap) == "totaldemand"] = material
+  df_cap = subset(df_cap, select = -c(Material, newval, value))
+  
+  if (i==1){
+    materials_demand = df_cap
+  }
+  else{
+    materials_demand <- materials_demand %>% left_join(df_cap, by=  c("scenario", "year", "technology"))
+    
+  }
+  i= i+1
+}
+#materials_demand <- materials_demand %>%
+ # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
+
+#summing and summarising all mateiral demand/technology combos 
+materials_demand_sum <-materials_demand %>% group_by(year,scenario) %>% summarise(Al = sum(Al), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Magenese= sum(Mn))
+
+
+
+
+```
+
+```{r}
+#applying triangular distribution of material intensity 
+n = 1
+df_mc <- data.frame() 
+
+for (mat in materials){
+  for (tech in repeat_technologies){
+    loc = subset(intensity, Material %in% mat & technology %in% tech)
+    if (nrow(loc)>1){
+      minv = min(loc$value)
+      maxv = max(loc$value)
+      meanv = mean(loc$value)
+      index_name = paste(mat, gsub("[[:space:]]", ".", tech), sep = ".")#addressing issues with spaces and dashes
+      index_name = gsub("-", ".", index_name)
+      df2 = data.frame(index = index_name, min = minv, max= maxv, mean = meanv)
+      
+      if (n==1){
+        mc_values = df2
+      }
+      else{
+        mc_values = rbind(mc_values, df2)
+      }
+      result <- rtriangle(10000, minv, maxv, meanv)
+      
+      if(n==1){
+        df_mc <- data.frame(cbind(result))
+      }
+      else{
+        df_mc <- data.frame(cbind(df_mc, result))
+      }
+      colnames(df_mc)[colnames(df_mc) == "result"] =index_name
+      n= n+1
+    }
+  }
+}
+
+
+
+
+```
+
+```{r}
+
+# updated material inputs
+#mulitplying material intensity from df_mc (run 10000 times) by the new capacities 
+#result mc_material_demand is new material inputs needed per year. 
+
+j=1
+n=1
+
+for (tech in repeat_technologies){
+  for (mat in materials){
+    for (scen in scenarios){
+      n=1
+      entry_df = data.frame()
+      name = paste(mat, tech, sep ='.')
+      name = str_replace_all(name, "-", ".")
+      name = str_replace_all(name, ' ', '.')#addressing issues with spaces and dashes
+      
+      for (setyear in c(unique(capacities_new$year))){
+        tryCatch(
+          expr = {
+            mc_loc = subset(df_mc, select = c(name))
+            colnames(mc_loc)[colnames(mc_loc) == name] ="value"
+            mc_loc = cbind(mc_loc, Material = mat, technology = tech, scenario = scen )
+            cap_loc = subset(capacities_new, scenario %in% scen & technology %in% tech & year %in% setyear)
+            test = merge(mc_loc, cap_loc)
+            
+            if (nrow(test)<1){#if there is no data setting value to -1
+              test <- data.frame(matrix(-1,nrow = 100,ncol = 1))
+              colnames(test)<- paste("a", setyear, sep = "")
+              test$scenario = scen
+              test$technology = tech
+              test$value = -1 
+              test$newval = -1
+              test$Material = mat
+              test$year = paste("a", setyear, sep = "")
+            }
+            
+            else{
+              test$value = as.numeric(test$value)
+              test$finalvalue = test$value *test$newval
+              colnames(test)[colnames(test) == "finalvalue"] = paste("a", setyear, sep = "")
+            }
+            
+            if ((n==1) & (nrow(test)>1)){
+              entry_df = test
+              n = n+1
+            }
+            
+            else if ((n!=1) & (nrow(test)>1)){
+              df = subset(test, select = -c(Material, scenario,technology, newval,year,value))
+              entry_df = cbind(entry_df, df)
+            }
+          },
+          error = function(e){
+          }
+        )
+      }
+      
+      if (j==1){
+        mc_material_demand=entry_df
+        j= j+1
+      }
+      else{
+        mc_material_demand = rbind(mc_material_demand, entry_df)
+      }
+    } 
+  }
+}
+```
+
+```{r}
+#sensitivity analysis plots 
+par(mfrow = c(3, 3))  
+par(mar = c(2, 2, 2, 2)) 
+
+for(material in materials){
+  for(tech in repeat_technologies){
+    tryCatch(                      
+      expr = {                      
+        type = paste(material, tech, sep = ".")
+        type = str_replace_all(type, " ", ".")
+        type = str_replace_all(type, "-", ".")
+        
+        histtype = str_replace_all(type, "-", ".")
+        histtype = str_replace_all(histtype, " ", ".")
+        
+        axislabels= subset(mc_values, index %in% type)
+        hist_df = subset(df_mc, select = c(histtype))
+        
+        colnames(hist_df)[colnames(hist_df) == histtype] ="value"
+        
+        hist(as.numeric(hist_df$value), col = "antiquewhite1", cex.main=1.4,xaxt ='n', xlab = '', main = type, xlim =c(axislabels$min,axislabels$max))
+        axis(1, at = c(axislabels$mean, axislabels$min,axislabels$max),
+             labels = c(round(axislabels$mean, digits =5), round(axislabels$min, digits = 5), round(axislabels$max, digits = 5)))
+      },
+      error = function(e){
+        dummy = '1'
+      }
+    )
+  }
+}
+```
+
+```{r}
+
+plot.new()
+
+for(scen in scenarios){
+  
+  par(mfrow = c(3, 3)) 
+  par(mar=c(2,2,2,2)) 
+  par(xpd=NA)
+  
+
+  for(mat in materials){
+    for(tech in repeat_technologies){
+      tryCatch(                       
+        
+        expr = { 
+          boxplot_df = subset(mc_material_demand, technology %in% tech & scenario %in% scen & Material %in% mat)
+          boxplot_df =subset(boxplot_df, select = c(a2025, a2030, a2035))
+          if (nrow(boxplot_df)>0){
+              boxplot(boxplot_df, cex.main=1.2,cex.axis=1.2, main =  (paste (mat, tech, sep = ";")), names = c('2025','2030','2035'),border = "coral3", col ="white")
+            
+          }
+        },
+        error = function(e){
+          message("error")
+          }
+      )
+    }
+  }
+  
+  title(main = scen, xlab= "test", outer=TRUE, cex.main = 1)
+
+}
+
+```
+
+
+
+```
