@@ -9,7 +9,7 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
-```{r warning=FALSE}
+```{r}
 rm(list = ls())
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
 library(readxl)
@@ -216,36 +216,37 @@ flow = subset(input_usgs, Variable %in%usgs_variables)
 
 ```
 
-```{r eval=FALSE, include=FALSE}
-# setwd("C:/Users/avery/Downloads/Material demand data for Avery")
-# repeat_scenarios = c("baseline", "ira_mid")
-# input_capacities= read.csv("capacity_y.csv")
-# input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
-# #input_capacities["tech..type"][input_capacities["tech..type"] == "thermal"] <- "new"#this allows nuclear to work; I'm not sure if I can do this
-# input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "nuclear"
-# #input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
-# 
-# 
-# input_capacities_delta = read.csv("capacity_delta_y.csv")
-# input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
-# input_capacities_delta["tech..type"][input_capacities_delta["tech..type"] == "new nuclear"] <- "new"
-# input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "nuclear"
-# #input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
-# new = subset(input_capacities_delta,  type %in% "new")
-# new = unique(subset(new, select = c(tech..outputs_group_detailed, tech..outputs_group_aggregate)))
-# 
-# repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
-# #colnames(capacities)[colnames(capacities) == "tech..outputs_group_detailed"] ="technology"
-# 
-# repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
-#   group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
-# colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
-# 
-# repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
-# repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
-# repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
-# 
-# 
+```{r }
+
+repeat_scenarios = c("baseline", "ira_mid")
+input_capacities= read.csv("capacity_y.csv")
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+#input_capacities["tech..type"][input_capacities["tech..type"] == "thermal"] <- "new"#this allows nuclear to work; I'm not sure if I can do this
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+#input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
+
+
+input_capacities_delta = read.csv("capacity_delta_y.csv")
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+#input_capacities_delta["tech..type"][input_capacities_delta["tech..type"] == "new nuclear"] <- "new"
+
+#input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
+new = subset(input_capacities_delta,  type %in% "new")
+new = unique(subset(new, select = c(tech..outputs_group_detailed, tech..outputs_group_aggregate)))
+
+repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+#colnames(capacities)[colnames(capacities) == "tech..outputs_group_detailed"] ="technology"
+
+repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
+  group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
+
+repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
+repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
+repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
+
+
 
 ```
 
@@ -281,6 +282,7 @@ intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #t
 capacities_new <- subset(final_y_cap_IRA, technology  %in% repeat_technologies)
 capacities_new<- subset(capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier for key years 
 i=1
+invisible(
 for (material in materials){
   df_int = subset(intensity_mean, Material %in% material)
   df_cap = capacities_new %>% left_join (df_int, by='technology') 
@@ -296,15 +298,47 @@ for (material in materials){
     
   }
   i= i+1
-}
+})
 #materials_demand <- materials_demand %>%
  # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
 
 #summing and summarising all mateiral demand/technology combos 
 materials_demand_sum <-materials_demand %>% group_by(year,scenario) %>% summarise(Al = sum(Al), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Magenese= sum(Mn))
 
+```
+```{r}
+#same thing as above chunk but for repeat
+repeat_capacities_new <- subset(repeat_capacities_new, technology  %in% repeat_technologies)
+repeat_capacities_new<- subset(repeat_capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier
+names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
+repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
+repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
 
 
+
+i=1
+invisible(
+for (material in materials){
+  df_int = subset(intensity_mean, Material %in% material)
+  df_cap = repeat_capacities_new %>% left_join (df_int, by='technology') 
+  df_cap$totaldemand = df_cap$newval *df_cap$value
+  colnames(df_cap)[colnames(df_cap) == "totaldemand"] = material
+  df_cap = subset(df_cap, select = -c(Material, newval, value))
+  
+  if (i==1){
+    repeat_materials_demand = df_cap
+  }
+  else{
+    repeat_materials_demand <- repeat_materials_demand %>% left_join(df_cap, by=  c("scenario", "year", "technology"))
+    
+  }
+  i= i+1
+})
+#materials_demand <- materials_demand %>%
+ # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
+
+#summing and summarising all mateiral demand/technology combos 
+repeat_materials_demand_sum <-repeat_materials_demand %>% group_by(year,scenario) %>% summarise(Al = sum(Al), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Magenese= sum(Mn))
 
 ```
 
@@ -330,7 +364,7 @@ for (mat in materials){
       else{
         mc_values = rbind(mc_values, df2)
       }
-      result <- rtriangle(10000, minv, maxv, meanv)
+      result <- rtriangle(100, minv, maxv, meanv)
       
       if(n==1){
         df_mc <- data.frame(cbind(result))
@@ -419,6 +453,74 @@ for (tech in repeat_technologies){
   }
 }
 ```
+
+```{r}
+#same thing as above with repeat
+j=1
+n=1
+
+for (tech in repeat_technologies){
+  for (mat in materials){
+    for (scen in scenarios){
+      n=1
+      entry_df = data.frame()
+      name = paste(mat, tech, sep ='.')
+      name = str_replace_all(name, "-", ".")
+      name = str_replace_all(name, ' ', '.')#addressing issues with spaces and dashes
+      
+      for (setyear in c(unique(repeat_capacities_new$year))){
+        tryCatch(
+          expr = {
+            mc_loc = subset(df_mc, select = c(name))
+            colnames(mc_loc)[colnames(mc_loc) == name] ="value"
+            mc_loc = cbind(mc_loc, Material = mat, technology = tech, scenario = scen )
+            cap_loc = subset(repeat_capacities_new, scenario %in% scen & technology %in% tech & year %in% setyear)
+            test = merge(mc_loc, cap_loc)
+            
+            if (nrow(test)<1){#if there is no data setting value to -1
+              test <- data.frame(matrix(-1,nrow = 100,ncol = 1))
+              colnames(test)<- paste("a", setyear, sep = "")
+              test$scenario = scen
+              test$technology = tech
+              test$value = -1 
+              test$newval = -1
+              test$Material = mat
+              test$year = paste("a", setyear, sep = "")
+            }
+            
+            else{
+              test$value = as.numeric(test$value)
+              test$finalvalue = test$value *test$newval
+              colnames(test)[colnames(test) == "finalvalue"] = paste("a", setyear, sep = "")
+            }
+            
+            if ((n==1) & (nrow(test)>1)){
+              entry_df = test
+              n = n+1
+            }
+            
+            else if ((n!=1) & (nrow(test)>1)){
+              df = subset(test, select = -c(Material, scenario,technology, newval,year,value))
+              entry_df = cbind(entry_df, df)
+            }
+          },
+          error = function(e){
+          }
+        )
+      }
+      
+      if (j==1){
+        repeat_mc_material_demand=entry_df
+        j= j+1
+      }
+      else{
+        repeat_mc_material_demand = rbind(repeat_mc_material_demand, entry_df)
+      }
+    } 
+  }
+}
+```
+
 
 ```{r}
 #sensitivity analysis plots 
