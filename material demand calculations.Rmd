@@ -188,9 +188,12 @@ input_usgs = read_excel("US Geological Survey 2023/Data by material/USGS_2023_IR
 usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export - US")
 
 #Import wang et al., material intensity values
-input_wang = read_excel("Combined Intensity Values.xlsx", sheet = "Sheet1", range = cell_cols(1:3))
+input_wang = read_excel("Final Intensity Values.xlsx", sheet = "Sheet1", range = cell_cols(1:6))
 colnames(input_wang)[1] ="technology"
 colnames(input_wang)[3] ="value"
+
+input_wang <- input_wang[input_wang$`Year of the data` <= 2025, 
+                                  !(names(input_wang) %in% c('Year of the data', 'Authors', 'Publish year'))]
 
 #data processing, worth checking some of these 
 input_wang["technology"][input_wang["technology"] == "Nuclear"] <- "Nuclear New"
@@ -199,7 +202,9 @@ input_wang["technology"][input_wang["technology"] == "Onshore_DD_PMG"] <- "onsho
 input_wang["technology"][input_wang["technology"] == "Wind onshore"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "Wind Onshore"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "CSI_PV"] <- "utility-scale solar pv"
-input_wang = unique(input_wang)
+input_wang$technology[input_wang$technology == "Offshore_DD_PMG"] <- "Wind Offshore"
+input_wang$technology[input_wang$technology == "Offshore_AG"] <- "Wind Offshore"
+
 
 
 #Define the relevant materials 
@@ -378,9 +383,6 @@ for (mat in materials){
   }
 }
 
-
-
-
 ```
 
 ```{r}
@@ -461,7 +463,7 @@ n=1
 
 for (tech in repeat_technologies){
   for (mat in materials){
-    for (scen in scenarios){
+    for (scen in "IRA"){
       n=1
       entry_df = data.frame()
       name = paste(mat, tech, sep ='.')
