@@ -1,7 +1,5 @@
 ```{r}
 col_index <- which(names(capacities_all) == "model")
-
-# Rename the column at the found index
 names(capacities_all)[col_index] <- "Model"
 
 new_nuclear <- subset(capacities_all, technology %in% "Nuclear New")
@@ -11,12 +9,8 @@ merged_data <- left_join(new_nuclear, existing_nuclear, by = c("Model", "year", 
   select(-value.x, -value.y,-technology.x) 
 col_index <- which(names(merged_data) == "technology.y")
 
-# Rename the column at the found index
 names(merged_data)[col_index] <- "technology"
 merged_data$technology <- "Nuclear Combined"
-
-
-# Remove value.x and value.y columns if not needed anymore
 capacities_all <- rbind(capacities_all, merged_data)
 
 ```
@@ -24,25 +18,20 @@ capacities_all <- rbind(capacities_all, merged_data)
 ```{r}
 col_index <- which(names(capacities_all) == "model")
 
-# Rename the column at the found index
 names(capacities_all)[col_index] <- "Model"
 
 library(ggplot2)
 library(dplyr)
+library(scales)
 
-
-# Subset your data
 plot_IRA <- subset(capacities_all, technology %in% "utility-scale solar pv")
-# Replace "2021.00000000000000000000" with "2021" in the "Model" column
 plot_IRA$Model[plot_IRA$Model == "2021.00000000000000000000"] <- "2021"
 
-# Convert year to a factor with a specific order
 plot_IRA$year <- factor(plot_IRA$year, levels = c(2021, 2025, 2030, 2035))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
 
-# Create the box plot
 boxplot <- barplot %>%
   ggplot(aes(x = year, fill = scenario)) +
   geom_boxplot(
@@ -63,21 +52,6 @@ boxplot <- barplot %>%
     panel.background = element_rect(fill = "white"),
     plot.title = element_text(hjust = 0.5)
   )
-
-# combined_plot1 <- boxplot +
-#   geom_jitter(data = plot_IRA, aes(x = as.numeric(year), y = value, color = Model, group = interaction(year, scenario)), 
-#               position = position_dodge(width = 0.9), size = 3, alpha = 0.5)
-# 
-# # Print the combined plot
-# print(combined_plot1)
-# Get the legend colors from the first plot (combined_plot1)
-#legend_colors1 <- combined_plot1$data$fill
-
-# Get the legend colors from the second plot (combined_plot2)
-#legend_colors2 <- combined_plot2$data$fill
-
-# Print the legend colors
-#print(legend_colors1)
 
 ```
 
@@ -140,14 +114,6 @@ boxplot <- barplot %>%
 ```
 
 ```{r}
-# Subset your data
-#  geom_hline(aes(yintercept = solar_line$value, group = 2), linetype = "dashed", color = "blue", size = 1)
-
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "Hydro", value != 0)
 
@@ -164,9 +130,6 @@ barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
 
-# Your existing code...
-
-# Creating the boxplot
 boxplot <- barplot %>%
   ggplot(aes(x = year, fill = scenario)) +
   geom_boxplot(
@@ -204,10 +167,6 @@ print(combined_plot)
 
 ```
 ```{r}
-# Subset your data
-library(dplyr)
-
-# Subset and filter the dataframe
 plot_IRA1 <- capacities_all %>%
   filter(technology == "Nuclear Combined", value != 0)
 
@@ -219,10 +178,8 @@ solar_line <-unique(subset(dashed_line, scenario %in% "IRA"))
 
 plot_IRA1 <- subset(plot_IRA1, !(year %in% "2021"))
 
-# Convert year to a factor with a specific order
 plot_IRA1$year <- factor(plot_IRA1$year, levels = c("2025", "2030", "2035"))
 
-# Your existing code...
 barplot <- plot_IRA1 %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
@@ -266,14 +223,6 @@ print(combined_plot2)
 
 ```
 ```{r}
-# Subset your data
-#  geom_hline(aes(yintercept = solar_line$value, group = 2), linetype = "dashed", color = "blue", size = 1)
-
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "Solar Distributed", value != 0)
 
@@ -290,9 +239,6 @@ barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
 
-# Your existing code...
-
-# Creating the boxplot
 boxplot <- barplot %>%
   ggplot(aes(x = year, fill = scenario)) +
   geom_boxplot(
@@ -329,14 +275,6 @@ combined_plot3 <- boxplot +
 print(combined_plot3)
 ```
 ```{r}
-# Subset your data
-#  geom_hline(aes(yintercept = solar_line$value, group = 2), linetype = "dashed", color = "blue", size = 1)
-
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "Bio CCS", value != 0)
 
@@ -353,7 +291,6 @@ barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
 
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -391,13 +328,6 @@ print(combined_plot4)
 
 ```
 ```{r}
-# Subset your data
-#  geom_hline(aes(yintercept = solar_line$value, group = 2), linetype = "dashed", color = "blue", size = 1)
-
-library(dplyr)
-library(scales)
-
-
 #plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "Hydrogen Green", value != 0)
@@ -414,8 +344,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -453,11 +381,6 @@ print(combined_plot5)
 ```
 
 ```{r}
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "NGGT", value != 0)
 
@@ -473,8 +396,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -511,11 +432,6 @@ combined_plot6<- boxplot +
 print(combined_plot6)
 ```
 ```{r}
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "NGCC", value != 0)
 
@@ -531,8 +447,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -570,11 +484,6 @@ print(combined_plot7)
 ```
 
 ```{r}
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "NGGT", value != 0)
 
@@ -590,8 +499,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -629,11 +536,6 @@ print(combined_plot6)
 ```
 
 ```{r}
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "NGCC CCS", value != 0)
 
@@ -649,8 +551,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -687,11 +587,6 @@ combined_plot8<- boxplot +
 print(combined_plot8)
 ```
 ```{r}
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "Coal", value != 0)
 
@@ -707,8 +602,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -747,11 +640,6 @@ print(combined_plot9)
 
 
 ```{r}
-library(dplyr)
-library(scales)
-
-
-#plot_IRA <- subset(capacities_all, technology == "utility-scale solar pv")
 plot_IRA <- capacities_all %>%
   filter(technology == "Coal CCS", value != 0)
 
@@ -767,8 +655,6 @@ plot_IRA$year <- factor(plot_IRA$year, levels = c("2025", "2030", "2035"))
 barplot <- plot_IRA %>%
   group_by(year, scenario) %>%
   summarise(newval = mean(value), min = min(value), max = max(value))
-
-# Your existing code...
 
 # Creating the boxplot
 boxplot <- barplot %>%
@@ -813,6 +699,8 @@ print(combined_plot10)
 
 ```{r}
 library(patchwork)
+library(gridExtra)
+
 combined_plot
 combined_plot2
 combined_subplot <- combined_plot + combined_plot2 + combined_plot3+combined_plot4+combined_plot5+combined_plot6+combined_plot7+combined_plot8+combined_plot9+combined_plot10+plot_layout(guides = "collect")  # Add a single y-axis label
@@ -821,9 +709,7 @@ row1<- combined_plot + combined_plot2 + combined_plot3+combined_plot4+combined_p
 row2<-combined_plot7+combined_plot8+combined_plot9+combined_plot10
 print(row1)
 print(row2)
-library(gridExtra)
 
-# Assuming combined_plot7, combined_plot8, combined_plot9, combined_plot10 are already created
 
 # Arrange the plots in three columns
 grid.arrange(

@@ -10,6 +10,7 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r}
+#Currently only running this script on aluminum cement and steel. you can change this by changing rows 222,305, and 341
 rm(list = ls())
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
 library(readxl)
@@ -145,7 +146,7 @@ capacities_y_all$newval <- capacities_y_all$value
 capacities_y_all$newval[capacities_y_all$year == 2025] <- capacities_y_all$value[capacities_y_all$year == 2025] / 4
 capacities_y_all$newval[capacities_y_all$year == 2030] <- capacities_y_all$value[capacities_y_all$year == 2030] / 5
 capacities_y_all$newval[capacities_y_all$year == 2035] <- capacities_y_all$value[capacities_y_all$year == 2035] / 5
-#data processigng
+#data processing 
 colnames(capacities_y_all)[3] ="technology"
 capacities_y_all$technology <- gsub("Wind", "onshore wind", capacities_y_all$technology)
 capacities_y <- capacities_y_all[c(-1,-4)]
@@ -191,6 +192,7 @@ usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export
 input_wang = read_excel("Final Intensity Values.xlsx", sheet = "Sheet1", range = cell_cols(1:6))
 colnames(input_wang)[1] ="technology"
 colnames(input_wang)[3] ="value"
+input_wang <- input_wang[!duplicated(input_wang), ]
 
 input_wang <- input_wang[input_wang$`Year of the data` <= 2025, 
                                   !(names(input_wang) %in% c('Year of the data', 'Authors', 'Publish year'))]
@@ -199,22 +201,25 @@ input_wang <- input_wang[input_wang$`Year of the data` <= 2025,
 input_wang["technology"][input_wang["technology"] == "Nuclear"] <- "Nuclear New"
 input_wang["technology"][input_wang["technology"] == "Onshore_AG"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "Onshore_DD_PMG"] <- "onshore wind"
+input_wang["technology"][input_wang["technology"] == "Wind Directed_Drive"] <- "onshore wind"
+input_wang["technology"][input_wang["technology"] == "Geared"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "Wind onshore"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "Wind Onshore"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "CSI_PV"] <- "utility-scale solar pv"
 input_wang$technology[input_wang$technology == "Offshore_DD_PMG"] <- "Wind Offshore"
 input_wang$technology[input_wang$technology == "Offshore_AG"] <- "Wind Offshore"
+input_wang$Material[input_wang$Material == "Neodymium "] <-  "Neodymium"
 
 
-
-#Define the relevant materials 
-materials = c("Al", "Cement", "Steel", "Cu", "Si", "Glass", "In", "Nd", "Ag", "Dy", "Ga","Se", "Ni","Mn")
+materials <- c("Aluminum","Cement","Steel")
+# Print the unique materials
+print(materials)
 
 #Define the REPEAT scenarios to be included
 scenarios = c("Ref", "IRA")
 
 #Define the REPEAT technologies to be included
-repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New")
+repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore")
 
 #Filtering of USGS data
 flow = subset(input_usgs, Variable %in%usgs_variables)
@@ -222,26 +227,18 @@ flow = subset(input_usgs, Variable %in%usgs_variables)
 ```
 
 ```{r }
-
+#repeat-rio data processing
 repeat_scenarios = c("baseline", "ira_mid")
 input_capacities= read.csv("capacity_y.csv")
 input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
-#input_capacities["tech..type"][input_capacities["tech..type"] == "thermal"] <- "new"#this allows nuclear to work; I'm not sure if I can do this
 input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
-#input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
 
 
 input_capacities_delta = read.csv("capacity_delta_y.csv")
 input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
 input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
-#input_capacities_delta["tech..type"][input_capacities_delta["tech..type"] == "new nuclear"] <- "new"
-
-#input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
-new = subset(input_capacities_delta,  type %in% "new")
-new = unique(subset(new, select = c(tech..outputs_group_detailed, tech..outputs_group_aggregate)))
 
 repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
-#colnames(capacities)[colnames(capacities) == "tech..outputs_group_detailed"] ="technology"
 
 repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
   group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
@@ -251,15 +248,12 @@ repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030",
 repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
 repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
 
-
-
 ```
 
 ```{r}
 #Calculating material intensity 
 
 intensity = subset(input_wang, Material %in% materials)
-intensity = unique(intensity) #filtered out duplicates here - I'm not sure if this makes complete sense 
 as.numeric(intensity$value)
 
 
@@ -308,7 +302,8 @@ for (material in materials){
  # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
 
 #summing and summarising all mateiral demand/technology combos 
-materials_demand_sum <-materials_demand %>% group_by(year,scenario) %>% summarise(Al = sum(Al), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Magenese= sum(Mn))
+materials_demand_sum <-materials_demand %>% group_by(year,scenario) %>% summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel))
+                                                                                  #, Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Mangenese= sum(Mn))
 
 ```
 ```{r}
@@ -343,7 +338,8 @@ for (material in materials){
  # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
 
 #summing and summarising all mateiral demand/technology combos 
-repeat_materials_demand_sum <-repeat_materials_demand %>% group_by(year,scenario) %>% summarise(Al = sum(Al), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Magenese= sum(Mn))
+repeat_materials_demand_sum <-repeat_materials_demand %>% group_by(year,scenario) %>% summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel))
+#, Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Manganese= sum(Mn))
 
 ```
 

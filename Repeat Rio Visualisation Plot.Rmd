@@ -1,0 +1,85 @@
+---
+title: "Repeat Rio Method Visualisations"
+output: html_document
+date: "2023-12-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Including Plots
+
+
+```{r pressure, echo=FALSE}
+#tranmission plot
+library(dplyr)
+library(stringr)
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
+
+# Convert 'year' column to character type
+Spur_Dist_Sum$year <- as.character(Spur_Dist_Sum$year)
+Spur_Dist_Sum$tech <- ifelse(Spur_Dist_Sum$tech == "offshorewind", "Offshore Wind",
+                             ifelse(Spur_Dist_Sum$tech == "solar", "Solar",
+                                    ifelse(Spur_Dist_Sum$tech == "wind", "Onshore Wind",
+                                           Spur_Dist_Sum$tech)))
+Spur_Dist_Sum$policy <- ifelse(Spur_Dist_Sum$policy == "baseline", "Baseline",
+                               ifelse(Spur_Dist_Sum$policy == "ira_mid", "IRA",
+                                      Spur_Dist_Sum$policy))
+
+# Subset the data for different technologies
+plot_df <- subset(Spur_Dist_Sum, tech %in% c("Solar", "Offshore Wind", "Onshore Wind"))
+plot_df <- transform(plot_df, Policy = policy)
+plot_df <- subset(plot_df, select = -policy)
+
+ggplot(plot_df, aes(x = year, y = totalspurdistance, color = Policy, shape = ifelse(Policy == "IRA", "IRA", "Baseline"))) +
+  geom_point(size = 3) +  # Set the size of points to 3
+  labs(x = "", y = "Total Spur Line Distance (km)") +
+  theme_minimal() +
+  facet_wrap(~tech) +
+  scale_shape_manual(values = c("Baseline" = 16, "IRA" = 17)) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1)
+  ) +
+  guides(shape = FALSE)  # Remove the shape legend
+
+
+```
+
+```{r}
+#repeat_rio capacity plot
+repeat_technologies = c("onshore wind","offshore wind floating", "offshore wind fixed")
+repeat_scenarios = c("baseline", "ira_mid")
+input_capacities= read.csv("capacity_y.csv")
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "Offshore wind fixed"
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+
+repeat_capacities<- subset(repeat_capacities, year %in% c("2022","2026","2030","2035")) 
+repeat_capacities$year <- as.character(repeat_capacities$year)
+
+colnames(repeat_capacities)[which(colnames(repeat_capacities) == "tech..outputs_group_detailed")] <- "tech"
+colnames(repeat_capacities)[which(colnames(repeat_capacities) == "run.name")] <- "Policy"
+repeat_capacities$Policy <- ifelse(repeat_capacities$Policy == "baseline", "Baseline",
+                               ifelse(repeat_capacities$Policy == "ira_mid", "IRA",
+                                      repeat_capacities$Policy))
+repeat_capacities$year <- as.character(repeat_capacities$year)
+colnames(repeat_capacities)[which(colnames(repeat_capacities) == "tech..outputs_group_detailed")] <- "tech"
+repeat_capacities$year <- as.character(repeat_capacities$year)
+colnames(repeat_capacities)[which(colnames(repeat_capacities) == "tech..outputs_group_detailed")] <- "tech"
+repeat_capacities$tech <- str_to_title(repeat_capacities$tech)
+
+ggplot(repeat_capacities, aes(x = year, y = newval, color = Policy)) +
+  geom_point(aes(shape = ifelse(Policy == "IRA", "IRA", "other")), size = 3) +
+  labs(x = "", y = "Capacity (GW)") +
+  theme_minimal() +
+  facet_wrap(~tech, scales = "free_y") +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1)
+  )+guides(shape = FALSE)  
+
+
+
+```
+
