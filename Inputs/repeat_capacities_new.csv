@@ -1,0 +1,17 @@
+"run.name","year","technology","newval"
+"baseline",2025,"onshore wind",27.245170405
+"baseline",2025,"utility-scale solar pv",23.241850185
+"baseline",2030,"Nuclear New",0.01172974
+"baseline",2030,"onshore wind",29.45177286
+"baseline",2030,"utility-scale solar pv",96.37596907
+"baseline",2035,"Nuclear New",0.00291132
+"baseline",2035,"onshore wind",21.05112111
+"baseline",2035,"utility-scale solar pv",91.48716359
+"ira_mid",2025,"onshore wind",27.245333485
+"ira_mid",2025,"utility-scale solar pv",25.344867265
+"ira_mid",2030,"Nuclear New",0.00023048
+"ira_mid",2030,"onshore wind",112.99182878
+"ira_mid",2030,"utility-scale solar pv",105.11039341
+"ira_mid",2035,"Nuclear New",0.00157467
+"ira_mid",2035,"onshore wind",73.07638073
+"ira_mid",2035,"utility-scale solar pv",329.65624537

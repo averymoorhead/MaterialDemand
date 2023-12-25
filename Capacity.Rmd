@@ -1,0 +1,261 @@
+---
+title: "Capacity"
+output:
+  html_document:
+    df_print: paged
+date created: 12/22/23
+created by: Avery Moorhead
+last revised by: Erin Mayfield
+---
+
+```{r setup, include=FALSE}
+###NTS: Currently only running this script on aluminum cement and steel. you can change this by changing rows 222,305, and 341
+#Clear objects from workspace
+rm(list = ls())
+
+#Set working directory
+knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Raw Data")
+
+#Load libraries
+library(readxl)
+library(data.table)
+library(dplyr)
+library(tidyverse)
+library(triangle)
+library(stringr)
+library(knitr)
+```
+
+**Capacity inputs (Bistline et al., 2023):** This code processes electric power capacity input data from Bistline et al. (2023). The data include total capacity and added capacity by technology, capacity expansion model, and year. All capacity data are in units of gigawatts.
+
+```{r message=FALSE, warning=FALSE}
+
+##Cap_IRA: total capacity for each technology, model, and period under IRA scenario (units: gigawatts)
+
+#Load data
+Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
+                      sheet = "Cap IRA", na="ND", range =  cell_rows(1:18), col_names= FALSE)
+
+#Creating dataframe and processing data
+Cap_IRA <- t(Cap_IRA)
+Cap_IRA <- as.data.frame(Cap_IRA)
+rownames(Cap_IRA)<-NULL
+new_colnames <- unlist(Cap_IRA[1, ])
+colnames(Cap_IRA) <- new_colnames
+Cap_IRA <- Cap_IRA[-1,]
+colnames(Cap_IRA)[1] ="model"
+colnames(Cap_IRA)[2] ="year"
+Cap_IRA$year[is.na(Cap_IRA$year)] <- "2021"
+Cap_IRA <-  Cap_IRA[(1:34),]
+Cap_IRA[is.na(Cap_IRA)] <- 0
+Cap_IRA[] <- lapply(Cap_IRA, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Cap_IRA <- as.data.frame(Cap_IRA)
+
+#Creating dataframe for total capacity in the year 2021
+initial_year <- subset(Cap_IRA, year %in% "2021")
+initial_year[is.na(initial_year)] <- '0'
+
+#Additional data processing 
+Cap_IRA = Cap_IRA[-1,]
+Cap_IRA[is.na(Cap_IRA)] <- '0'
+Cap_IRA <- rbind(Cap_IRA, initial_year)
+Cap_IRA <- reshape2::melt(Cap_IRA, id = c("model","year")) 
+Cap_IRA$value <- as.numeric(unlist(Cap_IRA$value))
+Cap_IRA$scenario <- "IRA"
+
+##Y_Cap_IRA: additional capacity for each technology, model, and period under IRA scenario (units: gigawatts)
+
+#Load data
+Y_Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
+                     sheet = "Cap IRA", na="ND", col_names= FALSE, range = cell_rows(28:45))
+
+#Creating dataframe and processing data
+Y_Cap_IRA <- t(Y_Cap_IRA)
+Y_Cap_IRA <- as.data.frame(Y_Cap_IRA)
+rownames(Y_Cap_IRA)<-NULL
+new_colnames <- unlist(Y_Cap_IRA[1, ])
+colnames(Y_Cap_IRA) <- new_colnames
+Y_Cap_IRA <- Y_Cap_IRA[-1,]
+colnames(Y_Cap_IRA)[1] ="model"
+colnames(Y_Cap_IRA)[2] ="year"
+Y_Cap_IRA$year[is.na(Y_Cap_IRA$year)] <- "2021"
+Y_Cap_IRA <-  Y_Cap_IRA[(1:34),]
+Y_Cap_IRA[is.na(Y_Cap_IRA)] <- 0
+Y_Cap_IRA[] <- lapply(Y_Cap_IRA, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Y_Cap_IRA <- as.data.frame(Y_Cap_IRA)
+Y_Cap_IRA[is.na(Y_Cap_IRA)] <- '0'
+Y_Cap_IRA <- reshape2::melt(Y_Cap_IRA, id = c("model","year")) 
+Y_Cap_IRA$value <- as.numeric(unlist(Y_Cap_IRA$value))
+Y_Cap_IRA$scenario <- "IRA"
+Y_Cap_IRA$model[Y_Cap_IRA$model=='0']<-"2021"
+
+##Cap_Ref: total capacity for each technology, model, and period under reference scenario (units: gigawatts)
+
+#Load data
+Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
+                     sheet = "Cap Ref", na="ND", range =  cell_rows(1:18), col_names= FALSE)
+
+#Creating dataframe and processing data
+Cap_Ref <- t(Cap_Ref)
+Cap_Ref <- as.data.frame(Cap_Ref)
+rownames(Cap_Ref)<-NULL
+new_colnames <- unlist(Cap_Ref[1, ])
+colnames(Cap_Ref) <- new_colnames
+Cap_Ref <- Cap_Ref[-1,]
+colnames(Cap_Ref)[1] ="model"
+colnames(Cap_Ref)[2] ="year"
+Cap_Ref$year[is.na(Cap_Ref$year)] <- "2021"
+Cap_Ref <-  Cap_Ref[(1:34),]
+Cap_Ref[is.na(Cap_Ref)] <- 0
+Cap_Ref[] <- lapply(Cap_Ref, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Cap_Ref <- as.data.frame(Cap_Ref)
+Cap_Ref = Cap_Ref[-1,]
+Cap_Ref[is.na(Cap_Ref)] <- '0'
+Cap_Ref <- rbind(Cap_Ref, initial_year)
+Cap_Ref <- reshape2::melt(Cap_Ref, id = c("model","year")) 
+Cap_Ref$value <- as.numeric(unlist(Cap_Ref$value))
+Cap_Ref$scenario <- "Ref"
+
+##Y_Cap_Ref: additional capacity for each technology, model, and period under reference scenario (units: gigawatts)
+
+#Load data
+Y_Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
+                       sheet = "Cap Ref", na="ND", col_names= FALSE, range = cell_rows(28:45))
+
+#Creating dataframe and processing data
+Y_Cap_Ref <- t(Y_Cap_Ref)
+Y_Cap_Ref <- as.data.frame(Y_Cap_Ref)
+rownames(Y_Cap_Ref)<-NULL
+new_colnames <- unlist(Y_Cap_Ref[1, ])
+colnames(Y_Cap_Ref) <- new_colnames
+Y_Cap_Ref <- Y_Cap_Ref[-1,]
+colnames(Y_Cap_Ref)[1] ="model"
+colnames(Y_Cap_Ref)[2] ="year"
+Y_Cap_Ref$year[is.na(Y_Cap_Ref$year)] <- "2021"
+Y_Cap_Ref <-  Y_Cap_Ref[(1:34),]
+Y_Cap_Ref[is.na(Y_Cap_Ref)] <- 0
+Y_Cap_Ref[] <- lapply(Y_Cap_Ref, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
+Y_Cap_Ref <- as.data.frame(Y_Cap_Ref)
+Y_Cap_Ref[is.na(Y_Cap_Ref)] <- '0'
+Y_Cap_Ref <- reshape2::melt(Y_Cap_Ref, id = c("model","year")) 
+Y_Cap_Ref$value <- as.numeric(unlist(Y_Cap_Ref$value))
+Y_Cap_Ref$scenario <- "Ref"
+Y_Cap_Ref$model[Y_Cap_Ref$model=='0']<-"2021"
+
+##capacities_all: total capacity for each technology, model, and period under reference and IRA scenarios (units: gigawatts)
+
+#Merging Cap_IRA and Cap_Ref dataframes and data processing
+capacities_all <- rbind(Cap_IRA,Cap_Ref)
+colnames(capacities_all)[3] ="technology"
+capacities_all$technology <- gsub("Wind", "onshore wind", capacities_all$technology)
+capacities_all$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_all$technology)
+
+##capacities: mean, minimum, and maximum total capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
+capacities <- capacities_all[-1]
+capacities <-capacities %>% group_by(scenario,year,technology) %>% summarise(newval = mean(value), max = max(value),min = min(value)) #calculating mean, minimum, and maximum capacities across models 
+
+##capacities_y_all: annualized additional capacity for each technology, model, and period under reference and IRA scenarios (units: gigawatts)
+
+#Merging Y_Cap_IRA and Y_Cap_Ref dataframes
+capacities_y_all <- rbind(Y_Cap_IRA,Y_Cap_Ref)
+
+#Annualizing capacity data 
+capacities_y_all$newval <- capacities_y_all$value
+capacities_y_all$newval[capacities_y_all$year == 2025] <- capacities_y_all$value[capacities_y_all$year == 2025] / 4
+capacities_y_all$newval[capacities_y_all$year == 2030] <- capacities_y_all$value[capacities_y_all$year == 2030] / 5
+capacities_y_all$newval[capacities_y_all$year == 2035] <- capacities_y_all$value[capacities_y_all$year == 2035] / 5
+
+##capacities_y: mean annualized additional capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
+colnames(capacities_y_all)[3] ="technology"
+capacities_y_all$technology <- gsub("Wind", "onshore wind", capacities_y_all$technology)
+capacities_y <- capacities_y_all[c(-1,-4)]
+capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) #calculating mean capacities across models 
+
+##multi_model_capacities: additional capacity for each technology, model and year under reference and IRA scenarios (units: gigawatts)
+
+#Creating intermediate dataframes for each period and data processing
+temp_df_2025 <- capacities_y %>%
+  filter(year == 2025)
+duplicated_vector <- rep(1:nrow(temp_df_2025), each = 4)
+temp_df_2025 <- temp_df_2025[duplicated_vector, ]
+
+temp_df_2030 <- capacities_y %>%
+  filter(year == 2030)
+duplicated_vector <- rep(1:nrow(temp_df_2030), each = 5)
+temp_df_2030 <- temp_df_2030[duplicated_vector, ]
+num_rows <- nrow(temp_df_2030)
+
+temp_df_2035 <- capacities_y %>%
+  filter(year == 2035)
+duplicated_vector <- rep(1:nrow(temp_df_2035), each = 5)
+temp_df_2035 <- temp_df_2035[duplicated_vector, ]
+num_rows <- nrow(temp_df_2035)
+
+temp_df_2025 <- temp_df_2025 %>% group_by(technology,scenario)%>%
+  mutate(year = ifelse(row_number() %% 3 == 0, 2022, year)) %>% mutate(year = ifelse((row_number() - 1) %% 3 == 0 & row_number() != 1, 2023, year))%>% mutate(year = ifelse((row_number() - 2) %% 3 == 0 & row_number() != 1, 2024, year))
+
+temp_df_2030 <- temp_df_2030 %>% group_by(technology,scenario)%>%
+  mutate(year = ifelse(row_number() %% 4 == 0, 2029, year)) %>% mutate(year = ifelse((row_number() - 1) %% 4 == 0 & row_number() != 1, 2028, year))%>% mutate(year = ifelse((row_number() - 2) %% 4 == 0 & row_number() != 1, 2027, year))%>% mutate(year = ifelse((row_number() - 3) %% 4 == 0 & row_number() != 1, 2026, year))
+
+temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
+  mutate(year = ifelse(row_number() %% 4 == 0, 2034, year)) %>% mutate(year = ifelse((row_number() - 1) %% 4 == 0 & row_number() != 1, 2033, year))%>% mutate(year = ifelse((row_number() - 2) %% 4 == 0 & row_number() != 1, 2032, year))%>% mutate(year = ifelse((row_number() - 3) %% 4 == 0 & row_number() != 1, 2031, year))
+
+#Combining intermediate dataframes for each period 
+multi_model_capacities <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
+multi_model_capacities$technology <- ifelse(multi_model_capacities$technology == "wind", "onshore wind", multi_model_capacities$technology)
+multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Utility"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
+
+```
+
+**Capacity inputs (Jenkins et al., 2023):** This code uploads and processes electric power capacity input data from Jenkins et al. (2023). The data include total capacity and added capacity by technology, capacity expansion model, and year. All capacity data are in units of gigawatts.
+
+```{r message=FALSE, warning=FALSE}
+##repeat_capacities: total capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
+
+#Load data
+input_capacities= read.csv("capacity_y.csv")
+
+#Creating dataframe and processing data
+scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
+repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore")#Define the REPEAT technologies to be included
+repeat_scenarios = c("baseline", "ira_mid")
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+
+##repeat_capacities_new: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
+
+#Load data
+input_capacities_delta = read.csv("capacity_delta_y.csv")
+
+#Creating dataframe and processing data
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
+  group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
+
+#Annualizing added capacities
+repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
+repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
+repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
+
+```
+
+**Saving data frames to "inputs" folder:** This code saves the dataframes for use in the model 
+
+```{r}
+folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
+
+file_path1 <- file.path(folder_path, "initial_year.csv")
+file_path2 <- file.path(folder_path, "multi_model_capacities.csv")
+file_path3 <- file.path(folder_path, "repeat_capacities_new.csv")
+
+
+# Write each dataframe to its respective CSV file in the specified folder
+write.csv(initial_year, file = file_path1, row.names = FALSE)
+write.csv(multi_model_capacities, file = file_path2, row.names = FALSE)
+write.csv(repeat_capacities_new, file = file_path3, row.names = FALSE)
+
+```
+
