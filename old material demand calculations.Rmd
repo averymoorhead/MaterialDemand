@@ -1,18 +1,33 @@
 ---
-title: "Material Demand Calculations"
-output: html_notebook
-date: 11/28/23
-author: Avery Moorhead 
+title: "Material Demand Simulation"
+output:
+  html_document:
+    df_print: paged
+date created: 11/28/23
+date last modified: 12/13/23
+created by: Avery Moorhead
+last revised by: Erin Mayfield
 ---
+```{r setup, include=FALSE}
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+# Set working directory using here::set_here()
+knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Raw Data")
 
-```{r}
-#Currently only running this script on aluminum cement and steel. you can change this by changing rows 222,305, and 341
+# Clear objects from workspace
 rm(list = ls())
-setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
+
+```
+
+```{r message=FALSE, warning=FALSE}
+###NTS: Currently only running this script on aluminum cement and steel. you can change this by changing rows 222,305, and 341
+#Clear objects from workspace
+rm(list = ls())
+
+#Set working directory
+#setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
+
+#Load libraries
 library(readxl)
 library(data.table)
 library(dplyr)
@@ -20,14 +35,18 @@ library(tidyverse)
 library(triangle)
 library(stringr)
 library(knitr)
+```
 
+**Capacity inputs (Bistline et al., 2023):** This code processes electric power capacity input data from Bistline et al. (2023). The data include total capacity and added capacity by technology, capacity expansion model, and year. All capacity data are in units of gigawatts.
 
-#uploading and proessing multi model IRA results 
-#CAP_IRA is the total capacity of each technology under IRA scenario 
+```{r message=FALSE, warning=FALSE}
+##Cap_IRA: total capacity for each technology, model, and period under IRA scenario (units: gigawatts)
+
+#Load data
 Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
                       sheet = "Cap IRA", na="ND", range =  cell_rows(1:18), col_names= FALSE)
 
-#this is all data processing 
+#Creating dataframe and processing data
 Cap_IRA <- t(Cap_IRA)
 Cap_IRA <- as.data.frame(Cap_IRA)
 rownames(Cap_IRA)<-NULL
@@ -42,23 +61,25 @@ Cap_IRA[is.na(Cap_IRA)] <- 0
 Cap_IRA[] <- lapply(Cap_IRA, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
 Cap_IRA <- as.data.frame(Cap_IRA)
 
-#made 2021 data into it's own df 
+#Creating dataframe for total capacity in the year 2021
 initial_year <- subset(Cap_IRA, year %in% "2021")
 initial_year[is.na(initial_year)] <- '0'
 
-#more data processing 
+#Additional data processing 
 Cap_IRA = Cap_IRA[-1,]
 Cap_IRA[is.na(Cap_IRA)] <- '0'
 Cap_IRA <- rbind(Cap_IRA, initial_year)
-Cap_IRA <- melt(Cap_IRA, id = c("model","year")) 
+Cap_IRA <- reshape2::melt(Cap_IRA, id = c("model","year")) 
 Cap_IRA$value <- as.numeric(unlist(Cap_IRA$value))
 Cap_IRA$scenario <- "IRA"
 
-#Y_Cap_IRA is the additional capacity between each time step 
+##Y_Cap_IRA: additional capacity for each technology, model, and period under IRA scenario (units: gigawatts)
+
+#Load data
 Y_Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
                      sheet = "Cap IRA", na="ND", col_names= FALSE, range = cell_rows(28:45))
 
-#data processing (similar to CAP_IRA)
+#Creating dataframe and processing data
 Y_Cap_IRA <- t(Y_Cap_IRA)
 Y_Cap_IRA <- as.data.frame(Y_Cap_IRA)
 rownames(Y_Cap_IRA)<-NULL
@@ -73,16 +94,18 @@ Y_Cap_IRA[is.na(Y_Cap_IRA)] <- 0
 Y_Cap_IRA[] <- lapply(Y_Cap_IRA, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
 Y_Cap_IRA <- as.data.frame(Y_Cap_IRA)
 Y_Cap_IRA[is.na(Y_Cap_IRA)] <- '0'
-Y_Cap_IRA <- melt(Y_Cap_IRA, id = c("model","year")) 
+Y_Cap_IRA <- reshape2::melt(Y_Cap_IRA, id = c("model","year")) 
 Y_Cap_IRA$value <- as.numeric(unlist(Y_Cap_IRA$value))
 Y_Cap_IRA$scenario <- "IRA"
 Y_Cap_IRA$model[Y_Cap_IRA$model=='0']<-"2021"
 
+##Cap_Ref: total capacity for each technology, model, and period under reference scenario (units: gigawatts)
 
-#Repeating what was done above for the reference scenario
+#Load data
 Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
                      sheet = "Cap Ref", na="ND", range =  cell_rows(1:18), col_names= FALSE)
-#data processing
+
+#Creating dataframe and processing data
 Cap_Ref <- t(Cap_Ref)
 Cap_Ref <- as.data.frame(Cap_Ref)
 rownames(Cap_Ref)<-NULL
@@ -99,15 +122,17 @@ Cap_Ref <- as.data.frame(Cap_Ref)
 Cap_Ref = Cap_Ref[-1,]
 Cap_Ref[is.na(Cap_Ref)] <- '0'
 Cap_Ref <- rbind(Cap_Ref, initial_year)
-Cap_Ref <- melt(Cap_Ref, id = c("model","year")) 
+Cap_Ref <- reshape2::melt(Cap_Ref, id = c("model","year")) 
 Cap_Ref$value <- as.numeric(unlist(Cap_Ref$value))
 Cap_Ref$scenario <- "Ref"
 
-#additional capacity per time step
+##Y_Cap_Ref: additional capacity for each technology, model, and period under reference scenario (units: gigawatts)
+
+#Load data
 Y_Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
                        sheet = "Cap Ref", na="ND", col_names= FALSE, range = cell_rows(28:45))
 
-#data processing 
+#Creating dataframe and processing data
 Y_Cap_Ref <- t(Y_Cap_Ref)
 Y_Cap_Ref <- as.data.frame(Y_Cap_Ref)
 rownames(Y_Cap_Ref)<-NULL
@@ -122,37 +147,43 @@ Y_Cap_Ref[is.na(Y_Cap_Ref)] <- 0
 Y_Cap_Ref[] <- lapply(Y_Cap_Ref, gsub, pattern = "N/A", replacement = "0", fixed = TRUE)
 Y_Cap_Ref <- as.data.frame(Y_Cap_Ref)
 Y_Cap_Ref[is.na(Y_Cap_Ref)] <- '0'
-Y_Cap_Ref <- melt(Y_Cap_Ref, id = c("model","year")) 
+Y_Cap_Ref <- reshape2::melt(Y_Cap_Ref, id = c("model","year")) 
 Y_Cap_Ref$value <- as.numeric(unlist(Y_Cap_Ref$value))
 Y_Cap_Ref$scenario <- "Ref"
 Y_Cap_Ref$model[Y_Cap_Ref$model=='0']<-"2021"
 
+##capacities_all: total capacity for each technology, model, and period under reference and IRA scenarios (units: gigawatts)
 
-#merging both scenarios in one df 
-#capacities all is the total capacity for each technology not added capacity per time step 
-#this is data processing
+#Merging Cap_IRA and Cap_Ref dataframes and data processing
 capacities_all <- rbind(Cap_IRA,Cap_Ref)
 colnames(capacities_all)[3] ="technology"
 capacities_all$technology <- gsub("Wind", "onshore wind", capacities_all$technology)
 capacities_all$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_all$technology)
-capacities <- capacities_all[-1]
-capacities <-capacities %>% group_by(scenario,year,technology) %>% summarise(newval = mean(value), max = max(value),min = min(value)) #averaging the different model results 
 
-#capacities_y_all is the added capacity per time step combined df 
+##capacities: mean, minimum, and maximum total capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
+capacities <- capacities_all[-1]
+capacities <-capacities %>% group_by(scenario,year,technology) %>% summarise(newval = mean(value), max = max(value),min = min(value)) #calculating mean, minimum, and maximum capacities across models 
+
+##capacities_y_all: annualized additional capacity for each technology, model, and period under reference and IRA scenarios (units: gigawatts)
+
+#Merging Y_Cap_IRA and Y_Cap_Ref dataframes
 capacities_y_all <- rbind(Y_Cap_IRA,Y_Cap_Ref)
 
-#putting the data on a per year basis 
+#Annualizing capacity data 
 capacities_y_all$newval <- capacities_y_all$value
 capacities_y_all$newval[capacities_y_all$year == 2025] <- capacities_y_all$value[capacities_y_all$year == 2025] / 4
 capacities_y_all$newval[capacities_y_all$year == 2030] <- capacities_y_all$value[capacities_y_all$year == 2030] / 5
 capacities_y_all$newval[capacities_y_all$year == 2035] <- capacities_y_all$value[capacities_y_all$year == 2035] / 5
-#data processing 
+
+##capacities_y: mean annualized additional capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
 colnames(capacities_y_all)[3] ="technology"
 capacities_y_all$technology <- gsub("Wind", "onshore wind", capacities_y_all$technology)
 capacities_y <- capacities_y_all[c(-1,-4)]
-capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) #averaging the different model results 
+capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) #calculating mean capacities across models 
 
-#pulling results for 2025,2030,2035
+##final_y_cap_IRA: additional capacity for each technology, model and year under reference and IRA scenarios (units: gigawatts)
+
+#Creating intermediate dataframes for each period and data processing
 temp_df_2025 <- capacities_y %>%
   filter(year == 2025)
 duplicated_vector <- rep(1:nrow(temp_df_2025), each = 4)
@@ -178,26 +209,77 @@ temp_df_2030 <- temp_df_2030 %>% group_by(technology,scenario)%>%
 
 temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
   mutate(year = ifelse(row_number() %% 4 == 0, 2034, year)) %>% mutate(year = ifelse((row_number() - 1) %% 4 == 0 & row_number() != 1, 2033, year))%>% mutate(year = ifelse((row_number() - 2) %% 4 == 0 & row_number() != 1, 2032, year))%>% mutate(year = ifelse((row_number() - 3) %% 4 == 0 & row_number() != 1, 2031, year))
-#combining years together 
+
+#Combining intermediate dataframes for each period 
 final_y_cap_IRA <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
 final_y_cap_IRA$technology <- ifelse(final_y_cap_IRA$technology == "wind", "onshore wind", final_y_cap_IRA$technology)
-final_y_cap_IRA["technology"][final_y_cap_IRA["technology"] == "Solar Utility"] <- "utility-scale solar pv"#check solar distributed vs utlity 
+final_y_cap_IRA["technology"][final_y_cap_IRA["technology"] == "Solar Utility"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
 
-#Import USGS historical material demand values
+```
+
+**Capacity inputs (Jenkins et al., 2023):** This code uploads and processes electric power capacity input data from Jenkins et al. (2023). The data include total capacity and added capacity by technology, capacity expansion model, and year. All capacity data are in units of gigawatts.
+
+```{r message=FALSE, warning=FALSE}
+##repeat_capacities: total capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
+
+#Load data
+input_capacities= read.csv("capacity_y.csv")
+
+#Creating dataframe and processing data
+scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
+repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore")#Define the REPEAT technologies to be included
+repeat_scenarios = c("baseline", "ira_mid")
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+
+##repeat_capacities_new: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
+
+#Load data
+input_capacities_delta = read.csv("capacity_delta_y.csv")
+
+#Creating dataframe and processing data
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
+  group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
+
+#Annualizing added capacities
+repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
+repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
+repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
+
+```
+
+**Historical material supply, demand, imports, and exports:** This code uploads historical U.S. consumption, production, imports, and exports of materials for 2018 to 2022 from the U.S. Geological Survey (2023).
+
+```{r message=FALSE, warning=FALSE}
+##inputs_usgs: U.S. supply, demand, imports, and exports for materials from 2018 to 2021
+
+#Load data
 input_usgs = read_excel("US Geological Survey 2023/Data by material/USGS_2023_IRA materials calculations.xlsx", 
                         sheet = "Combined", range = cell_cols(1:5))
+#Filtering of USGS data
 usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export - US")
+flow = subset(input_usgs, Variable %in%usgs_variables)
+```
 
-#Import wang et al., material intensity values
-input_wang = read_excel("Final Intensity Values.xlsx", sheet = "Sheet1", range = cell_cols(1:6))
+**Material intensity (Liang et al., 202X; Wang et al., 202X):** This code uploads and processes material intensity values from Liang et al. (202X) and Wang et al. (202X).
+
+```{r message=FALSE, warning=FALSE}
+##repeat_capacities_delta: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
+
+#Load data
+input_wang = read_excel("Final Intensity Values.xlsx", sheet = "Intensity Values", range = cell_cols(1:6))
+
+#Creating dataframe and processing data
 colnames(input_wang)[1] ="technology"
 colnames(input_wang)[3] ="value"
 input_wang <- input_wang[!duplicated(input_wang), ]
-
 input_wang <- input_wang[input_wang$`Year of the data` <= 2025, 
                                   !(names(input_wang) %in% c('Year of the data', 'Authors', 'Publish year'))]
-
-#data processing, worth checking some of these 
+###NTS:data processing, worth checking some of these 
 input_wang["technology"][input_wang["technology"] == "Nuclear"] <- "Nuclear New"
 input_wang["technology"][input_wang["technology"] == "Onshore_AG"] <- "onshore wind"
 input_wang["technology"][input_wang["technology"] == "Onshore_DD_PMG"] <- "onshore wind"
@@ -210,52 +292,15 @@ input_wang$technology[input_wang$technology == "Offshore_DD_PMG"] <- "Wind Offsh
 input_wang$technology[input_wang$technology == "Offshore_AG"] <- "Wind Offshore"
 input_wang$Material[input_wang$Material == "Neodymium "] <-  "Neodymium"
 
+```
 
+**Material intensity summary statistics and distribution fitting:** This code estimates summary statistics and fits probability distributions to material intensity data from Liang et al. (202X) and Wang et al. (202X).
+
+```{r message=FALSE, warning=FALSE}
+#Subset material intensity data to include some materials 
 materials <- c("Aluminum","Cement","Steel")
-# Print the unique materials
-print(materials)
-
-#Define the REPEAT scenarios to be included
-scenarios = c("Ref", "IRA")
-
-#Define the REPEAT technologies to be included
-repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore")
-
-#Filtering of USGS data
-flow = subset(input_usgs, Variable %in%usgs_variables)
-
-```
-
-```{r }
-#repeat-rio data processing
-repeat_scenarios = c("baseline", "ira_mid")
-input_capacities= read.csv("capacity_y.csv")
-input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
-input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
-
-
-input_capacities_delta = read.csv("capacity_delta_y.csv")
-input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
-input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
-
-repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
-
-repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
-  group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
-colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
-
-repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
-repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
-repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
-
-```
-
-```{r}
-#Calculating material intensity 
-
+#print(materials)# Print the unique materials
 intensity = subset(input_wang, Material %in% materials)
-as.numeric(intensity$value)
-
 
 #Check if all material/technology scenarios are present, if not add 0.
 for (material in materials) {
@@ -267,19 +312,22 @@ for (material in materials) {
   }
 }
 
+#Estimate summary statistics of material intensity data
 intensity_mean = intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
-intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo. 
+intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo.
 
-
-
-
+###ADD DISTRIBUTION FITTING CODE HERE###
 ```
 
-```{r}
-#material demand calculation 
+**Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
 
+```{r message=FALSE, warning=FALSE}
+#Capacity dataframes subsetted for specific technologies and years
 capacities_new <- subset(final_y_cap_IRA, technology  %in% repeat_technologies)
 capacities_new<- subset(capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier for key years 
+
+##materials_demand: annual material demand by material, scenario, year, and technology 
+#Material demand simulation
 i=1
 invisible(
 for (material in materials){
@@ -298,24 +346,27 @@ for (material in materials){
   }
   i= i+1
 })
-#materials_demand <- materials_demand %>%
- # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
+materials_demand <- materials_demand %>%
+ select(-max.x, -min.x, -max.y, -min.y, -min, -max)
 
-#summing and summarising all mateiral demand/technology combos 
+##materials_demand_sum: material demand by material, scenario, and year 
 materials_demand_sum <-materials_demand %>% group_by(year,scenario) %>% summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel))
                                                                                   #, Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Mangenese= sum(Mn))
 
 ```
-```{r}
-#same thing as above chunk but for repeat
+
+**Material demand simulation (using mean material intensity values and Jenkins et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Jenkins et al. (2023).
+
+```{r message=FALSE, warning=FALSE}
+#Capacity dataframes subsetted for specific technologies and years
 repeat_capacities_new <- subset(repeat_capacities_new, technology  %in% repeat_technologies)
 repeat_capacities_new<- subset(repeat_capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier
 names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
 
-
-
+##repeat_materials_demand: annual material demand by material, scenario, year, and technology 
+#Material demand simulation
 i=1
 invisible(
 for (material in materials){
@@ -334,18 +385,21 @@ for (material in materials){
   }
   i= i+1
 })
-#materials_demand <- materials_demand %>%
- # select(-max.x, -min.x, -max.y, -min.y, -min, -max) this just makes it look nicer 
+repeat_materials_demand <- repeat_materials_demand %>%
+ select(-max.x, -min.x, -max.y, -min.y, -min, -max)
 
-#summing and summarising all mateiral demand/technology combos 
+##repeat_materials_demand_sum: material demand by material, scenario, and year 
 repeat_materials_demand_sum <-repeat_materials_demand %>% group_by(year,scenario) %>% summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel))
 #, Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Manganese= sum(Mn))
 
 ```
 
+**Material intensity simulation (using material intensity distributions and Bistline et al. (2023) capacity):** This code simulates material demand using fitted material intensity distributions and added capacities estimated based on Bistline et al. (2023).
+
 ```{r}
-#applying triangular distribution of material intensity 
-n = 1
+#Material intensity simulation
+set.seed(25)
+n = 1 #number of iterations
 df_mc <- data.frame() 
 
 for (mat in materials){
@@ -380,6 +434,8 @@ for (mat in materials){
 }
 
 ```
+
+**Material demand simulation (using material intensity distributions and Jenkins et al. (2023) capacity):** This code simulates material demand using fitted material intensity distributions and added capacities estimated based on Jenkins et al. (2023).
 
 ```{r}
 
@@ -519,7 +575,6 @@ for (tech in repeat_technologies){
 }
 ```
 
-
 ```{r}
 #sensitivity analysis plots 
 par(mfrow = c(3, 3))  
@@ -589,6 +644,9 @@ for(scen in scenarios){
 
 ```
 
+**Saving data frames to "inputs" folder:** This code saves the dataframes for use in the model 
+
 
 
 ```
+

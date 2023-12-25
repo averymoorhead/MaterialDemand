@@ -1,0 +1,82 @@
+---
+title: "Material Intensity"
+output:
+  html_document:
+    df_print: paged
+date created: 12/22/23
+created by: Avery Moorhead
+last revised by: Erin Mayfield
+---
+```{r setup, include=FALSE}
+# Load necessary packages
+library(here)
+library(readxl)
+library(data.table)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(knitr)
+
+# Set working directory using here::set_here()
+knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Raw Data")
+
+# Clear objects from workspace
+rm(list = ls())
+
+```
+
+
+**Historical material supply, demand, imports, and exports:** This code uploads historical U.S. consumption, production, imports, and exports of materials for 2018 to 2022 from the U.S. Geological Survey (2023).
+
+```{r message=FALSE, warning=FALSE}
+##inputs_usgs: U.S. supply, demand, imports, and exports for materials from 2018 to 2021
+
+#Load data
+
+input_usgs = read_excel("US Geological Survey 2023/Data by material/USGS_2023_IRA materials calculations.xlsx", 
+                        sheet = "Combined", range = cell_cols(1:5))
+#Filtering of USGS data
+usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export - US")
+flow = subset(input_usgs, Variable %in%usgs_variables)
+```
+
+**Material intensity (Liang et al., 202X; Wang et al., 202X):** This code uploads and processes material intensity values from Liang et al. (202X) and Wang et al. (202X).
+
+```{r message=FALSE, warning=FALSE}
+##repeat_capacities_delta: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
+
+#Load data
+material_intensity = read_excel("Final Intensity Values.xlsx", sheet = "Intensity Values", range = cell_cols(1:6))
+
+#Creating dataframe and processing data
+colnames(material_intensity)[1] ="technology"
+colnames(material_intensity)[3] ="value"
+material_intensity <- material_intensity[!duplicated(material_intensity), ]
+material_intensity <- material_intensity[material_intensity$`Year of the data` <= 2025, 
+                                  !(names(material_intensity) %in% c('Year of the data', 'Authors', 'Publish year'))]
+###NTS:data processing, worth checking some of these 
+material_intensity["technology"][material_intensity["technology"] == "Nuclear"] <- "Nuclear New"
+material_intensity["technology"][material_intensity["technology"] == "Onshore_AG"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Onshore_DD_PMG"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Wind Directed_Drive"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Geared"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Wind onshore"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Wind Onshore"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <- "utility-scale solar pv"
+material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "Wind Offshore"
+material_intensity$technology[material_intensity$technology == "Offshore_AG"] <- "Wind Offshore"
+material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Neodymium"
+
+```
+**Saving data frames to "inputs" folder:** This code saves the dataframes for use in the model 
+```{r}
+folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
+file_path1 <- file.path(folder_path, "input_usgs.csv")
+file_path2 <- file.path(folder_path, "intensity_data.csv")
+
+# Write each dataframe to its respective CSV file in the specified folder
+write.csv(input_usgs, file = file_path1, row.names = FALSE)
+write.csv(material_intensity, file = file_path2, row.names = FALSE)
+
+```
+

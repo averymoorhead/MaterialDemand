@@ -1,0 +1,94 @@
+---
+title: "RepeatCapacityPlots"
+output: html_document
+date: "2023-11-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(dplyr)
+repeat_technologies = c("geothermal", "offshore wind floating", "offshore wind fixed", "nuclear")
+#repeat_technologies = c("onshore wind", "utility-scale solar pv", "nuclear", "geothermal","offshore wind floating", "offshore wind fixed" )
+
+
+setwd("C:/Users/avery/Downloads/Material demand data for Avery")
+repeat_scenarios = c("baseline", "ira_mid")
+input_capacities= read.csv("capacity_y.csv")
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+#input_capacities["tech..type"][input_capacities["tech..type"] == "thermal"] <- "new"#this allows nuclear to work; I'm not sure if I can do this
+input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "nuclear"
+#input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
+
+
+input_capacities_delta = read.csv("capacity_delta_y.csv")
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
+input_capacities_delta["tech..type"][input_capacities_delta["tech..type"] == "new nuclear"] <- "new"
+input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "nuclear"
+#input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_aggregate"] == "gas power"] <- "gas power" #renamed basically everything to gas power
+new = subset(input_capacities_delta,  type %in% "new")
+new = unique(subset(new, select = c(tech..outputs_group_detailed, tech..outputs_group_aggregate)))
+
+repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+#colnames(capacities)[colnames(capacities) == "tech..outputs_group_detailed"] ="technology"
+
+repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
+  group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
+colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
+
+repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
+repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
+repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
+colnames(repeat_capacities)[3] <- "technology"
+repeat_capacities_long<- repeat_capacities
+repeat_capacities_long <- repeat_capacities_long %>%
+  mutate(year = as.character(year)) %>%
+  mutate(year = ifelse(run.name == "baseline", paste0(year, "b"), year))
+
+output_subset <- input_capacities %>%
+  distinct(tech..outputs_group_detailed)
+
+```
+```{r}
+library(dplyr)
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+library(ggplot2)
+repeat_capacities_long = repeat_capacities
+
+
+```
+```{r}
+# Assuming you have your data loaded and the 'repeat_capacities' dataframe already defined
+
+# Assuming you have your data loaded and the 'repeat_capacities' dataframe already defined
+dashed_line <- subset(repeat_capacities, year %in% "2022")
+repeat_capacities_new <- subset(repeat_capacities, !(year %in% "2022"))
+
+repeat_capacities_new$year <- as.character(repeat_capacities_new$year)
+
+ggplot(repeat_capacities_new, aes(x = year, y = newval, fill = technology, group = run.name)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 1), 
+           aes(color = ifelse(run.name == "baseline", "black", "transparent"))) +
+  labs(title = "",
+       x = "", y = "Capacity (GW)") +
+  scale_color_identity(guide = "none") +  # Hide the legend for the border color
+  theme_minimal()
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
