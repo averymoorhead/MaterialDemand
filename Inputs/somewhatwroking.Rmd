@@ -1,0 +1,40 @@
+# Remove all objects from the workspace
+rm(list = ls())
+
+# Set the working directory
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
+
+# Load required libraries
+library(gamlss)
+library(gamlss.dist)
+library(gamlss.add)
+library(readxl)
+
+# Read the CSV data
+completedata <- read.csv("intensity_data.csv")
+completedata <- completedata[completedata$technology %in% c("utility-scale solar pv", "onshore wind"), ]
+
+# Get unique combinations of Material and Technology
+unique_combinations <- unique(completedata[, c("Material", "technology")])
+
+
+# Loop through each combination
+for (i in seq_len(nrow(unique_combinations))) {
+  # Get Material and Technology for the current iteration
+  current_material <- unique_combinations$Material[i]
+  current_technology <- unique_combinations$technology[i]
+
+  # Subset the data for the current combination
+  subset <- completedata[completedata$Material == current_material & completedata$technology == current_technology, ]
+  
+  # Keep only the "value" column
+  subset <- subset[["value"]]
+
+  # Fit distribution
+  fit <-fitDist(subset, k = 2, type = "realplus", method = "best", trace = TRUE, try.gamlss = TRUE)
+  fit$fits
+
+}
+
+# Display the results_df
+print(results_df)
