@@ -1,5 +1,6 @@
 rm(list = ls())
-setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand")
+
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Raw Data")
 
 library(readxl)
 library(data.table)
@@ -39,5 +40,11 @@ Spur_Dist_Sum <- Spur_Dist_Sum %>%
 # Trans_Dist_Delta <- subset(Trans_Dist_Delta, run_name %in% c("baseline", "ira_mid"))
 # Trans_Dist_Delta <- Trans_Dist_Delta %>% group_by(run_name) %>% summarise(totaltransdistance = sum(dist_km_Difference)) #averaging the different model results 
 
+
+#saving to inputs folder
+folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
+file_path1 <- file.path(folder_path, "spur_dist_sum.csv")
+# Write each dataframe to its respective CSV file in the specified folder
+write.csv(Spur_Dist_Sum, file = file_path1, row.names = FALSE)
 
       
