@@ -62,12 +62,63 @@ material_intensity["technology"][material_intensity["technology"] == "Wind Direc
 material_intensity["technology"][material_intensity["technology"] == "Geared"] <- "onshore wind"
 material_intensity["technology"][material_intensity["technology"] == "Wind onshore"] <- "onshore wind"
 material_intensity["technology"][material_intensity["technology"] == "Wind Onshore"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Onshore Wind"] <- "onshore wind"
 material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <- "utility-scale solar pv"
 material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "Wind Offshore"
 material_intensity$technology[material_intensity$technology == "Offshore_AG"] <- "Wind Offshore"
 material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Neodymium"
 
+library(dplyr)
+
+# Group by technology and Material and count the number of entries
+count_table <- material_intensity %>%
+  group_by(technology, Material) %>%
+  summarise(count = n())
+
+# Print the new table
+print(count_table)
+
 ```
+```{r}
+# Load necessary library
+library(dplyr)
+
+# Sensitivity analysis plots
+par(mfrow = c(3, 3))
+par(mar = c(2, 2, 2, 2))
+
+# Filter dataframe to only include specified technologies
+filtered_df <- filter(material_intensity, technology %in% c("onshore wind", "Offshore Wind", "utility-scale solar pv", "nuclear"))
+
+for (tech in unique(filtered_df$technology)) {
+  for (material in unique(filtered_df$Material)) {
+    tryCatch(
+      expr = {
+        combo_type <- paste(material, tech, sep = ".")
+        combo_type <- gsub(" ", ".", combo_type)
+        combo_type <- gsub("-", ".", combo_type)
+
+        hist_type <- gsub("-", ".", combo_type)
+        hist_type <- gsub(" ", ".", hist_type)
+
+        axis_labels <- subset(filtered_df, technology == tech & Material == material)
+        hist_df <- subset(filtered_df, technology == tech & Material == material, select = c("value"))
+
+        hist(hist_df$value, col = "antiquewhite1", cex.main = 1.4, xaxt = 'n', xlab = '', main = combo_type, xlim = c(min(axis_labels$value), max(axis_labels$value)))
+        axis(1, at = c(mean(axis_labels$value), min(axis_labels$value), max(axis_labels$value)),
+             labels = c(round(mean(axis_labels$value), digits = 5), round(min(axis_labels$value), digits = 5), round(max(axis_labels$value), digits = 5)))
+      },
+      error = function(e) {
+        dummy <- '1'
+      }
+    )
+  }
+}
+
+
+```
+
+
 **Saving data frames to "inputs" folder:** This code saves the dataframes for use in the model 
 ```{r}
 folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
@@ -77,6 +128,9 @@ file_path2 <- file.path(folder_path, "intensity_data.csv")
 # Write each dataframe to its respective CSV file in the specified folder
 write.csv(input_usgs, file = file_path1, row.names = FALSE)
 write.csv(material_intensity, file = file_path2, row.names = FALSE)
+
+```
+```{r}
 
 ```
 
