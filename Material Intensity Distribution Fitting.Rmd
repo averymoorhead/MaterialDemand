@@ -1,0 +1,138 @@
+---
+title: "Material Intensity Distribution Fitting"
+author: "Avery Moorhead"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+#setup
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Raw Data")
+library(tibble)
+library(fitdistrplus)
+library(readxl)
+```
+
+```{r}
+#data processing 
+material_intensity = read_excel("Final Intensity Values.xlsx", sheet = "Intensity Values", range = cell_cols(1:6))
+
+
+#Creating dataframe and processing data
+colnames(material_intensity)[1] ="technology"
+colnames(material_intensity)[3] ="value"
+material_intensity <- material_intensity[!duplicated(material_intensity), ]
+material_intensity <- material_intensity[material_intensity$`Year of the data` <= 2025, 
+                                  !(names(material_intensity) %in% c('Year of the data', 'Authors', 'Publish year'))]
+###NTS:data processing, worth checking some of these 
+material_intensity["technology"][material_intensity["technology"] == "Nuclear"] <- "Nuclear New"
+material_intensity["technology"][material_intensity["technology"] == "Onshore_AG"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Onshore_DD_PMG"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Wind Directed_Drive"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Geared"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Wind onshore"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Wind Onshore"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Onshore Wind"] <- "onshore wind"
+material_intensity["technology"][material_intensity["technology"] == "Offshore Wind"] <- "Wind Offshore"
+
+material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <- "utility-scale solar pv"
+material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "Wind Offshore"
+material_intensity$technology[material_intensity$technology == "Offshore_AG"] <- "Wind Offshore"
+material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Neodymium"
+
+```
+```{r}
+test = subset(material_intensity, technology == "utility-scale solar pv" & Material == "Silver")
+fw <- fitdist(test$value, "weibull")
+summary(fw)
+
+```
+
+```{r}
+library(dplyr)
+
+# Count occurrences of each technology and material
+count_table <- material_intensity %>%
+  group_by(technology, Material) %>%
+  summarise(count = n())
+
+material_intensity_dist_df <- material_intensity_dist_df %>%
+  filter(!(technology %in% c("CIGS", "CdTe")))
+
+# Filter to include only combinations with counts >= 30
+material_intensity_dist_df <- material_intensity %>%
+  inner_join(count_table, by = c("technology", "Material")) %>%
+  filter(count >= 30)
+
+# Extract unique technologies
+unique_technologies <- unique(material_intensity_dist_df$technology)
+
+# List to store combinations
+combinations <- list()
+
+# Loop over each unique technology
+for (tech in unique_technologies) {
+  # Get materials for this technology with counts >= 30
+  materials <- material_intensity_dist_df %>%
+    filter(technology == tech) %>%
+    select(Material) %>%
+    distinct() %>%
+    pull()
+
+  # Create combinations for this technology
+  tech_combinations <- lapply(materials, function(mat) list(technology = tech, Material = mat))
+  
+  # Add to the list of combinations
+  combinations <- c(combinations, tech_combinations)
+}
+
+# Dataframe to store results
+lowest_aic_results <- data.frame()
+
+# Loop over each combination
+for (combo in combinations) {
+  # Subset the data
+  subset_data <- subset(material_intensity_dist_df, 
+                        technology == combo[["technology"]] & Material == combo[["Material"]])
+  
+  # Fit distributions
+  fits <- list()
+  distributions <- c("weibull", "gamma", "exp")
+  for (dist in distributions) {
+    tryCatch({
+      fit <- fitdist(subset_data$value, dist)
+      fits[[dist]] <- fit
+    }, error = function(e) {
+      fits[[dist]] <- NULL
+    })
+  }
+  
+  # Remove NULLs from fits list
+  fits <- fits[!sapply(fits, is.null)]
+  
+  # Check if any distributions were successfully fitted
+  if (length(fits) > 0) {
+    # Compare the fits using AIC
+    aic_values <- sapply(fits, function(fit) fit$aic)
+    aic_df <- data.frame(Distribution = names(fits), AIC = aic_values)
+    
+    # Find the row with the lowest AIC
+    lowest_aic_row <- aic_df[aic_df$AIC == min(aic_df$AIC), ]
+    
+    # Add combination information
+    lowest_aic_row$technology <- combo[["technology"]]
+    lowest_aic_row$Material <- combo[["Material"]]
+    
+    # Add to results dataframe
+    lowest_aic_results <- rbind(lowest_aic_results, lowest_aic_row)
+  }
+}
+
+# Print the dataframe with the lowest AIC value for each combination
+
+final_aic_results <- lowest_aic_results  %>% filter(!(technology %in% c("CIGS", "CdTe")))
+final_aic_results <- remove_rownames(final_aic_results)
+
+```
+
