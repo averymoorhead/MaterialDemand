@@ -43,9 +43,9 @@ material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Ne
 
 ```
 ```{r}
-test = subset(material_intensity, technology == "utility-scale solar pv" & Material == "Silver")
-fw <- fitdist(test$value, "weibull")
-summary(fw)
+#test = subset(material_intensity, technology == "Wind Offshore" & Material == "Silver")
+#fw <- fitdist(test$value, "gamma")
+#summary(fw)
 
 ```
 
@@ -56,14 +56,15 @@ library(dplyr)
 count_table <- material_intensity %>%
   group_by(technology, Material) %>%
   summarise(count = n())
-
-material_intensity_dist_df <- material_intensity_dist_df %>%
-  filter(!(technology %in% c("CIGS", "CdTe")))
-
 # Filter to include only combinations with counts >= 30
 material_intensity_dist_df <- material_intensity %>%
   inner_join(count_table, by = c("technology", "Material")) %>%
   filter(count >= 30)
+
+
+material_intensity_dist_df <- material_intensity_dist_df %>%
+  filter(!(technology %in% c("CIGS", "CdTe")))
+
 
 # Extract unique technologies
 unique_technologies <- unique(material_intensity_dist_df$technology)
@@ -98,7 +99,7 @@ for (combo in combinations) {
   
   # Fit distributions
   fits <- list()
-  distributions <- c("weibull", "gamma", "exp")
+  distributions <- c("weibull", "gamma", "exp","triang","norm")
   for (dist in distributions) {
     tryCatch({
       fit <- fitdist(subset_data$value, dist)
@@ -133,6 +134,22 @@ for (combo in combinations) {
 
 final_aic_results <- lowest_aic_results  %>% filter(!(technology %in% c("CIGS", "CdTe")))
 final_aic_results <- remove_rownames(final_aic_results)
+greater_than_30_count <- material_intensity %>%
+  inner_join(count_table, by = c("technology", "Material")) %>%
+  filter(count < 30) %>%
+  distinct(Material, technology) %>%  filter(!technology %in% c("a-Si", "ASIGE", "BiomassCCS", "CdTe", "CDTE", "CIGS", "Coal", "CoalCCS", "Gas", "GasCCS"))%>%   mutate(AIC = NA) %>%   mutate(Distribution = "norm")
+
+final_aic_results <- bind_rows(greater_than_30_count, final_aic_results)
+
+
 
 ```
+```{r}
+folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
+file_path1 <- file.path(folder_path, "distribution_fitting_results.csv")
+write.csv(final_aic_results, file = file_path1, row.names = FALSE)
+
+
+```
+
 

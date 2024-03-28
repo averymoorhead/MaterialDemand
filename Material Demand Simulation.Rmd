@@ -35,6 +35,8 @@ material_intensity<- read.csv("intensity_data.csv")
 initial_year<- read.csv("initial_year.csv")
 multi_model_capacities<- read.csv("multi_model_capacities.csv")
 repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
+distribution_fits<- read.csv("distribution_fitting_results.csv")
+
 
 
 
@@ -68,7 +70,6 @@ for (material in materials) {
 intensity_mean = intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
 intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo.
 
-###ADD DISTRIBUTION FITTING CODE HERE###
 ```
 
 **Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
@@ -149,41 +150,106 @@ repeat_materials_demand_sum <-repeat_materials_demand %>% group_by(year,scenario
 **Material intensity simulation (using material intensity distributions and Bistline et al. (2023) capacity):** This code simulates material demand using fitted material intensity distributions and added capacities estimated based on Bistline et al. (2023).
 
 ```{r}
-#Material intensity simulation
+library(triangle)
+
 set.seed(25)
-n = 1 #number of iterations
+n <- 1 # number of iterations
 df_mc <- data.frame() 
 
-for (mat in materials){
-  for (tech in repeat_technologies){
-    loc = subset(intensity, Material %in% mat & technology %in% tech)
-    if (nrow(loc)>1){
-      minv = min(loc$value)
-      maxv = max(loc$value)
-      meanv = mean(loc$value)
-      index_name = paste(mat, gsub("[[:space:]]", ".", tech), sep = ".")#addressing issues with spaces and dashes
-      index_name = gsub("-", ".", index_name)
-      df2 = data.frame(index = index_name, min = minv, max= maxv, mean = meanv)
+for (mat in materials) {
+  for (tech in repeat_technologies) {
+    loc <- subset(intensity, Material %in% mat & technology %in% tech)
+    if (nrow(loc) > 1) {
       
-      if (n==1){
-        mc_values = df2
-      }
-      else{
-        mc_values = rbind(mc_values, df2)
-      }
-      result <- rtriangle(100, minv, maxv, meanv)
+      tryCatch({
+        distribution_info <- subset(distribution_fits, Material == mat & technology == tech)$Distribution
+      }, error = function(e) {
+        distribution_info <- NA
+      })
       
-      if(n==1){
-        df_mc <- data.frame(cbind(result))
+      if (is.na(distribution_info)) {  # If no distribution info found, default to normal
+        distribution_info <- "normal"
       }
-      else{
-        df_mc <- data.frame(cbind(df_mc, result))
+      
+      minv <- min(loc$value)
+      maxv <- max(loc$value)
+      meanv <- mean(loc$value)
+      index_name <- paste(mat, gsub("[[:space:]]", ".", tech), sep = ".") # addressing issues with spaces and dashes
+      index_name <- gsub("-", ".", index_name)
+      df2 <- data.frame(index = index_name, min = minv, max = maxv, mean = meanv)
+      
+      if (n == 1) {
+        mc_values <- df2
+      } else {
+        mc_values <- rbind(mc_values, df2)
       }
-      colnames(df_mc)[colnames(df_mc) == "result"] =index_name
-      n= n+1
+      
+      # Generate values based on the distribution type
+      if (distribution_info == "triangular") {
+        result <- rtriangle(100, minv, maxv, meanv)
+      } else if (distribution_info == "norm") {
+        result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)  # Using 3-sigma rule for standard deviation
+      } else if (distribution_info == "gauss") {
+        result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
+      } else if (distribution_info == "weibull") {
+        result <- rweibull(100, shape = 1.5, scale = meanv)
+      } else if (distribution_info == "gamma") {
+        result <- rgamma(100, shape = 1.5, scale = meanv / 1.5)
+      } else {
+        warning(paste("Distribution", distribution_info, "not recognized. Defaulting to normal distribution."))
+        result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
+      }
+      
+      if (n == 1) {
+        df_mc <- data.frame(result)
+      } else {
+        df_mc <- cbind(df_mc, result)
+      }
+      colnames(df_mc)[colnames(df_mc) == "result"] <- index_name
+      n <- n + 1
     }
   }
 }
+
+```
+
+
+```{r}
+#Material intensity simulation
+# set.seed(25)
+# n = 1 #number of iterations
+# df_mc <- data.frame() 
+# 
+# for (mat in materials){
+#   for (tech in repeat_technologies){
+#     loc = subset(intensity, Material %in% mat & technology %in% tech)
+#     if (nrow(loc)>1){
+#       minv = min(loc$value)
+#       maxv = max(loc$value)
+#       meanv = mean(loc$value)
+#       index_name = paste(mat, gsub("[[:space:]]", ".", tech), sep = ".")#addressing issues with spaces and dashes
+#       index_name = gsub("-", ".", index_name)
+#       df2 = data.frame(index = index_name, min = minv, max= maxv, mean = meanv)
+#       
+#       if (n==1){
+#         mc_values = df2
+#       }
+#       else{
+#         mc_values = rbind(mc_values, df2)
+#       }
+#       result <- rtriangle(100, minv, maxv, meanv)
+#       
+#       if(n==1){
+#         df_mc <- data.frame(cbind(result))
+#       }
+#       else{
+#         df_mc <- data.frame(cbind(df_mc, result))
+#       }
+#       colnames(df_mc)[colnames(df_mc) == "result"] =index_name
+#       n= n+1
+#     }
+#   }
+# }
 
 ```
 
