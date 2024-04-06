@@ -241,6 +241,36 @@ repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repea
 repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
 
 ```
+```{r}
+#adding initial year to multi model df
+melted_initial_year <- melt(initial_year, id.vars = c("year"), variable.name = "technology")
+melted_initial_year <- melted_initial_year[-1,]
+
+names(melted_initial_year)[names(melted_initial_year) == "value"] <- "newval"
+melted_initial_year <- melted_initial_year %>%
+                         mutate(scenario = NA)
+summary(melted_initial_year)
+melted_initial_year$newval <- as.numeric(melted_initial_year$newval)
+
+melted_initial_year$technology <- gsub("Nuclear\\.Existing", "Nuclear Existing", melted_initial_year$technology)
+melted_initial_year$technology <- gsub("Nuclear\\.New", "Nuclear New", melted_initial_year$technology)
+melted_initial_year$technology <- gsub("NGCC.CCS", "Nuclear CCS", melted_initial_year$technology)
+melted_initial_year$technology <- gsub("Hydrogen.Green", "Hydrogen Green", melted_initial_year$technology)
+melted_initial_year$technology <- gsub("Solar.Utility", "utility-scale solar pv", melted_initial_year$technology)
+melted_initial_year$technology <- gsub("Wind", "onshore wind", melted_initial_year$technology)
+
+
+
+# Print the updated data frame
+print(melted_initial_year)
+
+
+print(melted_initial_year)
+print(multi_model_capacities)
+combined_df <- rbind(melted_initial_year, multi_model_capacities)
+multi_model_capacities<-combined_df
+
+```
 
 **Saving data frames to "inputs" folder:** This code saves the dataframes for use in the model 
 
@@ -256,6 +286,11 @@ file_path3 <- file.path(folder_path, "repeat_capacities_new.csv")
 write.csv(initial_year, file = file_path1, row.names = FALSE)
 write.csv(multi_model_capacities, file = file_path2, row.names = FALSE)
 write.csv(repeat_capacities_new, file = file_path3, row.names = FALSE)
+
+```
+```{r}
+
+
 
 ```
 
