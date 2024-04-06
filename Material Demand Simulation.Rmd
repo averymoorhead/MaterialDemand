@@ -41,7 +41,9 @@ distribution_fits<- read.csv("distribution_fitting_results.csv")
 
 
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
-repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore")#Define the REPEAT technologies to be included
+repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore","Coal","Geothermal","Biomass","Gas", "Hydro")
+                        
+                        #"Coal","Geothermal","Biomass","Gas", "Hydro")#Define the REPEAT technologies to be included
 repeat_scenarios = c("baseline", "ira_mid")
 usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export - US")
 
@@ -52,7 +54,9 @@ usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export
 
 ```{r message=FALSE, warning=FALSE}
 #Subset material intensity data to include some materials 
-materials <- c("Aluminum","Cement","Steel")
+#  summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass = sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver = sum(Ag), Dysprosium = sum(Dy), Gallium = sum(Ga), Selenium = sum(Se), Nickel = sum(Ni), Manganese = sum(Mn))
+
+materials <- c("Aluminum","Cement","Steel","Copper", "Silicon", "Indium","Neodymium","Silver","Dysprosium","Gallium","Selenium","Nickel","Manganese")
 #print(materials)# Print the unique materials
 intensity = subset(material_intensity, Material %in% materials)
 
@@ -75,84 +79,106 @@ intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #t
 **Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
 
 ```{r message=FALSE, warning=FALSE}
-#Capacity dataframes subsetted for specific technologies and years
-capacities_new <- subset(multi_model_capacities, technology  %in% repeat_technologies)
-capacities_new<- subset(capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier for key years 
+# Capacity dataframes subsetted for specific technologies and years
+capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
+capacities_new <- subset(capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
 
-##materials_demand: annual material demand by material, scenario, year, and technology 
-#Material demand simulation
-i=1
+# Material demand simulation
+i <- 1
 invisible(
-for (material in materials){
-  df_int = subset(intensity_mean, Material %in% material)
-  df_cap = capacities_new %>% left_join (df_int, by='technology') 
-  df_cap$totaldemand = df_cap$newval *df_cap$value
-  colnames(df_cap)[colnames(df_cap) == "totaldemand"] = material
-  df_cap = subset(df_cap, select = -c(Material, newval, value))
-  
-  if (i==1){
-    materials_demand = df_cap
-  }
-  else{
-    materials_demand <- materials_demand %>% left_join(df_cap, by=  c("scenario", "year", "technology"))
-    
-  }
-  i= i+1
-})
-materials_demand <- materials_demand %>%
- select(-max.x, -min.x, -max.y, -min.y, -min, -max)
+  for (material in materials) {
+    df_int <- subset(intensity_mean, Material %in% material)
+    df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
+    df_cap$totaldemand <- df_cap$newval * df_cap$value
+    colnames(df_cap)[colnames(df_cap) == "totaldemand"] <- material
+    df_cap <- subset(df_cap, select = -c(Material, newval, value))
 
-##materials_demand_sum: material demand by material, scenario, and year 
-materials_demand_sum <-materials_demand %>% group_by(year,scenario) %>% summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel))
-                                                                                  #, Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Mangenese= sum(Mn))
+    # Prevent negative values
+    df_cap[df_cap < 0] <- 0
+
+    if (i == 1) {
+      materials_demand <- df_cap
+    } else {
+      materials_demand <- materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+    }
+    i <- i + 1
+  }
+)
+
+# Remove unnecessary columns
+materials_demand <- materials_demand %>%
+  select(-max.x, -min.x, -max.y, -min.y, -min, -max, 
+         -min.x.x, -min.x.x.x, -min.x.x.x.x, -min.x.x.x.x.x, 
+         -max.x, -max.x.x, -max.x.x.x, -max.x.x.x.x, -max.x.x.x.x.x, -max.x.x.x.x.x.x,
+         -min.x.x.x.x.x.x,
+         # Additional removals for columns ending with ".y"
+         -max.y, -min.y, -max.y.y, -min.y.y, -max.y.y.y, -min.y.y.y, -max.y.y.y.y, -min.y.y.y.y, -max.y.y.y.y.y, -min.y.y.y.y.y,-max.y.y.y.y.y.y,-min.y.y.y.y.y.y)
+
+# Material demand by material, scenario, and year 
+materials_demand_sum <- materials_demand %>% 
+  group_by(year, scenario) %>% 
+  summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
+
+# Prevent negative values in materials_demand_sum
+materials_demand_sum[materials_demand_sum < 0] <- 0
+
 
 ```
 
 **Material demand simulation (using mean material intensity values and Jenkins et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Jenkins et al. (2023).
 
 ```{r message=FALSE, warning=FALSE}
-#Capacity dataframes subsetted for specific technologies and years
-repeat_capacities_new <- subset(repeat_capacities_new, technology  %in% repeat_technologies)
-repeat_capacities_new<- subset(repeat_capacities_new, year %in% c(2025,2030,2035))#this was just to make this easier
+# Capacity dataframes subsetted for specific technologies and years
+repeat_capacities_new <- subset(repeat_capacities_new, technology %in% repeat_technologies)
+repeat_capacities_new <- subset(repeat_capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
 names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
 
-##repeat_materials_demand: annual material demand by material, scenario, year, and technology 
-#Material demand simulation
-i=1
+# Material demand simulation
+i <- 1
 invisible(
-for (material in materials){
-  df_int = subset(intensity_mean, Material %in% material)
-  df_cap = repeat_capacities_new %>% left_join (df_int, by='technology') 
-  df_cap$totaldemand = df_cap$newval *df_cap$value
-  colnames(df_cap)[colnames(df_cap) == "totaldemand"] = material
-  df_cap = subset(df_cap, select = -c(Material, newval, value))
-  
-  if (i==1){
-    repeat_materials_demand = df_cap
-  }
-  else{
-    repeat_materials_demand <- repeat_materials_demand %>% left_join(df_cap, by=  c("scenario", "year", "technology"))
-    
-  }
-  i= i+1
-})
-repeat_materials_demand <- repeat_materials_demand %>%
- select(-max.x, -min.x, -max.y, -min.y, -min, -max)
+  for (material in materials) {
+    df_int <- subset(intensity_mean, Material %in% material)
+    df_cap <- repeat_capacities_new %>% left_join(df_int, by = 'technology') 
+    df_cap$totaldemand <- df_cap$newval * df_cap$value
+    colnames(df_cap)[colnames(df_cap) == "totaldemand"] <- material
+    df_cap <- subset(df_cap, select = -c(Material, newval, value))
 
-##repeat_materials_demand_sum: material demand by material, scenario, and year 
-repeat_materials_demand_sum <-repeat_materials_demand %>% group_by(year,scenario) %>% summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel))
-#, Copper = sum(Cu), Silicon = sum(Si), Glass =sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver= sum(Ag), Dysprosium  = sum(Dy), Gallium = sum(Ga), Selenium= sum(Se), Nickel = sum(Ni), Manganese= sum(Mn))
+    # Prevent negative values
+    df_cap[df_cap < 0] <- 0
+
+    if (i == 1) {
+      repeat_materials_demand <- df_cap
+    } else {
+      repeat_materials_demand <- repeat_materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+    }
+    i <- i + 1
+  }
+)
+
+# Remove unnecessary columns
+repeat_materials_demand <- repeat_materials_demand %>%  select(-max.x, -min.x, -max.y, -min.y, -min, -max, 
+         -min.x.x, -min.x.x.x, -min.x.x.x.x, -min.x.x.x.x.x, 
+         -max.x, -max.x.x, -max.x.x.x, -max.x.x.x.x, -max.x.x.x.x.x, -max.x.x.x.x.x.x,
+         -min.x.x.x.x.x.x,
+         # Additional removals for columns ending with ".y"
+         -max.y, -min.y, -max.y.y, -min.y.y, -max.y.y.y, -min.y.y.y, -max.y.y.y.y, -min.y.y.y.y, -max.y.y.y.y.y, -min.y.y.y.y.y,-max.y.y.y.y.y.y,-min.y.y.y.y.y.y)
+
+
+# Material demand by material, scenario, and year 
+repeat_materials_demand_sum <- repeat_materials_demand %>% 
+  group_by(year, scenario) %>% 
+  summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
+
+# Prevent negative values in repeat_materials_demand_sum
+repeat_materials_demand_sum[repeat_materials_demand_sum < 0] <- 0
 
 ```
 
 **Material intensity simulation (using material intensity distributions and Bistline et al. (2023) capacity):** This code simulates material demand using fitted material intensity distributions and added capacities estimated based on Bistline et al. (2023).
 
 ```{r}
-library(triangle)
-
-set.seed(25)
 n <- 1 # number of iterations
 df_mc <- data.frame() 
 
@@ -166,6 +192,10 @@ for (mat in materials) {
       }, error = function(e) {
         distribution_info <- NA
       })
+      
+      if (length(distribution_info) == 0) {  # Handle empty dataframe
+        distribution_info <- NA
+      }
       
       if (is.na(distribution_info)) {  # If no distribution info found, default to normal
         distribution_info <- "normal"
@@ -199,6 +229,9 @@ for (mat in materials) {
         warning(paste("Distribution", distribution_info, "not recognized. Defaulting to normal distribution."))
         result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
       }
+      
+      # Check if result is negative and replace with 0
+      result[result < 0] <- 0
       
       if (n == 1) {
         df_mc <- data.frame(result)
