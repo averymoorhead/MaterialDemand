@@ -81,7 +81,7 @@ intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #t
 ```{r message=FALSE, warning=FALSE}
 # Capacity dataframes subsetted for specific technologies and years
 capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
-capacities_new <- subset(capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
+capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
 
 # Material demand simulation
 i <- 1
@@ -504,12 +504,16 @@ file_path1 <- file.path(folder_path, "multi_model_materials_demand_sum.csv")
 file_path2 <- file.path(folder_path, "repeat_materials_demand_sum.csv")
 file_path3 <- file.path(folder_path, "multi_model_mc_material_demand.csv")
 file_path4 <- file.path(folder_path, "repeat_mc_material_demand.csv")
+file_path5 <- file.path(folder_path, "materials_demand.csv")
+
 
 # Write each dataframe to its respective CSV file in the specified folder
 write.csv(materials_demand_sum, file = file_path1, row.names = FALSE)
 write.csv(repeat_materials_demand_sum, file = file_path2, row.names = FALSE)
 write.csv(mc_material_demand, file = file_path3, row.names = FALSE)
 write.csv(repeat_mc_material_demand, file = file_path4, row.names = FALSE)
+write.csv(materials_demand, file = file_path5, row.names = FALSE)
+
 
 ```
 ```

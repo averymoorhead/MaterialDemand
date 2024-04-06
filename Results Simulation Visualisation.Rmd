@@ -17,34 +17,60 @@ library(dplyr)
 ```{r}
 print(getwd())
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
-multi_model_materials_demand_sum.csv<- read.csv("multi_model_materials_demand_sum.csv")
-repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
-repeat_mc_material_demand_sum<- read.csv("repeat_materials_demand_sum.csv")
-multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
+#multi_model_materials_demand_sum.csv<- read.csv("multi_model_materials_demand_sum.csv")
+#repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
+#repeat_mc_material_demand_sum<- read.csv("repeat_materials_demand_sum.csv")
+#multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
+materials_demand<-read.csv("materials_demand.csv")
+
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
 
-material_intensity <- read.csv("intensity_data.csv")
-initial_year<-read.csv("initial_year.csv")
-multi_model_capacities<-read.csv("multi_model_capacities.csv")
-repeat_capacities_new<-read.csv("repeat_capacities_new.csv")
-
-```
-
-```{r}
-repeat_aluminum <- repeat_mc_material_demand[repeat_mc_material_demand$Material == "Aluminum", ]
-multi_aluminum <- multi_model_mc_material_demand[multi_model_mc_material_demand$Material == "Aluminum", ]
+#material_intensity <- read.csv("intensity_data.csv")
+#initial_year<-read.csv("initial_year.csv")
+#multi_model_capacities<-read.csv("multi_model_capacities.csv")
+#repeat_capacities_new<-read.csv("repeat_capacities_new.csv")
 
 
 ```
 
 ```{r}
-material_intensity_results <- material_intensity %>%
-  group_by(technology, Material) %>%
-  summarise(
-    min_value = min(value),
-    max_value = max(value),
-    mean_value = mean(value)
-  )
+#repeat_aluminum <- repeat_mc_material_demand[repeat_mc_material_demand$Material == "Aluminum", ]
+#multi_aluminum <- multi_model_mc_material_demand[multi_model_mc_material_demand$Material == "Aluminum", ]
+
+
+```
+
+```{r}
+#material_intensity_results <- material_intensity %>%
+ # group_by(technology, Material) %>%
+#  summarise(
+ #   min_value = min(value),
+  #  max_value = max(value),
+ #   mean_value = mean(value)
+ # )
+
+```
+```{r}
+plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum'))
+plot_df <- subset(plot_df, scenario == "IRA" | is.na(scenario))
+plot_df$year <- ifelse(is.na(plot_df$year), 2021, plot_df$year)
+
+library(ggplot2)
+
+library(ggplot2)
+
+# Convert 'year' to factor with the desired order
+
+```
+```{r}
+plot_df$year <- factor(plot_df$year, levels = c("2021","2025", "2030", "2035"))
+
+# Create the plot
+ggplot(plot_df, aes(x = year, y = Aluminum, fill = technology)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Year", y = "Aluminum", fill = "Technology") +
+  theme_minimal()
+
 
 ```
 
