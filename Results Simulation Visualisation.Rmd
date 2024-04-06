@@ -1,0 +1,50 @@
+---
+title: "Results Simulation Visualisation"
+output: html_notebook
+---
+
+
+```{r}
+rm(list = ls())
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
+
+library(readxl)
+library(dplyr)
+
+```
+
+```{r}
+print(getwd())
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
+multi_model_materials_demand_sum.csv<- read.csv("multi_model_materials_demand_sum.csv")
+repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
+repeat_mc_material_demand_sum<- read.csv("repeat_materials_demand_sum.csv")
+multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
+
+material_intensity <- read.csv("intensity_data.csv")
+initial_year<-read.csv("initial_year.csv")
+multi_model_capacities<-read.csv("multi_model_capacities.csv")
+repeat_capacities_new<-read.csv("repeat_capacities_new.csv")
+
+```
+
+```{r}
+repeat_aluminum <- repeat_mc_material_demand[repeat_mc_material_demand$Material == "Aluminum", ]
+multi_aluminum <- multi_model_mc_material_demand[multi_model_mc_material_demand$Material == "Aluminum", ]
+
+
+```
+
+```{r}
+material_intensity_results <- material_intensity %>%
+  group_by(technology, Material) %>%
+  summarise(
+    min_value = min(value),
+    max_value = max(value),
+    mean_value = mean(value)
+  )
+
+```
+
