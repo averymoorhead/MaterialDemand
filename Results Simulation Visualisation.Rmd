@@ -50,27 +50,187 @@ setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
  # )
 
 ```
+
 ```{r}
-plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum'))
+plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
 plot_df <- subset(plot_df, scenario == "IRA" | is.na(scenario))
 plot_df$year <- ifelse(is.na(plot_df$year), 2021, plot_df$year)
+plot_df <- subset(materials_demand, year != 2021, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
 
+```
+
+```{r}
+# Load required library
 library(ggplot2)
+library(scales)  # For number formatting
 
+head(plot_df)
+plot_df <- plot_df %>%
+  filter(scenario == "IRA")
+
+
+# Convert year to integer
+plot_df$year <- as.integer(plot_df$year)
+
+# Create the plot
+ggplot(plot_df, aes(x = year, y = Aluminum_mean, fill = technology)) +
+  geom_area() +
+  labs(title = "IRA Aluminum Material Demand",
+       x = "Year",
+       y = "Material Demand") +
+  theme_minimal() +
+  scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+  scale_x_continuous(breaks = c(2025, 2030, 2035))  # Set specific x-axis breaks
+
+# Create the plot
+
+
+```
+
+```{r}
 library(ggplot2)
+material_demand_sum <- materials_demand %>%
+  group_by(year,scenario) %>%
+  summarise(Aluminum_mean = sum(Aluminum_mean),
+            Aluminum_min = sum(Aluminum_min),
+            Aluminum_max = sum(Aluminum_max))
+material_demand_sum_ira <- material_demand_sum %>%
+  filter(scenario == "IRA")
+# Plot the data
+material_demand_sum_ref <- material_demand_sum %>%
+  filter(scenario == "Ref")
+# Plot the data
 
-# Convert 'year' to factor with the desired order
+
+ggplot(material_demand_sum_ira, aes(x = year)) +
+  geom_line(aes(y = Aluminum_mean, color = "Aluminum_mean"), linetype = "solid") +
+  geom_line(aes(y = Aluminum_min, color = "Aluminum_min"), linetype = "dashed") +
+  geom_line(aes(y = Aluminum_max, color = "Aluminum_max"), linetype = "dotted") +
+  labs(title = "Aluminum Demand (IRA)",
+       x = "Year",
+       y = "Aluminum",
+       color = "Variable") +
+  scale_color_manual(values = c("Aluminum_mean" = "red", 
+                                "Aluminum_min" = "red", 
+                                "Aluminum_max" = "red"),  # Provide three colors for the three lines
+                     name = "Variable") +
+  theme_minimal()
+
+
+ggplot(material_demand_sum_ref, aes(x = year)) +
+  geom_line(aes(y = Aluminum_mean, color = "Aluminum_mean"), linetype = "solid") +
+  geom_line(aes(y = Aluminum_min, color = "Aluminum_min"), linetype = "dashed") +
+  geom_line(aes(y = Aluminum_max, color = "Aluminum_max"), linetype = "dotted") +
+  labs(title = "Aluminum Demand (IRA)",
+       x = "Year",
+       y = "Aluminum",
+       color = "Variable") +
+  scale_color_manual(values = c("Aluminum_mean" ="blue", 
+                                "Aluminum_min" = "blue", 
+                                "Aluminum_max" = "blue"),  # Provide three colors for the three lines
+                     name = "Variable") +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
 
 ```
 ```{r}
-plot_df$year <- factor(plot_df$year, levels = c("2021","2025", "2030", "2035"))
+library(ggplot2)
 
-# Create the plot
-ggplot(plot_df, aes(x = year, y = Aluminum, fill = technology)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Year", y = "Aluminum", fill = "Technology") +
+# Plot the data for IRA scenario
+p <- ggplot() +
+  geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                y = Aluminum_mean, 
+                                                color = "Aluminum_mean (IRA)"), 
+            linetype = "solid") +
+  geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                y = Aluminum_min, 
+                                                color = "Aluminum_min (IRA)"), 
+            linetype = "dashed") +
+  geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                y = Aluminum_max, 
+                                                color = "Aluminum_max (IRA)"), 
+            linetype = "dotted") +
+  labs(title = "Aluminum Demand",
+       x = "Year",
+       y = "Aluminum",
+       color = "Scenario") +
+  scale_color_manual(values = c("Aluminum_mean (IRA)" = "red", 
+                                "Aluminum_min (IRA)" = "red", 
+                                "Aluminum_max (IRA)" = "red", 
+                                "Ref" = "blue"),  # Color for each scenario
+                     name = "Scenario") +
   theme_minimal()
 
+# Plot the data for Ref scenario and combine with the previous plot
+p +
+  geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                y = Aluminum_mean, 
+                                                color = "Ref"), 
+            linetype = "solid") +
+  geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                y = Aluminum_min, 
+                                                color = "Ref"), 
+            linetype = "dashed") +
+  geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                y = Aluminum_max, 
+                                                color = "Ref"), 
+            linetype = "dotted")
+
+```
+```{r}
+library(ggplot2)
+
+# Plot the data for IRA scenario
+p <- ggplot() +
+  geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                y = Aluminum_mean, 
+                                                color = "Aluminum_mean (IRA)"), 
+            linetype = "solid") +
+  geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                y = Aluminum_min, 
+                                                color = "Aluminum_min (IRA)"), 
+            linetype = "dashed") +
+  geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                y = Aluminum_max, 
+                                                color = "Aluminum_max (IRA)"), 
+            linetype = "dotted") +
+  labs(title = "Annual Aluminum Demand",
+       x = "Year",
+       y = "Material Demand (Mton/year)",
+       color = "Scenario") +
+  scale_color_manual(values = c("Aluminum_mean (IRA)" = "red", 
+                                "Aluminum_min (IRA)" = "red", 
+                                "Aluminum_max (IRA)" = "red", 
+                                "Aluminum_mean (Ref)" = "blue", 
+                                "Aluminum_min (Ref)" = "blue", 
+                                "Aluminum_max (Ref)" = "blue"),  # Color for each line
+                     name = "Scenario",
+                     labels = c("Mean (IRA)", "Min (IRA)", "Max (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
+  theme_minimal()
+
+# Plot the data for Ref scenario and combine with the previous plot
+p +
+  geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                y = Aluminum_mean, 
+                                                color = "Aluminum_mean (Ref)"), 
+            linetype = "solid") +
+  geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                y = Aluminum_min, 
+                                                color = "Aluminum_min (Ref)"), 
+            linetype = "dashed") +
+  geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                y = Aluminum_max, 
+                                                color = "Aluminum_max (Ref)"), 
+            linetype = "dotted")
 
 ```
 

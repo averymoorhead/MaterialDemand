@@ -71,27 +71,81 @@ for (material in materials) {
 }
 
 #Estimate summary statistics of material intensity data
-intensity_mean = intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
-intensity_mean <- subset(intensity_mean, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo.
+intensity_mean_df = intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
+intensity_mean <- subset(intensity_mean_df, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo.
+
 
 ```
 
 **Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
 
 ```{r message=FALSE, warning=FALSE}
-# Capacity dataframes subsetted for specific technologies and years
-capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
-capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
+# # Capacity dataframes subsetted for specific technologies and years
+# capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
+# capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
+# 
+# # Material demand simulation
+# i <- 1
+# invisible(
+#   for (material in materials) {
+#     df_int <- subset(intensity_mean, Material %in% material)
+#     df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
+#     df_cap$totaldemand <- df_cap$newval * df_cap$value
+#     colnames(df_cap)[colnames(df_cap) == "totaldemand"] <- material
+#     df_cap <- subset(df_cap, select = -c(Material, newval, value))
+# 
+#     # Prevent negative values
+#     df_cap[df_cap < 0] <- 0
+# 
+#     if (i == 1) {
+#       materials_demand <- df_cap
+#     } else {
+#       materials_demand <- materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+#     }
+#     i <- i + 1
+#   }
+# )
+# 
+# # Remove unnecessary columns
+# materials_demand <- materials_demand %>%
+#   select(-max.x, -min.x, -max.y, -min.y, -min, -max, 
+#          -min.x.x, -min.x.x.x, -min.x.x.x.x, -min.x.x.x.x.x, 
+#          -max.x, -max.x.x, -max.x.x.x, -max.x.x.x.x, -max.x.x.x.x.x, -max.x.x.x.x.x.x,
+#          -min.x.x.x.x.x.x,
+#          # Additional removals for columns ending with ".y"
+#          -max.y, -min.y, -max.y.y, -min.y.y, -max.y.y.y, -min.y.y.y, -max.y.y.y.y, -min.y.y.y.y, -max.y.y.y.y.y, -min.y.y.y.y.y,-max.y.y.y.y.y.y,-min.y.y.y.y.y.y)
+# 
+# # Material demand by material, scenario, and year 
+# materials_demand_sum <- materials_demand %>% 
+#   group_by(year, scenario) %>% 
+#   summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
+# 
+# # Prevent negative values in materials_demand_sum
+# materials_demand_sum[materials_demand_sum < 0] <- 0
 
+
+```
+```{r}
 # Material demand simulation
+ capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
+ capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
+
 i <- 1
 invisible(
   for (material in materials) {
     df_int <- subset(intensity_mean, Material %in% material)
     df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
-    df_cap$totaldemand <- df_cap$newval * df_cap$value
-    colnames(df_cap)[colnames(df_cap) == "totaldemand"] <- material
-    df_cap <- subset(df_cap, select = -c(Material, newval, value))
+    
+    # Calculate total demand considering min, max, and mean intensity
+    df_cap$total_demand_mean <- df_cap$newval * df_cap$value
+    df_cap$total_demand_min <- df_cap$newval * df_cap$min
+    df_cap$total_demand_max <- df_cap$newval * df_cap$max
+    
+    colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
+    colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
+    colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
+    
+    df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
 
     # Prevent negative values
     df_cap[df_cap < 0] <- 0
@@ -104,23 +158,12 @@ invisible(
     i <- i + 1
   }
 )
-
-# Remove unnecessary columns
-materials_demand <- materials_demand %>%
-  select(-max.x, -min.x, -max.y, -min.y, -min, -max, 
-         -min.x.x, -min.x.x.x, -min.x.x.x.x, -min.x.x.x.x.x, 
-         -max.x, -max.x.x, -max.x.x.x, -max.x.x.x.x, -max.x.x.x.x.x, -max.x.x.x.x.x.x,
-         -min.x.x.x.x.x.x,
-         # Additional removals for columns ending with ".y"
-         -max.y, -min.y, -max.y.y, -min.y.y, -max.y.y.y, -min.y.y.y, -max.y.y.y.y, -min.y.y.y.y, -max.y.y.y.y.y, -min.y.y.y.y.y,-max.y.y.y.y.y.y,-min.y.y.y.y.y.y)
-
-# Material demand by material, scenario, and year 
-materials_demand_sum <- materials_demand %>% 
-  group_by(year, scenario) %>% 
-  summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
-
-# Prevent negative values in materials_demand_sum
-materials_demand_sum[materials_demand_sum < 0] <- 0
+ #materials_demand_sum <- materials_demand %>% 
+  # group_by(year, scenario) %>% 
+  # summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
+ 
+ # Prevent negative values in materials_demand_sum
+ #materials_demand_sum[materials_demand_sum < 0] <- 0
 
 
 ```
@@ -508,7 +551,7 @@ file_path5 <- file.path(folder_path, "materials_demand.csv")
 
 
 # Write each dataframe to its respective CSV file in the specified folder
-write.csv(materials_demand_sum, file = file_path1, row.names = FALSE)
+#write.csv(materials_demand_sum, file = file_path1, row.names = FALSE)
 write.csv(repeat_materials_demand_sum, file = file_path2, row.names = FALSE)
 write.csv(mc_material_demand, file = file_path3, row.names = FALSE)
 write.csv(repeat_mc_material_demand, file = file_path4, row.names = FALSE)
