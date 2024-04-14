@@ -267,8 +267,8 @@ print(melted_initial_year)
 
 print(melted_initial_year)
 print(multi_model_capacities)
-combined_df <- rbind(melted_initial_year, multi_model_capacities)
-multi_model_capacities<-combined_df
+#combined_df <- rbind(melted_initial_year, multi_model_capacities)
+#multi_model_capacities<-combined_df
 
 ```
 
