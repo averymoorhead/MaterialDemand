@@ -37,9 +37,6 @@ multi_model_capacities<- read.csv("multi_model_capacities.csv")
 repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
 distribution_fits<- read.csv("distribution_fitting_results.csv")
 
-
-
-
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
 repeat_technologies = c("onshore wind","utility-scale solar pv", "Nuclear New", "Wind Offshore","Coal","Geothermal","Biomass","Gas", "Hydro")
                         
@@ -53,9 +50,6 @@ usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export
 **Material intensity summary statistics and distribution fitting:** This code estimates summary statistics and fits probability distributions to material intensity data from Liang et al. (202X) and Wang et al. (202X).
 
 ```{r message=FALSE, warning=FALSE}
-#Subset material intensity data to include some materials 
-#  summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Cu), Silicon = sum(Si), Glass = sum(Glass), Indium = sum(In), Neodymium = sum(Nd), Silver = sum(Ag), Dysprosium = sum(Dy), Gallium = sum(Ga), Selenium = sum(Se), Nickel = sum(Ni), Manganese = sum(Mn))
-
 materials <- c("Aluminum","Cement","Steel","Copper", "Silicon", "Indium","Neodymium","Silver","Dysprosium","Gallium","Selenium","Nickel","Manganese")
 #print(materials)# Print the unique materials
 intensity = subset(material_intensity, Material %in% materials)
@@ -78,53 +72,6 @@ intensity_mean <- subset(intensity_mean_df, technology %in% repeat_technologies)
 ```
 
 **Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
-
-```{r message=FALSE, warning=FALSE}
-# # Capacity dataframes subsetted for specific technologies and years
-# capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
-# capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
-# 
-# # Material demand simulation
-# i <- 1
-# invisible(
-#   for (material in materials) {
-#     df_int <- subset(intensity_mean, Material %in% material)
-#     df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
-#     df_cap$totaldemand <- df_cap$newval * df_cap$value
-#     colnames(df_cap)[colnames(df_cap) == "totaldemand"] <- material
-#     df_cap <- subset(df_cap, select = -c(Material, newval, value))
-# 
-#     # Prevent negative values
-#     df_cap[df_cap < 0] <- 0
-# 
-#     if (i == 1) {
-#       materials_demand <- df_cap
-#     } else {
-#       materials_demand <- materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
-#     }
-#     i <- i + 1
-#   }
-# )
-# 
-# # Remove unnecessary columns
-# materials_demand <- materials_demand %>%
-#   select(-max.x, -min.x, -max.y, -min.y, -min, -max, 
-#          -min.x.x, -min.x.x.x, -min.x.x.x.x, -min.x.x.x.x.x, 
-#          -max.x, -max.x.x, -max.x.x.x, -max.x.x.x.x, -max.x.x.x.x.x, -max.x.x.x.x.x.x,
-#          -min.x.x.x.x.x.x,
-#          # Additional removals for columns ending with ".y"
-#          -max.y, -min.y, -max.y.y, -min.y.y, -max.y.y.y, -min.y.y.y, -max.y.y.y.y, -min.y.y.y.y, -max.y.y.y.y.y, -min.y.y.y.y.y,-max.y.y.y.y.y.y,-min.y.y.y.y.y.y)
-# 
-# # Material demand by material, scenario, and year 
-# materials_demand_sum <- materials_demand %>% 
-#   group_by(year, scenario) %>% 
-#   summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
-# 
-# # Prevent negative values in materials_demand_sum
-# materials_demand_sum[materials_demand_sum < 0] <- 0
-
-
-```
 ```{r}
 # Material demand simulation
  capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
@@ -160,12 +107,6 @@ invisible(
     i <- i + 1
   }
 )
- #materials_demand_sum <- materials_demand %>% 
-  # group_by(year, scenario) %>% 
-  # summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
- 
- # Prevent negative values in materials_demand_sum
- #materials_demand_sum[materials_demand_sum < 0] <- 0
 
 
 ```
@@ -210,17 +151,6 @@ invisible(
     i <- i + 1
   }
 )
-
-# Remove unnecessary columns
-
-
-# Material demand by material, scenario, and year 
-#repeat_materials_demand_sum <- repeat_materials_demand %>% 
-  #group_by(year, scenario) %>% 
-  #summarise(Aluminum = sum(Aluminum), Cement = sum(Cement), Steel = sum(Steel), Copper = sum(Copper), Silicon = sum(Silicon), Indium = sum(Indium), Neodymium = sum(Neodymium), Silver = sum(Silver), Dysprosium = sum(Dysprosium), Gallium = sum(Gallium), Selenium = sum(Selenium), Nickel = sum(Nickel), Manganese = sum(Manganese))
-
-# Prevent negative values in repeat_materials_demand_sum
-#repeat_materials_demand_sum[repeat_materials_demand_sum < 0] <- 0
 
 ```
 
@@ -295,63 +225,24 @@ for (mat in materials) {
 ```
 
 
-```{r}
-#Material intensity simulation
-# set.seed(25)
-# n = 1 #number of iterations
-# df_mc <- data.frame() 
-# 
-# for (mat in materials){
-#   for (tech in repeat_technologies){
-#     loc = subset(intensity, Material %in% mat & technology %in% tech)
-#     if (nrow(loc)>1){
-#       minv = min(loc$value)
-#       maxv = max(loc$value)
-#       meanv = mean(loc$value)
-#       index_name = paste(mat, gsub("[[:space:]]", ".", tech), sep = ".")#addressing issues with spaces and dashes
-#       index_name = gsub("-", ".", index_name)
-#       df2 = data.frame(index = index_name, min = minv, max= maxv, mean = meanv)
-#       
-#       if (n==1){
-#         mc_values = df2
-#       }
-#       else{
-#         mc_values = rbind(mc_values, df2)
-#       }
-#       result <- rtriangle(100, minv, maxv, meanv)
-#       
-#       if(n==1){
-#         df_mc <- data.frame(cbind(result))
-#       }
-#       else{
-#         df_mc <- data.frame(cbind(df_mc, result))
-#       }
-#       colnames(df_mc)[colnames(df_mc) == "result"] =index_name
-#       n= n+1
-#     }
-#   }
-# }
-
-```
-
 **Material demand simulation (using material intensity distributions and Jenkins et al. (2023) capacity):** This code simulates material demand using fitted material intensity distributions and added capacities estimated based on Jenkins et al. (2023).
 ```{r}
 
 library(dplyr)
 
-# Define repeat technologies and other data frames as needed
-subset_capacities <- subset(capacities_new, year == 2025 & scenario == "IRA")
-
+subset_capacities<- capacities_new 
 # Process df_mc data
 melted_df_mc <- df_mc %>%
   mutate(row_id = row_number()) %>%
-  pivot_longer(cols = -row_id, names_to = "Material_Technology", values_to = "Distribution_Value") %>%
+  pivot_longer(cols = -row_id, names_to = "Material_Technology", values_to = "Intensity_Distribution_Value") %>%
   mutate(Technology = gsub("^[^.]+\\.", "", Material_Technology),  # Extract word after the first dot
          Technology = gsub("\\.", " ", Technology))  # Replace periods with spaces
 
 # Rename column to 'technology'
 melted_df_mc <- melted_df_mc %>%
   rename(technology = Technology)
+melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar pv", melted_df_mc$technology)
+
 
 # Filter melted_df_mc to include only repeat technologies and remove "Wind Offshore"
 melted_df_mc <- melted_df_mc %>%
@@ -364,197 +255,59 @@ subset_capacities <- subset_capacities %>%
 melted_df_mc <- melted_df_mc %>%
   filter(technology %in% unique(subset_capacities$technology))
 
- merged_data <- merge(melted_df_mc, subset_capacities, by = "technology")
+ mc_material_demand <- merge(melted_df_mc, subset_capacities, by = "technology")
 
-# Print unique technology names
 print(unique(subset_capacities$technology))
 print(unique(melted_df_mc$technology))
 
-merged_data$demand_2025 = merged_data$Distribution_Value *merged_data$newval
+mc_material_demand$material_demand = mc_material_demand$Intensity_Distribution_Value *mc_material_demand$newval
+mc_material_demand$material_demand <- ifelse(mc_material_demand$material_demand < 0, 0, mc_material_demand$material_demand)
+mc_material_demand <- mc_material_demand %>%
+  rename(capacity_new = newval)
 
 
 ```
-
 ```{r}
-# subset_capacities <- subset(capacities_new, year == 2025 & scenario == "IRA")
-# 
-# melted_df_mc <- df_mc %>%
-#   mutate(row_id = row_number()) %>%
-#   pivot_longer(cols = -row_id, names_to = "Material_Technology", values_to = "Distribution_Value")
-# merged_data <- merge(melted_df_mc, subset_capacities, by = NULL)
-# 
-# # Step 3: Multiply distribution fitting values by capacity values
-# merged_data <- merged_data %>%
-#   mutate(final_value = Distribution_Value * newval)  # Replace capacity_column_name with the actual column name in capacities_new
+library(dplyr)
 
-# Extract Material and Technology from the combined column
-# Separate Material and Technology from the combined column
+subset_capacities<- repeat_capacities_new 
+# Process df_mc data
+melted_df_mc <- df_mc %>%
+  mutate(row_id = row_number()) %>%
+  pivot_longer(cols = -row_id, names_to = "Material_Technology", values_to = "Intensity_Distribution_Value") %>%
+  mutate(Technology = gsub("^[^.]+\\.", "", Material_Technology),  # Extract word after the first dot
+         Technology = gsub("\\.", " ", Technology))  # Replace periods with spaces
+
+# Rename column to 'technology'
 melted_df_mc <- melted_df_mc %>%
-  separate(Material_Technology, into = c("Material", "Technology"), sep = "\\.", remove = FALSE, extra = "merge")
+  rename(technology = Technology)
+melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar pv", melted_df_mc$technology)
 
 
-#
-# # updated material inputs
-#mulitplying material intensity from df_mc (run 10000 times) by the new capacities
-#result mc_material_demand is new material inputs needed per year.
-# capacities_new <- subset(capacities_new, technology %in% repeat_technologies)
-# capacities_new <- subset(capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
-# names(capacities_new)[names(capacities_new) == "run.name"] <- "scenario"
-# capacities_new$scenario[capacities_new$scenario == 'ira_mid'] <- 'IRA'
-# capacities_new$scenario[capacities_new$scenario == 'baseline'] <- 'REF'
+# Filter melted_df_mc to include only repeat technologies and remove "Wind Offshore"
+melted_df_mc <- melted_df_mc %>%
+  filter(technology %in% repeat_technologies)
 
-# j=1
-# n=1
-# print(repeat_technologies)
-# for (tech in repeat_technologies){
-#   print(tech)
-# 
-#   for (mat in materials){
-# 
-#     for (scen in scenarios){
-#       #mat= "Steel"
-#      # tech = "onshore wind"
-#      # setyear = "2025"
-#       n=1
-#       entry_df = data.frame()
-#       name = paste(mat, tech, sep ='.')
-#       name = str_replace_all(name, "-", ".")
-#       name = str_replace_all(name, ' ', '.')#addressing issues with spaces and dashes
-#       #
-#       for (setyear in c(unique(capacities_new$year))){
-#         tryCatch(
-#           expr = {
-#             print("-")
-#             print(name)
-#             mc_loc = subset(df_mc, select = c(name))
-#             print("mc loc below")
-#             print(mc_loc$Material)
-#             print(mc_loc$technology)
-#             print("-")
-#             colnames(mc_loc)[colnames(mc_loc) == name] ="value"
-#             mc_loc = cbind(mc_loc, Material = mat, technology = tech, scenario = scen )
-#             #print(tech)
-#             #print(scen)
-#             #tech = "onshore wind"
-#             cap_loc = subset(capacities_new, scenario %in% scen & technology %in% tech & year %in% setyear)
-#             print(cap_loc$technology)
-#                         #print(tech)
-# 
-#             test = merge(mc_loc, cap_loc)
-# 
-#             if (nrow(test)<1){#if there is no data setting value to -1
-#               test <- data.frame(matrix(NA,nrow = 100,ncol = 1))
-#               colnames(test)<- paste("a", setyear, sep = "")
-#               test$scenario = scen
-#               test$technology = tech
-#               test$value = NA
-#               test$newval = NA
-#               test$Material = mat
-#               test$year = paste("a", setyear, sep = "")
-#             }
-# 
-#             else{
-#               test$value = as.numeric(test$value)
-#               test$finalvalue = test$value *test$newval
-#               colnames(test)[colnames(test) == "finalvalue"] = paste("a", setyear, sep = "")
-#             }
-# 
-#             if ((n==1) & (nrow(test)>1)){
-#               entry_df = test
-#               n = n+1
-#             }
-# 
-#             else if ((n!=1) & (nrow(test)>1)){
-#               df = subset(test, select = -c(Material, scenario,technology, newval,year,value))
-#               entry_df = cbind(entry_df, df)
-#             }
-#           },
-#           error = function(e){
-#           }
-#         )
-#       }
-# 
-#       if (j==1){
-#         mc_material_demand=entry_df
-#         j= j+1
-#       }
-#       else{
-#         mc_material_demand = rbind(mc_material_demand, entry_df)
-#       }
-#     }
-#   }
-# }
+# Filter subset_capacities to include only technologies found in melted_df_mc
+subset_capacities <- subset_capacities %>%
+  filter(technology %in% unique(melted_df_mc$technology))
+
+melted_df_mc <- melted_df_mc %>%
+  filter(technology %in% unique(subset_capacities$technology))
+
+ repeat_mc_material_demand <- merge(melted_df_mc, subset_capacities, by = "technology")
+
+print(unique(subset_capacities$technology))
+print(unique(melted_df_mc$technology))
+
+repeat_mc_material_demand$material_demand = repeat_mc_material_demand$Intensity_Distribution_Value *repeat_mc_material_demand$newval
+repeat_mc_material_demand$material_demand <- ifelse(repeat_mc_material_demand$material_demand < 0, 0, repeat_mc_material_demand$material_demand)
+repeat_mc_material_demand <- repeat_mc_material_demand %>%
+  rename(capacity_new = newval)
+
+
+
 ```
-
-
-
-```{r}
-#same thing as above with repeat
-j=1
-n=1
-
-for (tech in repeat_technologies){
-  for (mat in materials){
-    for (scen in "IRA"){
-      n=1
-      entry_df = data.frame()
-      name = paste(mat, tech, sep ='.')
-      name = str_replace_all(name, "-", ".")
-      name = str_replace_all(name, ' ', '.')#addressing issues with spaces and dashes
-      
-      for (setyear in c(unique(repeat_capacities_new$year))){
-        tryCatch(
-          expr = {
-            mc_loc = subset(df_mc, select = c(name))
-            colnames(mc_loc)[colnames(mc_loc) == name] ="value"
-            mc_loc = cbind(mc_loc, Material = mat, technology = tech, scenario = scen )
-            cap_loc = subset(repeat_capacities_new, scenario %in% scen & technology %in% tech & year %in% setyear)
-            test = merge(mc_loc, cap_loc)
-            
-            if (nrow(test)<1){#if there is no data setting value to -1
-              test <- data.frame(matrix(-1,nrow = 100,ncol = 1))
-              colnames(test)<- paste("a", setyear, sep = "")
-              test$scenario = scen
-              test$technology = tech
-              test$value = 0 
-              test$newval = 0
-              test$Material = mat
-              test$year = paste("a", setyear, sep = "")
-            }
-            
-            else{
-              test$value = as.numeric(test$value)
-              test$finalvalue = test$value *test$newval
-              colnames(test)[colnames(test) == "finalvalue"] = paste("a", setyear, sep = "")
-            }
-            
-            if ((n==1) & (nrow(test)>1)){
-              entry_df = test
-              n = n+1
-            }
-            
-            else if ((n!=1) & (nrow(test)>1)){
-              df = subset(test, select = -c(Material, scenario,technology, newval,year,value))
-              entry_df = cbind(entry_df, df)
-            }
-          },
-          error = function(e){
-          }
-        )
-      }
-      
-      if (j==1){
-        repeat_mc_material_demand=entry_df
-        j= j+1
-      }
-      else{
-        repeat_mc_material_demand = rbind(repeat_mc_material_demand, entry_df)
-      }
-    } 
-  }
-}
-```
-
 ```{r}
 #sensitivity analysis plots 
 par(mfrow = c(3, 3))  
@@ -629,8 +382,6 @@ for(scen in scenarios){
 ```{r}
 folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs"
 
-file_path1 <- file.path(folder_path, "multi_model_materials_demand_sum.csv")
-file_path2 <- file.path(folder_path, "repeat_materials_demand_sum.csv")
 file_path3 <- file.path(folder_path, "multi_model_mc_material_demand.csv")
 file_path4 <- file.path(folder_path, "repeat_mc_material_demand.csv")
 file_path5 <- file.path(folder_path, "materials_demand.csv")
