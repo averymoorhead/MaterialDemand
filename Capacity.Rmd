@@ -217,6 +217,9 @@ multi_model_capacities$technology <- gsub("NGCC CCS", "Gas", multi_model_capacit
 multi_model_capacities$technology <- gsub("NGCC", "Gas", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("NGGT", "Gas", multi_model_capacities$technology)
 
+multi_model_capacities <- multi_model_capacities %>%
+  group_by(year, scenario, technology) %>%
+  summarise(newval = sum(newval))
 
 print(unique(multi_model_capacities$technology))
 
@@ -287,6 +290,10 @@ colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..output
 repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
 repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
 repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
+repeat_capacities_new <- repeat_capacities_new %>%
+  group_by(year, run.name, technology) %>%
+  summarise(newval = sum(newval))
+
 
 ```
 ```{r}
