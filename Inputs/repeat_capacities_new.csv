@@ -1,17 +1,29 @@
-"run.name","year","technology","newval"
-"baseline",2025,"onshore wind",27.245170405
-"baseline",2025,"utility-scale solar pv",23.241850185
-"baseline",2030,"Nuclear New",0.01172974
-"baseline",2030,"onshore wind",29.45177286
-"baseline",2030,"utility-scale solar pv",96.37596907
-"baseline",2035,"Nuclear New",0.00291132
-"baseline",2035,"onshore wind",21.05112111
-"baseline",2035,"utility-scale solar pv",91.48716359
-"ira_mid",2025,"onshore wind",27.245333485
-"ira_mid",2025,"utility-scale solar pv",25.344867265
-"ira_mid",2030,"Nuclear New",0.00023048
-"ira_mid",2030,"onshore wind",112.99182878
-"ira_mid",2030,"utility-scale solar pv",105.11039341
-"ira_mid",2035,"Nuclear New",0.00157467
-"ira_mid",2035,"onshore wind",73.07638073
-"ira_mid",2035,"utility-scale solar pv",329.65624537
+"year","run.name","technology","newval"
+2025,"baseline","Gas",30.297344295
+2025,"baseline","offshore wind",1.25947899
+2025,"baseline","onshore wind",27.245170405
+2025,"baseline","utility-scale solar pv",23.241850185
+2025,"ira_mid","Gas",31.924156255
+2025,"ira_mid","offshore wind",1.261012455
+2025,"ira_mid","onshore wind",27.245333485
+2025,"ira_mid","utility-scale solar pv",25.344867265
+2030,"baseline","Gas",13.67963388
+2030,"baseline","Nuclear New",0.01172974
+2030,"baseline","offshore wind",5.61472289
+2030,"baseline","onshore wind",29.45177286
+2030,"baseline","utility-scale solar pv",96.37596907
+2030,"ira_mid","Gas",13.61963023
+2030,"ira_mid","Nuclear New",0.00023048
+2030,"ira_mid","offshore wind",15.62590926
+2030,"ira_mid","onshore wind",112.99182878
+2030,"ira_mid","utility-scale solar pv",105.11039341
+2035,"baseline","Gas",1086.9976736
+2035,"baseline","Nuclear New",0.00291132
+2035,"baseline","offshore wind",22.7690292
+2035,"baseline","onshore wind",21.05112111
+2035,"baseline","utility-scale solar pv",91.48716359
+2035,"ira_mid","Gas",944.01327401
+2035,"ira_mid","Nuclear New",0.00157467
+2035,"ira_mid","offshore wind",22.76264051
+2035,"ira_mid","onshore wind",73.07638073
+2035,"ira_mid","utility-scale solar pv",329.65624537

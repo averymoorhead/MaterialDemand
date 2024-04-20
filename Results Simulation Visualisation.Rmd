@@ -17,11 +17,11 @@ library(dplyr)
 ```{r}
 print(getwd())
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
-#multi_model_materials_demand_sum.csv<- read.csv("multi_model_materials_demand_sum.csv")
 #repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
-#repeat_mc_material_demand_sum<- read.csv("repeat_materials_demand_sum.csv")
-#multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
+multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
 materials_demand<-read.csv("materials_demand.csv")
+simulated_intensity<-read.csv("simulated_intensity")
+
 
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
 
@@ -52,10 +52,6 @@ setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
 ```
 
 ```{r}
-plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
-plot_df <- subset(plot_df, scenario == "IRA" | is.na(scenario))
-plot_df$year <- ifelse(is.na(plot_df$year), 2021, plot_df$year)
-plot_df <- subset(materials_demand, year != 2021, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
 
 ```
 
@@ -63,6 +59,11 @@ plot_df <- subset(materials_demand, year != 2021, select = c('scenario', 'year',
 # Load required library
 library(ggplot2)
 library(scales)  # For number formatting
+
+plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
+plot_df <- subset(plot_df, scenario == "IRA" | is.na(scenario))
+plot_df$year <- ifelse(is.na(plot_df$year), 2021, plot_df$year)
+plot_df <- subset(materials_demand, year != 2021, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
 
 head(plot_df)
 plot_df <- plot_df %>%
@@ -86,6 +87,316 @@ ggplot(plot_df, aes(x = year, y = Aluminum_mean, fill = technology)) +
 
 
 ```
+```{r}
+library(ggplot2)
+library(scales)  # For number formatting
+library(cowplot)
+
+# Create a list of materials
+materials <- c("Aluminum", "Steel", "Cement", "Copper","Silicon","Neodymium","Silver","Dysprosium","Gallium", "Selenium","Nickel", "Manganese","Indium")
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each material
+for (material in materials) {
+  # Subset the data for the current material and scenario "IRA"
+  plot_df <- subset(materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
+  
+  # Convert year to integer
+  plot_df$year <- as.integer(plot_df$year)
+  
+  # Create the plot for the current material
+  p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
+    geom_area() +
+    labs(title = "",
+         x = "",
+         y = "") +
+    theme_minimal() +
+    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+    scale_x_continuous(breaks = c(2025, 2030, 2035))  # Set specific x-axis breaks
+  
+  # Store the plot in the plot list
+  plot_list[[material]] <- p
+}
+
+# Combine all plots in the plot list
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 4)
+
+# Display the combined plot
+print(combined_plot)
+
+
+```
+```{r}
+library(ggplot2)
+library(scales)  # For number formatting
+library(cowplot)
+
+# Create a list of materials
+materials <- c("Aluminum", "Steel", "Cement", "Copper","Silicon","Neodymium","Silver","Dysprosium","Gallium", "Selenium","Nickel", "Manganese","Indium")
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each material
+for (material in materials) {
+  # Subset the data for the current material and scenario "IRA"
+  plot_df <- subset(materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
+  
+  # Convert year to integer
+  plot_df$year <- as.integer(plot_df$year)
+  
+  # Create the plot for the current material
+  p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
+    geom_area() +
+    labs(title = paste(material, "Material Demand"),
+         x = "",
+         y = "") +
+    theme_minimal() +
+    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+    theme(legend.position = "none")  # Remove the legend
+  
+  # Store the plot in the plot list
+  plot_list[[material]] <- p
+}
+
+# Combine all plots in the plot list
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
+
+# Create a common legend plot
+# Extract the legend from the Aluminum plot
+legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
+
+# Arrange the combined plot and the legend plot
+final_plot <- cowplot::plot_grid(combined_plot, legend_plot, ncol = 2, widths = c(0.9, 0.1))
+
+# Display the final
+print(final_plot)
+
+```
+```{r}
+library(ggplot2)
+library(scales)  # For number formatting
+library(cowplot)
+
+# Create a list of materials
+materials <- c("Aluminum", "Steel", "Cement", "Copper","Silicon","Neodymium","Silver","Dysprosium","Gallium", "Selenium","Nickel", "Manganese","Indium")
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each material
+for (material in materials) {
+  # Subset the data for the current material and scenario "IRA"
+  plot_df <- subset(materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
+  
+  # Convert year to integer
+  plot_df$year <- as.integer(plot_df$year)
+  
+  # Create the plot for the current material
+  p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
+    geom_area() +
+    labs(title = paste(material, "Material Demand"),
+         x = "",
+         y = "") +
+    theme_minimal() +
+    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+    theme(legend.position = "none")  # Remove the legend
+  
+  # Store the plot in the plot list
+  plot_list[[material]] <- p
+}
+
+# Combine all plots in the plot list
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
+
+# Create a common legend plot
+# Extract the legend from the Aluminum plot
+legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
+
+# Manually adjust the widths of the legend and the combined plot
+final_plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
+  cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
+
+# Display the final plot
+print(final_plot)
+final_plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
+  cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
+
+# Set the width of the plot based on the maximum y-axis label length
+final_plot <- final_plot + theme(plot.margin = margin(r = 0.5 * max_y_label_length))
+
+# Display the final plot
+print(final_plot)
+# Adjust the width of each plot
+plot_width <- 10  # Adjust this value as needed
+library(patchwork)
+# Arrange the plots using patchwork
+final_plot <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
+
+# Add a common y-axis title using cowplot
+common_y_axis_title <- ggdraw() +
+  draw_label("Material Intensity (tonnes/GW)", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
+
+# Combine the common y-axis title with the final plot
+final_plot_with_title <- cowplot::plot_grid(
+  common_y_axis_title,
+  final_plot + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
+  nrow = 1,
+  rel_widths = c(0.1, 0.9)
+)
+
+# Print or display the final plot with the common y-axis title
+print(final_plot_with_title)
+
+
+```
+```{r}
+library(ggplot2)
+library(scales)  # For number formatting
+library(cowplot)
+#cut gallium indium selenium
+# Create a list of materials
+materials <- c("Aluminum", "Steel", "Cement", "Copper", "Silicon", "Neodymium", "Silver", "Dysprosium",  "Nickel", "Manganese")
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each material
+for (material in materials) {
+  # Subset the data for the current material and scenario "IRA"
+  plot_df <- subset(materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
+  
+  # Convert year to integer
+  plot_df$year <- as.integer(plot_df$year)
+  
+  # Create the plot for the current material
+p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
+  geom_area() +
+  labs(title = paste(material),
+       x = "",
+       y = "") +
+  theme_minimal() +
+  scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+  scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+  theme(
+    legend.position = "none",  # Remove the legend
+    plot.title = element_text(size = 10)  # Adjust the size of the plot title
+  )
+
+  # Store the plot in the plot list
+  plot_list[[material]] <- p
+}
+
+# Combine all plots in the plot list
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
+
+# Create a common legend plot
+# Extract the legend from the Aluminum plot
+legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
+
+# Manually adjust the widths of the legend and the combined plot
+final_plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
+  cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
+
+# Display the final plot
+print(final_plot)
+
+# Adjust the width of each plot
+plot_width <- 10  # Adjust this value as needed
+
+# Arrange the plots using patchwork
+final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
+
+# Add a common y-axis title using cowplot
+common_y_axis_title <- ggdraw() +
+  draw_label("Material Intensity (tonnes/GW)", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
+
+# Combine the common y-axis title with the final plot
+final_plot_with_title <- cowplot::plot_grid(
+  common_y_axis_title,
+  final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
+  nrow = 1,
+  rel_widths = c(0.1, 0.9)
+)
+
+# Print or display the final plot with the common y-axis title
+print(final_plot_with_title)
+# Save the combined plot as a PNG file
+print(getwd())
+ggsave("resultsplot.jpg", plot = final_plot_with_title, width = 10, height = 6, units = "in", dpi = 300)
+
+
+
+```
+
+```{r}
+library(ggplot2)
+library(scales)  # For number formatting
+library(cowplot)
+
+# Create a list of materials
+materials <- c("Aluminum", "Steel", "Cement", "Copper","Silicon","Neodymium","Silver","Dysprosium","Gallium", "Selenium","Nickel", "Manganese","Indium")
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each material
+max_y_label_length <- 0  # Initialize variable to store maximum y-axis label length
+for (material in materials) {
+  # Subset the data for the current material and scenario "IRA"
+  plot_df <- subset(materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
+  
+  # Convert year to integer
+  plot_df$year <- as.integer(plot_df$year)
+  
+  # Create the plot for the current material
+  p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
+    geom_area() +
+    labs(title = paste(material, "Material Demand"),
+         x = "",
+         y = "") +
+    theme_minimal() +
+    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+    theme(legend.position = "none")  # Remove the legend
+  
+  # Update max_y_label_length if the current plot's y-axis labels are longer
+  current_max_y_label_length <- max(nchar(comma(seq(0, max(plot_df[[paste0(material, "_mean")]], na.rm = TRUE), big.mark = ","))))
+  if (current_max_y_label_length > max_y_label_length) {
+    max_y_label_length <- current_max_y_label_length
+  }
+  
+  # Store the plot in the plot list
+  plot_list[[material]] <- p
+}
+
+# Combine all plots in the plot list
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
+
+# Create a common legend plot
+# Extract the legend from the Aluminum plot
+legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
+
+# Manually adjust the widths of the legend and the combined plot
+final_plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
+  cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
+
+# Set the width of the plot based on the maximum y-axis label length
+final_plot <- final_plot + theme(plot.margin = margin(r = 0.5 * max_y_label_length))
+
+# Display the final plot
+print(final_plot)
+
+```
 
 ```{r}
 library(ggplot2)
@@ -102,39 +413,6 @@ material_demand_sum_ref <- material_demand_sum %>%
 # Plot the data
 
 
-ggplot(material_demand_sum_ira, aes(x = year)) +
-  geom_line(aes(y = Aluminum_mean, color = "Aluminum_mean"), linetype = "solid") +
-  geom_line(aes(y = Aluminum_min, color = "Aluminum_min"), linetype = "dashed") +
-  geom_line(aes(y = Aluminum_max, color = "Aluminum_max"), linetype = "dotted") +
-  labs(title = "Aluminum Demand (IRA)",
-       x = "Year",
-       y = "Aluminum",
-       color = "Variable") +
-  scale_color_manual(values = c("Aluminum_mean" = "red", 
-                                "Aluminum_min" = "red", 
-                                "Aluminum_max" = "red"),  # Provide three colors for the three lines
-                     name = "Variable") +
-  theme_minimal()
-
-
-ggplot(material_demand_sum_ref, aes(x = year)) +
-  geom_line(aes(y = Aluminum_mean, color = "Aluminum_mean"), linetype = "solid") +
-  geom_line(aes(y = Aluminum_min, color = "Aluminum_min"), linetype = "dashed") +
-  geom_line(aes(y = Aluminum_max, color = "Aluminum_max"), linetype = "dotted") +
-  labs(title = "Aluminum Demand (IRA)",
-       x = "Year",
-       y = "Aluminum",
-       color = "Variable") +
-  scale_color_manual(values = c("Aluminum_mean" ="blue", 
-                                "Aluminum_min" = "blue", 
-                                "Aluminum_max" = "blue"),  # Provide three colors for the three lines
-                     name = "Variable") +
-  theme_minimal()
-
-
-
-
-
 
 
 
@@ -142,6 +420,8 @@ ggplot(material_demand_sum_ref, aes(x = year)) +
 
 
 ```
+
+
 ```{r}
 library(ggplot2)
 
@@ -159,30 +439,33 @@ p <- ggplot() +
                                                 y = Aluminum_max, 
                                                 color = "Aluminum_max (IRA)"), 
             linetype = "dotted") +
-  labs(title = "Aluminum Demand",
+  labs(title = "Annual Aluminum Demand",
        x = "Year",
-       y = "Aluminum",
+       y = "Material Demand (Mton/year)",
        color = "Scenario") +
   scale_color_manual(values = c("Aluminum_mean (IRA)" = "red", 
                                 "Aluminum_min (IRA)" = "red", 
                                 "Aluminum_max (IRA)" = "red", 
-                                "Ref" = "blue"),  # Color for each scenario
-                     name = "Scenario") +
+                                "Aluminum_mean (Ref)" = "blue", 
+                                "Aluminum_min (Ref)" = "blue", 
+                                "Aluminum_max (Ref)" = "blue"),  # Color for each line
+                     name = "Scenario",
+                     labels = c("Mean (IRA)", "Min (IRA)", "Max (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
   theme_minimal()
 
 # Plot the data for Ref scenario and combine with the previous plot
 p +
   geom_line(data = material_demand_sum_ref, aes(x = year, 
                                                 y = Aluminum_mean, 
-                                                color = "Ref"), 
+                                                color = "Aluminum_mean (Ref)"), 
             linetype = "solid") +
   geom_line(data = material_demand_sum_ref, aes(x = year, 
                                                 y = Aluminum_min, 
-                                                color = "Ref"), 
+                                                color = "Aluminum_min (Ref)"), 
             linetype = "dashed") +
   geom_line(data = material_demand_sum_ref, aes(x = year, 
                                                 y = Aluminum_max, 
-                                                color = "Ref"), 
+                                                color = "Aluminum_max (Ref)"), 
             linetype = "dotted")
 
 ```
