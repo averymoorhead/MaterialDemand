@@ -264,6 +264,8 @@ mc_material_demand$material_demand = mc_material_demand$Intensity_Distribution_V
 mc_material_demand$material_demand <- ifelse(mc_material_demand$material_demand < 0, 0, mc_material_demand$material_demand)
 mc_material_demand <- mc_material_demand %>%
   rename(capacity_new = newval)
+mc_material_demand <- mc_material_demand %>%
+  mutate(Material = str_extract(Material_Technology, "\\w+"))
 
 
 ```
@@ -304,76 +306,45 @@ repeat_mc_material_demand$material_demand = repeat_mc_material_demand$Intensity_
 repeat_mc_material_demand$material_demand <- ifelse(repeat_mc_material_demand$material_demand < 0, 0, repeat_mc_material_demand$material_demand)
 repeat_mc_material_demand <- repeat_mc_material_demand %>%
   rename(capacity_new = newval)
+repeat_mc_material_demand <- mc_material_demand %>%
+  mutate(Material = str_extract(Material_Technology, "\\w+"))
 
 
 
 ```
-```{r}
-#sensitivity analysis plots 
-par(mfrow = c(3, 3))  
-par(mar = c(2, 2, 2, 2)) 
-
-for(material in materials){
-  for(tech in repeat_technologies){
-    tryCatch(                      
-      expr = {                      
-        type = paste(material, tech, sep = ".")
-        type = str_replace_all(type, " ", ".")
-        type = str_replace_all(type, "-", ".")
-        
-        histtype = str_replace_all(type, "-", ".")
-        histtype = str_replace_all(histtype, " ", ".")
-        
-        axislabels= subset(mc_values, index %in% type)
-        hist_df = subset(df_mc, select = c(histtype))
-        
-        colnames(hist_df)[colnames(hist_df) == histtype] ="value"
-        
-        hist(as.numeric(hist_df$value), col = "antiquewhite1", cex.main=1.4,xaxt ='n', xlab = '', main = type, xlim =c(axislabels$min,axislabels$max))
-        axis(1, at = c(axislabels$mean, axislabels$min,axislabels$max),
-             labels = c(round(axislabels$mean, digits =5), round(axislabels$min, digits = 5), round(axislabels$max, digits = 5)))
-      },
-      error = function(e){
-        dummy = '1'
-      }
-    )
-  }
-}
-```
 
 ```{r}
+library(dplyr)
+library(tidyr)
 
-plot.new()
+mc_material_demand_total <- mc_material_demand %>%
+  select(-capacity_new, -Intensity_Distribution_Value) %>%  # Exclude irrelevant columns
+  pivot_wider(
+    id_cols = c(row_id, year, scenario, Material),  # Include identifiers
+    names_from = technology, 
+    values_from = material_demand,
+    values_fill = 0  # Fill missing values with 0
+  )
+mc_material_demand_total <- mc_material_demand_total %>%
+  mutate(
+    total_demand = rowSums(select(., 
+                                   c(Coal, Gas, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`)))
+  )
+repeat_mc_material_demand_total <- repeat_mc_material_demand %>%
+  select(-capacity_new, -Intensity_Distribution_Value) %>%  # Exclude irrelevant columns
+  pivot_wider(
+    id_cols = c(row_id, year, scenario, Material),  # Include identifiers
+    names_from = technology, 
+    values_from = material_demand,
+    values_fill = 0  # Fill missing values with 0
+  )
+repeat_mc_material_demand_total <- repeat_mc_material_demand_total %>%
+  mutate(
+    total_demand = rowSums(select(., 
+                                   c(Coal, Gas, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`)))
+  )
 
-for(scen in scenarios){
-  
-  par(mfrow = c(3, 3)) 
-  par(mar=c(2,2,2,2)) 
-  par(xpd=NA)
-  
 
-  for(mat in materials){
-    for(tech in repeat_technologies){
-      tryCatch(                       
-        
-        expr = { 
-          boxplot_df = subset(mc_material_demand, technology %in% tech & scenario %in% scen & Material %in% mat)
-          boxplot_df =subset(boxplot_df, select = c(a2025, a2030, a2035))
-          if (nrow(boxplot_df)>0){
-              boxplot(boxplot_df, cex.main=1.2,cex.axis=1.2, main =  (paste (mat, tech, sep = ";")), names = c('2025','2030','2035'),border = "coral3", col ="white")
-            
-          }
-        },
-        error = function(e){
-          message("error")
-          }
-      )
-    }
-  }
-  
-  title(main = scen, xlab= "test", outer=TRUE, cex.main = 1)
-
-}
 
 ```
 
@@ -381,12 +352,13 @@ for(scen in scenarios){
 
 ```{r}
 folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs"
-
+file_path2 <- file.path(folder_path, "simulated_intensity")
 file_path3 <- file.path(folder_path, "multi_model_mc_material_demand.csv")
 file_path4 <- file.path(folder_path, "repeat_mc_material_demand.csv")
 file_path5 <- file.path(folder_path, "materials_demand.csv")
 file_path6 <- file.path(folder_path, "repeat_materials_demand.csv")
-file_path2 <- file.path(folder_path, "simulated_intensity")
+file_path7 <- file.path(folder_path, "repeat_mc_material_demand_total.csv")
+file_path8 <- file.path(folder_path, "multi_model_mc_material_demand_total.csv")
 
 
 
@@ -399,6 +371,9 @@ write.csv(repeat_mc_material_demand, file = file_path4, row.names = FALSE)
 write.csv(materials_demand, file = file_path5, row.names = FALSE)
 write.csv(repeat_materials_demand, file = file_path6, row.names = FALSE)
 write.csv(df_mc, file = file_path2, row.names = FALSE)
+write.csv(repeat_mc_material_demand_total, file = file_path7, row.names = FALSE)
+write.csv(mc_material_demand_total, file = file_path8, row.names = FALSE)
+
 
 
 ```
