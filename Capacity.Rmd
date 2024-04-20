@@ -149,6 +149,13 @@ capacities_all <- rbind(Cap_IRA,Cap_Ref)
 colnames(capacities_all)[3] ="technology"
 capacities_all$technology <- gsub("Wind", "onshore wind", capacities_all$technology)
 capacities_all$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_all$technology)
+capacities_all$technology <- gsub("NGGT", "Gas", capacities_all$technology)
+capacities_all$technology <- gsub("NGCC", "Gas", capacities_all$technology)
+capacities_all$technology <- gsub("NGCC CCS", "Gas", capacities_all$technology)
+capacities_all$technology <- gsub("Coal CCS", "Coal", capacities_all$technology)
+capacities_all$technology <- gsub("Gas CCS", "Gas", capacities_all$technology)
+
+print(unique(capacities_all$technology))
 
 ##capacities: mean, minimum, and maximum total capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
 capacities <- capacities_all[-1]
@@ -204,6 +211,15 @@ temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
 multi_model_capacities <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
 multi_model_capacities$technology <- ifelse(multi_model_capacities$technology == "wind", "onshore wind", multi_model_capacities$technology)
 multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Utility"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
+multi_model_capacities$technology <- gsub("Coal CCS", "Coal", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("Gas CCS", "Gas", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("NGCC CCS", "Gas", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("NGCC", "Gas", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("NGGT", "Gas", multi_model_capacities$technology)
+
+
+print(unique(multi_model_capacities$technology))
+
 
 ```
 
@@ -217,10 +233,25 @@ input_capacities= read.csv("capacity_y.csv")
 
 #Creating dataframe and processing data
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
-repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore")#Define the REPEAT technologies to be included
+repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore", "Gas","Coal","offshore wind")#Define the REPEAT technologies to be included
 repeat_scenarios = c("baseline", "ira_mid")
 input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
 input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+input_capacities$tech..outputs_group_detailed <- gsub("existing_gas combustion turbine", "Gas", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("existing_gas combined cycle", "Gas", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("existing_gas steam turbine", "Gas", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("gas production", "Gas", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("naturalgas_ccavgcf", "Gas", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("naturalgas_ctavgcf", "Gas", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("offshore wind fixed", "offshore wind", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("offshore wind floating", "offshore wind", input_capacities$tech..outputs_group_detailed)
+
+
+
+
+print(unique(input_capacities$tech..outputs_group_detailed))
+
+
 repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
 
 ##repeat_capacities_new: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
@@ -231,6 +262,23 @@ input_capacities_delta = read.csv("capacity_delta_y.csv")
 #Creating dataframe and processing data
 input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
 input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
+input_capacities_delta$tech..outputs_group_detailed <- gsub("gas production", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("naturalgas_ccavgcf", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("naturalgas_ctavgcf", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("offshore wind fixed", "offshore wind", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("offshore wind floating", "offshore wind", input_capacities_delta$tech..outputs_group_detailed)
+print(unique(input_capacities_delta$tech..outputs_group_detailed))
+input_capacities_delta$tech..outputs_group_detailed <- gsub("lng production", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combined cycle", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combustion turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas steam turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
+print(unique(input_capacities_delta$tech..outputs_group_detailed))
+
+
+
+
+
+
 repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
   group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
 colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
