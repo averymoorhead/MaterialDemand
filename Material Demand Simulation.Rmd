@@ -364,8 +364,6 @@ file_path8 <- file.path(folder_path, "multi_model_mc_material_demand_total.csv")
 
 
 # Write each dataframe to its respective CSV file in the specified folder
-#write.csv(materials_demand_sum, file = file_path1, row.names = FALSE)
-#write.csv(repeat_materials_demand_sum, file = file_path2, row.names = FALSE)
 write.csv(mc_material_demand, file = file_path3, row.names = FALSE)
 write.csv(repeat_mc_material_demand, file = file_path4, row.names = FALSE)
 write.csv(materials_demand, file = file_path5, row.names = FALSE)
