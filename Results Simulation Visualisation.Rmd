@@ -19,9 +19,12 @@ print(getwd())
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
 #repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
 multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
+repeat_materials_demand<- read.csv("repeat_materials_demand.csv")
+
 materials_demand<-read.csv("materials_demand.csv")
-simulated_intensity<-read.csv("simulated_intensity")
 multi_model_mc_material_demand_total<-read.csv("multi_model_mc_material_demand_total.csv")
+transmission_material_sum<-read.csv("transmission_material_sum.csv")
+
 
 repeat_mc_material_demand_total<-read.csv("repeat_mc_material_demand_total.csv")
 
@@ -36,8 +39,13 @@ setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
 ```
 
 ```{r}
-#repeat_aluminum <- repeat_mc_material_demand[repeat_mc_material_demand$Material == "Aluminum", ]
-#multi_aluminum <- multi_model_mc_material_demand[multi_model_mc_material_demand$Material == "Aluminum", ]
+library(tidyr)
+
+melted_transmission_material_sum <- transmission_material_sum %>%
+  pivot_longer(cols = c(Cu, Concrete, Steel, Aluminum),
+               names_to = "material",
+               values_to = "Transmission_mean")
+
 
 
 ```
@@ -309,17 +317,30 @@ p+boxplot
 # Assuming p is your ggplot object representing your existing plot
 
 # Filter aluminum data for the specified conditions
-aluminum_subset <- multi_model_mc_material_demand_total %>%
+aluminum_subset_ira <- multi_model_mc_material_demand_total %>%
   filter(Material == "Aluminum", year == "2035", scenario == "IRA") %>%
-  select(-Coal, -Gas, -Hydro, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv)
+  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
+  mutate(
+    onshore.wind = sort(onshore.wind),
+    Hydro = sort(Hydro),
+    Nuclear.New = sort(Nuclear.New),
+    utility.scale.solar.pv = sort(utility.scale.solar.pv),
+    Coal = sort(Coal),
+    Gas = sort(Gas),
+    total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas,
+    year = 2035
+  )
+print(min(aluminum_subset_ira$total_demand))
+boxplot(aluminum_subset_ira$total_demand, 
+        main = "Boxplot of Total Demand", 
+        ylab = "Total Demand")
+
+
 
 # Create a box plot for aluminum demand
-boxplot <- ggplot(aluminum_subset, aes(x = year, y = total_demand)) +
-  geom_boxplot() +
-  labs(x = "Year", y = "Total Demand for Aluminum", title = "Box Plot of Total Demand for Aluminum")
 
 # Combine the box plot with your existing plot p
-combined_plot <- p1 + geom_boxplot(data = aluminum_subset, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
+combined_plot <- p1 + geom_boxplot(data = aluminum_subset_ira, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
   labs(title = "Combined Plot with Box Plot of Aluminum Demand",
        x = "Year",
        y = "Material Demand (Mton/year)",
@@ -334,12 +355,25 @@ print(combined_plot)
 # Filter aluminum data for the specified conditions for scenario "Ref"
 aluminum_subset_ref <- multi_model_mc_material_demand_total %>%
   filter(Material == "Aluminum", year == "2035", scenario == "Ref") %>%
-  select(-Coal, -Gas, -Hydro, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv)
+  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
+  mutate(
+    onshore.wind = sort(onshore.wind),
+    Hydro = sort(Hydro),
+    Nuclear.New = sort(Nuclear.New),
+    utility.scale.solar.pv = sort(utility.scale.solar.pv),
+    Coal = sort(Coal),
+    Gas = sort(Gas),
+    total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas,
+    year= 2035
+  )
+
+mean_demand <- mean(aluminum_subset$total_demand)
+min_demand <- min(aluminum_subset$total_demand)
+max_demand <- max(aluminum_subset$total_demand)
+
+
 
 # Create a box plot for aluminum demand for scenario "IRA"
-boxplot_ira <- ggplot(aluminum_subset, aes(x = year, y = total_demand)) +
-  geom_boxplot(fill = "gray", alpha = 0.5, width = 0.5) +
-  labs(x = "Year", y = "Total Demand for Aluminum (IRA)", title = "Box Plot of Total Demand for Aluminum (IRA)")
 
 # Create a box plot for aluminum demand for scenario "Ref"
 boxplot_ref <- ggplot(aluminum_subset_ref, aes(x = year, y = total_demand)) +
@@ -348,7 +382,7 @@ boxplot_ref <- ggplot(aluminum_subset_ref, aes(x = year, y = total_demand)) +
 
 # Combine the box plots with your existing plot p
 combined_plot <- p1 +
-  geom_boxplot(data = aluminum_subset, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
+  geom_boxplot(data = aluminum_subset_ira, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
   geom_boxplot(data = aluminum_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5) +
   labs(title = "Combined Plot with Box Plots of Aluminum Demand",
        x = "Year",
@@ -363,7 +397,7 @@ stagger_width <- 0.1  # Adjust as needed
 
 # Combine the box plots with your existing plot p, staggering them slightly
 combined_plot <- p1 +
-  geom_boxplot(data = aluminum_subset, aes(x = year - stagger_width, y = total_demand), fill = "gray", alpha = 0.5, width = 0.4) +
+  geom_boxplot(data = aluminum_subset, aes(x = year - stagger_width, y = total_demand), fill = "red", alpha = 0.5, width = 0.4) +
   geom_boxplot(data = aluminum_subset_ref, aes(x = year + stagger_width, y = total_demand), fill = "blue", alpha = 0.5, width = 0.4) +
   labs(title = "Combined Plot with Box Plots of Aluminum Demand",
        x = "Year",
@@ -375,5 +409,19 @@ combined_plot <- p1 +
 print(combined_plot)
 
 
+```
+```{r}
+aluminum_subset_test <- multi_model_mc_material_demand_total %>%
+  filter(Material == "Aluminum", year == "2035", scenario == "Ref") %>%
+  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
+  mutate(
+    onshore.wind = sort(onshore.wind),
+    Hydro = sort(Hydro),
+    Nuclear.New = sort(Nuclear.New),
+    utility.scale.solar.pv = sort(utility.scale.solar.pv),
+    Coal = sort(Coal),
+    Gas = sort(Gas),
+    total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas
+  )
 ```
 
