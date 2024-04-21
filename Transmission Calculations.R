@@ -32,19 +32,42 @@ Spur_Dist_Sum <- Spur_Dist_Sum %>%
   mutate(Glass = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Glass"]) %>% 
   mutate(Concrete = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Concrete"]) %>%
   mutate(Aluminum = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Aluminum"]) %>%
-  mutate(Steel = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Steel"])
+  mutate(Steel = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Steel"]) %>%
+  rename(technology = tech,
+         scenario = policy) %>%  mutate(
+           technology = case_when(
+             technology == "offshorewind" ~ "offshore wind",
+             technology == "solar" ~ "utility-scale solar pv",
+             technology == "wind" ~ "Onshore Wind",
+             TRUE ~ as.character(technology)
+           ))%>%  mutate(
+  scenario = case_when(
+    scenario == "baseline" ~ "Ref",
+    scenario == "ira_mid" ~ "IRA",
+    
+    TRUE ~ as.character(scenario)
+  ))
+           
 
 #currently only including the spur lines as there are high levels of uncertainty with the tranmission lines 
 # Trans_Dist_Delta = read_excel("transmission_cost_distribution_results_delta_y.xlsx")
 # Trans_Dist_Delta <- Trans_Dist_Delta %>% select(run_name, dist_km_Difference)
 # Trans_Dist_Delta <- subset(Trans_Dist_Delta, run_name %in% c("baseline", "ira_mid"))
 # Trans_Dist_Delta <- Trans_Dist_Delta %>% group_by(run_name) %>% summarise(totaltransdistance = sum(dist_km_Difference)) #averaging the different model results 
+Transmission_material_sum <- Spur_Dist_Sum %>%
+  group_by(year, scenario) %>%
+  summarise(Cu= sum(Cu), Concrete = sum(Concrete), Steel = sum(Steel), Aluminum = sum(Aluminum) )
+
 
 
 #saving to inputs folder
-folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
+folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs"
 file_path1 <- file.path(folder_path, "spur_dist_sum.csv")
+file_path2 <- file.path(folder_path, "transmission_material_sum.csv")
+
 # Write each dataframe to its respective CSV file in the specified folder
 write.csv(Spur_Dist_Sum, file = file_path1, row.names = FALSE)
+write.csv(Transmission_material_sum, file = file_path2, row.names = FALSE)
+
 
       
