@@ -12,7 +12,6 @@ knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/
 ###NTS: Currently only running this script on aluminum cement and steel. you can change this by changing rows 222,305, and 341
 #Clear objects from workspace
 rm(list = ls())
-
 #Load libraries
 library(readxl)
 library(data.table)
@@ -38,7 +37,7 @@ repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
 distribution_fits<- read.csv("distribution_fitting_results.csv")
 
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
-repeat_technologies = c("onshore wind","utility-scale solar pv", "Nuclear New", "Wind Offshore","Coal","Geothermal","Biomass","Gas", "Hydro")
+repeat_technologies = c("onshore wind","utility-scale solar pv", "Nuclear New", "offshore wind","Coal","Geothermal","Biomass","Gas", "Hydro")
                         
                         #"Coal","Geothermal","Biomass","Gas", "Hydro")#Define the REPEAT technologies to be included
 repeat_scenarios = c("baseline", "ira_mid")
@@ -50,10 +49,11 @@ usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export
 **Material intensity summary statistics and distribution fitting:** This code estimates summary statistics and fits probability distributions to material intensity data from Liang et al. (202X) and Wang et al. (202X).
 
 ```{r message=FALSE, warning=FALSE}
-materials <- c("Aluminum","Cement","Steel","Copper", "Silicon", "Indium","Neodymium","Silver","Dysprosium","Gallium","Selenium","Nickel","Manganese")
+#materials <- c("Aluminum","Cement","Steel","Copper", "Silicon", "Indium","Neodymium","Silver","Dysprosium","Gallium","Selenium","Nickel","Manganese")
 #print(materials)# Print the unique materials
-intensity = subset(material_intensity, Material %in% materials)
-
+#intensity = subset(material_intensity, Material %in% materials)
+intensity = material_intensity 
+materials <- c(unique(intensity$Material))
 #Check if all material/technology scenarios are present, if not add 0.
 for (material in materials) {
   for (tech in repeat_technologies){  
@@ -68,6 +68,8 @@ for (material in materials) {
 intensity_mean_df = intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
 intensity_mean <- subset(intensity_mean_df, technology %in% repeat_technologies) #take the mean of intensity values to get one value per tech/material combo.
 
+intensity_mean <- intensity_mean %>%
+  mutate_at(vars(value, min, max), ~ . / 1000)
 
 ```
 
@@ -76,10 +78,16 @@ intensity_mean <- subset(intensity_mean_df, technology %in% repeat_technologies)
 # Material demand simulation
  capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
  capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
-
 i <- 1
+#print(unique(intensity_mean$Material))
+Listofmaterials <-unique(intensity_mean$Material)
+Listofmaterials <- unique(trimws(intensity_mean$Material))
+
 invisible(
-  for (material in materials) {
+  for (material in c("Terbium", "Tin", "Vanadium", "Yttrium", "Zinc","Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass","Gallium", "Germanium", "Glass"
+)) {
+    #print(material)
+
    # material = "Aluminum"
     df_int <- subset(intensity_mean, Material %in% material)
     df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
@@ -107,8 +115,41 @@ invisible(
     i <- i + 1
   }
 )
+i<-1
+invisible(
+  for (material in c("Manganese", "Molybdenum", "Neodymium",  "Nickel", "Niobium", "Praseodymium", "Selenium", "Silicon", "Silver", "Steel", "Tellurium", "Indium", "Lead", "Magnesium"
+)) {
+    #print(material)
+
+   # material = "Aluminum"
+    df_int <- subset(intensity_mean, Material %in% material)
+    df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
+    # Prevent negative values
+    df_cap[df_cap < 0] <- 0
+
+    
+    # Calculate total demand considering min, max, and mean intensity
+    df_cap$total_demand_mean <- df_cap$newval * df_cap$value
+    df_cap$total_demand_min <- df_cap$newval * df_cap$min
+    df_cap$total_demand_max <- df_cap$newval * df_cap$max
+    
+    colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
+    colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
+    colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
+    
+    df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
 
 
+    if (i == 1) {
+      materials_demand1 <- df_cap
+    } else {
+      materials_demand1 <- materials_demand1 %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+    }
+    i <- i + 1
+  }
+)
+merged_material_demand <- merge(materials_demand, materials_demand1, by = c("year", "scenario", "technology"))
+materials_demand<-merged_material_demand
 ```
 
 **Material demand simulation (using mean material intensity values and Jenkins et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Jenkins et al. (2023).
@@ -345,7 +386,7 @@ repeat_mc_material_demand_total <- repeat_mc_material_demand_total %>%
   )
 
 
-
+unique(mc_material_demand_total$Material)
 ```
 
 **Saving data frames to "outputs" folder:** This code saves the dataframes for use in the model 
@@ -360,8 +401,7 @@ file_path6 <- file.path(folder_path, "repeat_materials_demand.csv")
 file_path7 <- file.path(folder_path, "repeat_mc_material_demand_total.csv")
 file_path8 <- file.path(folder_path, "multi_model_mc_material_demand_total.csv")
 
-
-
+unique(mc_material_demand_total$Material)
 
 # Write each dataframe to its respective CSV file in the specified folder
 write.csv(mc_material_demand, file = file_path3, row.names = FALSE)
@@ -371,7 +411,6 @@ write.csv(repeat_materials_demand, file = file_path6, row.names = FALSE)
 write.csv(df_mc, file = file_path2, row.names = FALSE)
 write.csv(repeat_mc_material_demand_total, file = file_path7, row.names = FALSE)
 write.csv(mc_material_demand_total, file = file_path8, row.names = FALSE)
-
 
 
 ```
