@@ -27,10 +27,11 @@ Spur_Dist_Sum <- Spur_Dist_Delta %>%
   mutate(totalspurdistance = totalspurdistance / 2) #as each year is reported in 2 year increments 
 
 #multiplying by material intensity 
+#using conversion from concrete to cement by Wang et al
 Spur_Dist_Sum <- Spur_Dist_Sum %>%
   mutate(Cu = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Cu"])%>% 
   mutate(Glass = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Glass"]) %>% 
-  mutate(Concrete = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Concrete"]) %>%
+  mutate(Cement = 10.4347826 *totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Concrete"]) %>%
   mutate(Aluminum = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Aluminum"]) %>%
   mutate(Steel = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Steel"]) %>%
   rename(technology = tech,
@@ -42,7 +43,7 @@ Spur_Dist_Sum <- Spur_Dist_Sum %>%
              TRUE ~ as.character(technology)
            ))%>%  mutate(
   scenario = case_when(
-    scenario == "baseline" ~ "Ref",
+    scenario == "baseline" ~ "REF",
     scenario == "ira_mid" ~ "IRA",
     
     TRUE ~ as.character(scenario)
@@ -56,9 +57,12 @@ Spur_Dist_Sum <- Spur_Dist_Sum %>%
 # Trans_Dist_Delta <- Trans_Dist_Delta %>% group_by(run_name) %>% summarise(totaltransdistance = sum(dist_km_Difference)) #averaging the different model results 
 Transmission_material_sum <- Spur_Dist_Sum %>%
   group_by(year, scenario) %>%
-  summarise(Cu= sum(Cu), Concrete = sum(Concrete), Steel = sum(Steel), Aluminum = sum(Aluminum) )
+  summarise(Cu= sum(Cu), Cement = sum(Cement), Steel = sum(Steel), Aluminum = sum(Aluminum),Glass=sum(Glass) )
 
 
+
+Transmission_material_sum <- Transmission_material_sum %>%
+  mutate_at(vars(Cu, Cement, Steel,Aluminum,Glass), ~ . / 1000)
 
 #saving to inputs folder
 folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs"
