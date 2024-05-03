@@ -360,7 +360,7 @@ library(ggplot2)
 # Initialize an empty list to store plots
 plot_list <- list()
 
-materials <- c("Aluminum", "Manganese")  # Add other materials as needed
+materials <- c("Aluminum", "Manganese","Cement")  # Add other materials as needed
 
 for (material in materials) {
   material_demand_sum <- materials_demand %>%

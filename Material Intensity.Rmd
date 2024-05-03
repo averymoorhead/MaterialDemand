@@ -67,7 +67,10 @@ material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <
 material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "offshore wind"
 material_intensity$technology[material_intensity$technology == "Offshore_AG"] <- "offshore wind"
 material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Neodymium"
+material_intensity$Material <- gsub("\\s+", "", material_intensity$Material)
+material_intensity$Material <- gsub("[^[:alnum:]]", "", material_intensity$Material)
 
+print(unique(material_intensity$Material))
 
 ```
 ```{r}
@@ -247,7 +250,7 @@ ppcomp(list(fw, fln), legendtext = plot.legend)
 #onshore wind neodymium
 
 dist_df <- material_intensity_dist_df %>%
-  filter(technology == "Wind Offshore" & Material == "Neodymium")
+  filter(technology == "onshore wind" & Material == "Neodymium")
 library(fitdistrplus)
 #descdist(dist_df$value, boot = 1000)
 
@@ -262,6 +265,10 @@ plot.legend <- c("Weibull", "Lognormal", "Gamma", "Exponential")
 denscomp(list(fw, fln, fg, fe), main = "Neodymium, Wind Offshore")
 
 ```
+```{r}
+
+```
+
 ```{r}
 #onshore wind steel
 

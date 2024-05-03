@@ -45,10 +45,10 @@
 "ASIGE","Aluminum",15390
 "ASIGE","Glass",66700
 "Biomass","Nickel",8
-"Biomass","Manganese ",199
+"Biomass","Manganese",199
 "Biomass","Copper",471
 "Biomass","Nickel",11
-"Biomass","Manganese ",124
+"Biomass","Manganese",124
 "Biomass","Copper",500
 "Biomass","Copper",538
 "Biomass","Steel",52000
@@ -56,12 +56,12 @@
 "Biomass","Cement",25440
 "Biomass","Aluminum",1300
 "Biomass","Nickel",10
-"Biomass","Manganese ",112
+"Biomass","Manganese",112
 "Biomass","Copper",454
 "BiomassCCS","Nickel",8
-"BiomassCCS","Manganese ",199
+"BiomassCCS","Manganese",199
 "BiomassCCS","Nickel",11
-"BiomassCCS","Manganese ",124
+"BiomassCCS","Manganese",124
 "BiomassCCS","Copper",600
 "BiomassCCS","Copper",645
 "BiomassCCS","Steel",79560
@@ -69,7 +69,7 @@
 "BiomassCCS","Cement",38923
 "BiomassCCS","Aluminum",1300
 "BiomassCCS","Nickel",10
-"BiomassCCS","Manganese ",112
+"BiomassCCS","Manganese",112
 "BiomassCCS","Copper",545
 "CDTE","Copper",7000
 "CDTE","Aluminum",31300
@@ -386,13 +386,13 @@
 "CIGS","Gallium",2.7
 "CIGS","Selenium",22
 "Coal","Nickel",8
-"Coal","Manganese ",199
+"Coal","Manganese",199
 "Coal","Copper",471
 "Coal","Cement",10572
 "Coal","Cement",16403
 "Coal","Steel",44425
 "Coal","Nickel",11
-"Coal","Manganese ",124
+"Coal","Manganese",124
 "Coal","Copper",500
 "Coal","Copper",538
 "Coal","Cement",4668
@@ -409,19 +409,19 @@
 "Coal","Cement",28531
 "Coal","Aluminum",624
 "Coal","Nickel",10
-"Coal","Manganese ",112
+"Coal","Manganese",112
 "Coal","Copper",454
 "Coal","Cement",7658
 "Coal","Cement",11881
 "Coal","Aluminum",255
 "CoalCCS","Nickel",8
-"CoalCCS","Manganese ",199
+"CoalCCS","Manganese",199
 "CoalCCS","Copper",565
 "CoalCCS","Cement",16175
 "CoalCCS","Cement",25096
 "CoalCCS","Steel",67695
 "CoalCCS","Nickel",11
-"CoalCCS","Manganese ",124
+"CoalCCS","Manganese",124
 "CoalCCS","Copper",600
 "CoalCCS","Copper",645
 "CoalCCS","Cement",7141
@@ -439,7 +439,7 @@
 "CoalCCS","Aluminum",624
 "CoalCCS","Steel",61648
 "CoalCCS","Nickel",10
-"CoalCCS","Manganese ",112
+"CoalCCS","Manganese",112
 "CoalCCS","Copper",545
 "CoalCCS","Cement",11716
 "CoalCCS","Cement",18178
@@ -532,8 +532,8 @@
 "CSP","Steel",4e+05
 "CSP","Nickel",940
 "CSP","Nickel",1900
-"CSP","Manganese ",2000
-"CSP","Manganese ",5700
+"CSP","Manganese",2000
+"CSP","Manganese",5700
 "CSP","Glass",130000
 "CSP","Glass",110000
 "CSP","Copper",3200
@@ -545,10 +545,10 @@
 "CSP","Silver",13
 "CSP","Silver",16
 "Gas","Nickel",8
-"Gas","Manganese ",199
+"Gas","Manganese",199
 "Gas","Copper",471
 "Gas","Nickel",11
-"Gas","Manganese ",124
+"Gas","Manganese",124
 "Gas","Copper",500
 "Gas","Copper",538
 "Gas","Steel",31030
@@ -560,15 +560,15 @@
 "Gas","Cement",10080
 "Gas","Aluminum",230
 "Gas","Nickel",10
-"Gas","Manganese ",112
+"Gas","Manganese",112
 "Gas","Copper",454
 "GasCCS","Nickel",8
-"GasCCS","Manganese ",199
+"GasCCS","Manganese",199
 "GasCCS","Copper",565
 "GasCCS","Nickel",10
 "GasCCS","Nickel",11
-"GasCCS","Manganese ",112
-"GasCCS","Manganese ",124
+"GasCCS","Manganese",112
+"GasCCS","Manganese",124
 "GasCCS","Copper",600
 "GasCCS","Copper",645
 "GasCCS","Steel",47476
@@ -627,7 +627,7 @@
 "Nuclear New","Cement",61420
 "Nuclear New","Steel",36068
 "Nuclear New","Nickel",484
-"Nuclear New","Manganese ",467
+"Nuclear New","Manganese",467
 "Nuclear New","Copper",726
 "Nuclear New","Cement",30133
 "Nuclear New","Aluminum",18
@@ -635,8 +635,8 @@
 "Nuclear New","Steel",10000
 "Nuclear New","Nickel",49
 "Nuclear New","Nickel",100
-"Nuclear New","Manganese ",209
-"Nuclear New","Manganese ",400
+"Nuclear New","Manganese",209
+"Nuclear New","Manganese",400
 "Nuclear New","Copper",907
 "Nuclear New","Copper",2000
 "Nuclear New","Cement",19600
@@ -654,7 +654,7 @@
 "Nuclear New","Cement",51125
 "Nuclear New","Steel",7407
 "Nuclear New","Nickel",74
-"Nuclear New","Manganese ",296
+"Nuclear New","Manganese",296
 "Nuclear New","Copper",1481
 "Nuclear New","Aluminum",33
 "Nuclear New","Silver",1
@@ -829,7 +829,7 @@
 "offshore wind","Cement",220
 "offshore wind","Aluminum",2140
 "offshore wind","Copper",9580
-"offshore wind","Neodymium ",186
+"offshore wind","Neodymium",186
 "offshore wind","Dysprosium",12
 "offshore wind","Steel",193257
 "offshore wind","Fiberglass",10921
@@ -1080,7 +1080,7 @@
 "onshore wind","Terbium",7
 "onshore wind","Zinc",5500
 "onshore wind","Neodymium",180.5
-"onshore wind","Neodymium ",186
+"onshore wind","Neodymium",186
 "onshore wind","Dysprosium",12
 "onshore wind","Aluminum",1060
 "onshore wind","Chromium",239
