@@ -36,6 +36,15 @@ setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
 
 
 ```
+```{r}
+# Assuming df is your dataframe
+# Replace 'mc_material_demand_total' with your dataframe name
+
+library(dplyr)
+
+# Now df$Gas and df$Nuclear New contain the values divided by 1000
+
+```
 
 ```{r}
 library(tidyr)
@@ -511,6 +520,8 @@ combined_plot <- p1 + geom_boxplot(data = aluminum_subset_ira, aes(x = year, y =
 
 # Print the combined plot
 print(combined_plot)
+
+print(p1)
 
 ```
 ```{r}

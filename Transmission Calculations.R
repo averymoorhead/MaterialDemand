@@ -31,7 +31,7 @@ Spur_Dist_Sum <- Spur_Dist_Delta %>%
 Spur_Dist_Sum <- Spur_Dist_Sum %>%
   mutate(Cu = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Cu"])%>% 
   mutate(Glass = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Glass"]) %>% 
-  mutate(Cement = 10.4347826 *totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Concrete"]) %>%
+  mutate(Cement = totalspurdistance/10.4347826  * transmission_material_intensity$Value[transmission_material_intensity$Material == "Concrete"]) %>%
   mutate(Aluminum = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Aluminum"]) %>%
   mutate(Steel = totalspurdistance * transmission_material_intensity$Value[transmission_material_intensity$Material == "Steel"]) %>%
   rename(technology = tech,

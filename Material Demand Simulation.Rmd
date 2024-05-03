@@ -388,6 +388,18 @@ repeat_mc_material_demand_total <- repeat_mc_material_demand_total %>%
 
 unique(mc_material_demand_total$Material)
 ```
+```{r}
+
+library(dplyr)
+
+#materials_demand <- materials_demand %>%
+  #mutate_at(vars(4:50), ~ ./1000)
+
+mc_material_demand_total<- mc_material_demand_total %>%
+  mutate_at(vars(5:11), ~ ./1000)
+# Now columns 5 to 11 have all their values divided by 1000
+
+```
 
 **Saving data frames to "outputs" folder:** This code saves the dataframes for use in the model 
 
