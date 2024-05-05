@@ -285,10 +285,16 @@ print(unique(input_capacities_delta$tech..outputs_group_detailed))
 repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
   group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
 colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
+#unique(input_capacities_delta$)
 
 #Annualizing added capacities
 repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
-repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2, repeat_capacities_new$newval)
+
+repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2,
+                                       ifelse(repeat_capacities_new$year == 2030, repeat_capacities_new$newval / 2,
+                                              repeat_capacities_new$newval / 3))
+
+
 repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
 repeat_capacities_new <- repeat_capacities_new %>%
   group_by(year, run.name, technology) %>%
