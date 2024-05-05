@@ -147,7 +147,7 @@ material_intensity_dist_df <- material_intensity %>%
   filter(count >= 30)
 
 solarsilver <- material_intensity_dist_df %>%
-  filter(technology == "utility-scale solar pv" & Material == "Silver")
+  filter(technology == "onshore wind" & Material == "Steel")
 
 descdist(solarsilver$value, boot = 1000)
 
@@ -155,7 +155,7 @@ fw <- fitdist(solarsilver$value, "weibull")
 summary(fw)
 
 par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-fg <- fitdist(solarsilver$value, "gamma")
+#fg <- fitdist(solarsilver$value, "gamma")
 fln <- fitdist(solarsilver$value, "lnorm")
 plot.legend <- c("Weibull", "lognormal", "gamma")
 denscomp(list(fw, fln, fg), legendtext = plot.legend)
@@ -250,7 +250,7 @@ ppcomp(list(fw, fln), legendtext = plot.legend)
 #onshore wind neodymium
 
 dist_df <- material_intensity_dist_df %>%
-  filter(technology == "onshore wind" & Material == "Neodymium")
+  filter(technology == "offshore wind" & Material == "Neodymium")
 library(fitdistrplus)
 #descdist(dist_df$value, boot = 1000)
 
@@ -258,11 +258,12 @@ library(fitdistrplus)
 fw <- fitdist(dist_df$value, "weibull")
 fg <- fitdist(dist_df$value, "gamma") #gamma doesn't work 
 fln <- fitdist(dist_df$value, "lnorm")
+fn <- fitdist(dist_df$value, "norm")
 fe <- fitdist(dist_df$value, "exp")
 
 #plotting
-plot.legend <- c("Weibull", "Lognormal", "Gamma", "Exponential")
-denscomp(list(fw, fln, fg, fe), main = "Neodymium, Wind Offshore")
+plot.legend <- c("Weibull","Gamma", "Lognormal","Normal","Exponential")
+denscomp(list(fw,fg, fln, fn,fe), main = "Neodymium, Offshore Wind", legendtext= NULL)
 
 ```
 ```{r}

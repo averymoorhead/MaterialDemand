@@ -152,21 +152,20 @@ merged_material_demand <- merge(materials_demand, materials_demand1, by = c("yea
 materials_demand<-merged_material_demand
 ```
 
-**Material demand simulation (using mean material intensity values and Jenkins et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Jenkins et al. (2023).
 
-```{r message=FALSE, warning=FALSE}
-# Capacity dataframes subsetted for specific technologies and years
+```{r}
+# Subset capacities dataframe for specific technologies and years
 repeat_capacities_new <- subset(repeat_capacities_new, technology %in% repeat_technologies)
 repeat_capacities_new <- subset(repeat_capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
 names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
 
-# Material demand simulation
-# Material demand simulation
+# Material demand simulation for the first group of materials
 i <- 1
+#c("Terbium", "Tin", "Vanadium", "Yttrium", "Zinc","Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass","Gallium", "Germanium", "Glass")
 invisible(
-  for (material in materials) {
+  for (material in "Aluminum" ) {
     df_int <- subset(intensity_mean, Material %in% material)
     df_cap <- repeat_capacities_new %>% left_join(df_int, by = 'technology') 
     
@@ -185,13 +184,91 @@ invisible(
     df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
     
     if (i == 1) {
-      repeat_materials_demand <- df_cap
+      repeat_materials_demand_group1 <- df_cap
     } else {
-      repeat_materials_demand <- repeat_materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+      repeat_materials_demand_group1 <- repeat_materials_demand_group1 %>% left_join(df_cap, by = c("scenario", "year", "technology"))
     }
     i <- i + 1
   }
 )
+
+# Material demand simulation for the second group of materials
+i <- 1
+invisible(
+  for (material in c("Manganese", "Molybdenum", "Neodymium",  "Nickel", "Niobium", "Praseodymium", "Selenium", "Silicon", "Silver", "Steel", "Tellurium", "Indium", "Lead", "Magnesium"
+)) {
+    df_int <- subset(intensity_mean, Material %in% material)
+    df_cap <- repeat_capacities_new %>% left_join(df_int, by = 'technology') 
+    
+    # Prevent negative values
+    df_cap[df_cap < 0] <- 0
+    
+    # Calculate total demand considering min, max, and mean intensity
+    df_cap$total_demand_mean <- df_cap$newval * df_cap$value
+    df_cap$total_demand_min <- df_cap$newval * df_cap$min
+    df_cap$total_demand_max <- df_cap$newval * df_cap$max
+    
+    colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
+    colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
+    colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
+    
+    df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
+    
+    if (i == 1) {
+      repeat_materials_demand_group2 <- df_cap
+    } else {
+      repeat_materials_demand_group2 <- repeat_materials_demand_group2 %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+    }
+    i <- i + 1
+  }
+)
+
+# Merge the results for both groups
+merged_material_demand <- merge(repeat_materials_demand_group1, repeat_materials_demand_group2, by = c("year", "scenario", "technology"))
+repeat_materials_demand <- merged_material_demand
+
+```
+
+**Material demand simulation (using mean material intensity values and Jenkins et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Jenkins et al. (2023).
+
+```{r message=FALSE, warning=FALSE}
+# # Capacity dataframes subsetted for specific technologies and years
+# repeat_capacities_new <- subset(repeat_capacities_new, technology %in% repeat_technologies)
+# repeat_capacities_new <- subset(repeat_capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
+# names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
+# repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
+# repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
+# 
+# # Material demand simulation
+# # Material demand simulation
+# i <- 1
+# invisible(
+#   for (material in materials) {
+#     df_int <- subset(intensity_mean, Material %in% material)
+#     df_cap <- repeat_capacities_new %>% left_join(df_int, by = 'technology') 
+#     
+#     # Prevent negative values
+#     df_cap[df_cap < 0] <- 0
+#     
+#     # Calculate total demand considering min, max, and mean intensity
+#     df_cap$total_demand_mean <- df_cap$newval * df_cap$value
+#     df_cap$total_demand_min <- df_cap$newval * df_cap$min
+#     df_cap$total_demand_max <- df_cap$newval * df_cap$max
+#     
+#     colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
+#     colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
+#     colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
+#     
+#     df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
+#     
+#     if (i == 1) {
+#       repeat_materials_demand <- df_cap
+#     } else {
+#       repeat_materials_demand <- repeat_materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+#     }
+#     i <- i + 1
+#   }
+# )
 
 ```
 
@@ -236,8 +313,6 @@ for (mat in materials) {
       # Generate values based on the distribution type
       if (distribution_info == "triangular") {
         result <- rtriangle(100, minv, maxv, meanv)
-      } else if (distribution_info == "norm") {
-        result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)  # Using 3-sigma rule for standard deviation
       } else if (distribution_info == "gauss") {
         result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
       } else if (distribution_info == "weibull") {
@@ -245,7 +320,7 @@ for (mat in materials) {
       } else if (distribution_info == "gamma") {
         result <- rgamma(100, shape = 1.5, scale = meanv / 1.5)
       } else {
-        warning(paste("Distribution", distribution_info, "not recognized. Defaulting to normal distribution."))
+        warning(paste("Distribution", distribution_info, " Defaulting to normal distribution."))
         result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
       }
       
@@ -392,10 +467,12 @@ unique(mc_material_demand_total$Material)
 
 library(dplyr)
 
-#materials_demand <- materials_demand %>%
+#repeat_materials_demand <- repeat_materials_demand %>%
   #mutate_at(vars(4:50), ~ ./1000)
 
 mc_material_demand_total<- mc_material_demand_total %>%
+  mutate_at(vars(5:11), ~ ./1000)
+repeat_mc_material_demand_total <-repeat_mc_material_demand_total%>%
   mutate_at(vars(5:11), ~ ./1000)
 # Now columns 5 to 11 have all their values divided by 1000
 
@@ -416,11 +493,12 @@ file_path8 <- file.path(folder_path, "multi_model_mc_material_demand_total.csv")
 unique(mc_material_demand_total$Material)
 
 # Write each dataframe to its respective CSV file in the specified folder
+write.csv(df_mc, file = file_path2, row.names = FALSE)
+
 write.csv(mc_material_demand, file = file_path3, row.names = FALSE)
 write.csv(repeat_mc_material_demand, file = file_path4, row.names = FALSE)
 write.csv(materials_demand, file = file_path5, row.names = FALSE)
 write.csv(repeat_materials_demand, file = file_path6, row.names = FALSE)
-write.csv(df_mc, file = file_path2, row.names = FALSE)
 write.csv(repeat_mc_material_demand_total, file = file_path7, row.names = FALSE)
 write.csv(mc_material_demand_total, file = file_path8, row.names = FALSE)
 

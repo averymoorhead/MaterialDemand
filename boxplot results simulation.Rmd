@@ -359,11 +359,12 @@ library(ggplot2)
 
 # Initialize an empty list to store plots
 plot_list <- list()
-
-materials <- c("Aluminum", "Manganese","Cement")  # Add other materials as needed
-
+#repeat_materials_demand <- repeat_materials_demand %>%
+ # mutate_at(vars(4:93), ~ ./1000)
+materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium")
+materials<-c("Aluminum")
 for (material in materials) {
-  material_demand_sum <- materials_demand %>%
+  material_demand_sum <- repeat_materials_demand %>%
     group_by(year, scenario) %>%
     summarise(
       !!paste0(material, "_mean") := sum(!!sym(paste0(material, "_mean"))),
@@ -375,7 +376,7 @@ for (material in materials) {
     filter(scenario == "IRA")
   
   material_demand_sum_ref <- material_demand_sum %>%
-    filter(scenario == "Ref")
+    filter(scenario == "REF")
   
   # Plot the data for IRA scenario
   p <- ggplot() +
@@ -406,11 +407,11 @@ for (material in materials) {
               linetype = "dotted") +
     labs(title = paste( material),
          x = "Year",
-         y ="Mton/year",
+         y ="Thousand Metric Tonne/year",
          color = "Scenario") +
     scale_color_manual(values = c("mean IRA" = "red", "min IRA" = "red", "max IRA" = "red",
                                    "mean Ref" = "blue", "min Ref" = "blue", "max Ref" = "blue"),
-                       labels = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref"),
+                       labels = c("Mean IRA", "Min IRA", "Max IRA", "Mean Ref", "Min Ref", "Max Ref"),
                        breaks = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref"),
                        # Specifying linetypes for the legend
                        guide = guide_legend(override.aes = list(
@@ -420,7 +421,7 @@ for (material in materials) {
     theme_minimal()
   
   # Filter data for the specified conditions for IRA scenario
-  material_subset_ira <- multi_model_mc_material_demand_total %>%
+  material_subset_ira <- repeat_mc_material_demand_total %>%
     filter(Material == material, year == 2035, scenario == "IRA") %>%
     select(-total_demand, -year, -scenario, -Material, -row_id) %>%
     mutate(
@@ -430,7 +431,7 @@ for (material in materials) {
     )
   
   # Filter data for the specified conditions for Ref scenario
-  material_subset_ref <- multi_model_mc_material_demand_total %>%
+  material_subset_ref <- repeat_mc_material_demand_total %>%
     filter(Material == material, year == 2035, scenario == "Ref") %>%
     select(-total_demand, -year, -scenario, -Material, -row_id) %>%
     mutate(
@@ -451,10 +452,115 @@ for (material in materials) {
 }
 
 # Combine all plots in the plot list into one greater plot with subplots
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 2)
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
 
 # Print the combined plot
 print(combined_plot)
+
+```
+
+```{r}
+# Initialize an empty list to store plots
+plot_list <- list()
+
+materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
+#materials<-c("Aluminum")
+for (material in materials) {
+  material_demand_sum <- repeat_materials_demand %>%
+    group_by(year, scenario) %>%
+    summarise(
+      !!paste0(material, "_mean") := sum(!!sym(paste0(material, "_mean"))),
+      !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min"))),
+      !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")))
+    )
+  
+  material_demand_sum_ira <- material_demand_sum %>%
+    filter(scenario == "IRA")
+  
+  material_demand_sum_ref <- material_demand_sum %>%
+    filter(scenario == "REF")
+  
+  # Plot the data for IRA scenario
+  p <- ggplot() +
+    geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                  y = !!sym(paste0(material, "_mean")), 
+                                                  color = "mean IRA"), 
+              linetype = "solid") +
+    geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                  y = !!sym(paste0(material, "_min")), 
+                                                  color = "min IRA"), 
+              linetype = "dashed") +
+    geom_line(data = material_demand_sum_ira, aes(x = year, 
+                                                  y = !!sym(paste0(material, "_max")), 
+                                                  color = "max IRA"), 
+              linetype = "dotted") +
+    # Plot the data for Ref scenario
+    geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                  y = !!sym(paste0(material, "_mean")), 
+                                                  color = "mean Ref"), 
+              linetype = "solid") +
+    geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                  y = !!sym(paste0(material, "_min")), 
+                                                  color = "min Ref"), 
+              linetype = "dashed") +
+    geom_line(data = material_demand_sum_ref, aes(x = year, 
+                                                  y = !!sym(paste0(material, "_max")), 
+                                                  color = "max Ref"), 
+              linetype = "dotted") +
+    labs(title = paste( material),
+         x = "",
+         y ="",
+         color = "Scenario") +
+    scale_color_manual(values = c("mean IRA" = "red", "min IRA" = "red", "max IRA" = "red",
+                                   "mean Ref" = "blue", "min Ref" = "blue", "max Ref" = "blue"),
+                       labels = c("Mean IRA", "Min IRA", "Max IRA", "Mean Ref", "Min Ref", "Max Ref"),
+                       breaks = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref"),
+                       # Specifying linetypes for the legend
+                       guide = guide_legend(override.aes = list(
+                         linetype = c("solid", "dashed", "dotted", "solid", "dashed", "dotted")
+                       ))) +
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +
+    theme_minimal() +
+    theme(legend.position = "none")  # Remove legend
+  
+  # Filter data for the specified conditions for IRA scenario
+  material_subset_ira <- repeat_mc_material_demand_total %>%
+    filter(Material == material, year == 2035, scenario == "IRA") %>%
+    select(-total_demand, -year, -scenario, -Material, -row_id) %>%
+    mutate(
+      across(c(onshore.wind, Hydro, Nuclear.New, utility.scale.solar.pv, Coal, Gas), ~sort(.)),
+      total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas,
+      year = 2035
+    )
+  
+  # Filter data for the specified conditions for Ref scenario
+  material_subset_ref <-repeat_mc_material_demand_total %>%
+    filter(Material == material, year == 2035, scenario == "Ref") %>%
+    select(-total_demand, -year, -scenario, -Material, -row_id) %>%
+    mutate(
+      across(c(onshore.wind, Hydro, Nuclear.New, utility.scale.solar.pv, Coal, Gas), ~sort(.)),
+      total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas,
+      year= 2035
+    )
+  
+  # Create box plots for IRA and Ref scenarios
+  boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand), fill = "red", alpha = 0.5, width = 0.5)
+  boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5)
+  
+  # Combine all layers into one plot
+  p <- p + boxplot_ira + boxplot_ref
+  
+  # Add the plot to the plot list
+  plot_list[[material]] <- p
+}
+
+# Combine all plots in the plot list into one greater plot with subplots
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
+
+# Print the combined plot without legend
+print(combined_plot)
+ggsave("plswork_plot.jpg", plot = combined_plot, width = 10, height = 20, units = "in", dpi = 300)
+
 
 ```
 
