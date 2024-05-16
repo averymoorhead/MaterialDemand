@@ -284,24 +284,30 @@ print(unique(input_capacities_delta$tech..outputs_group_detailed))
 
 
 
+# Step 1: Filter and Group the Data
+repeat_capacities_new <- subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
+  group_by(run.name, year, tech..outputs_group_detailed) %>%
+  summarise(newval = sum(value))
 
-repeat_capacities_new = subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
-  group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
-colnames(repeat_capacities_new)[colnames(repeat_capacities_new) == "tech..outputs_group_detailed"] ="technology"
-#unique(input_capacities_delta$)
+# Step 2: Rename the Column
+repeat_capacities_new <- rename(repeat_capacities_new, technology = tech..outputs_group_detailed)
 
-#Annualizing added capacities
-repeat_capacities_new<- subset(repeat_capacities_new, year %in% c("2026","2030","2035"))
+# Step 3: Filter for Specific Years
+repeat_capacities_new <- filter(repeat_capacities_new, year %in% c("2026", "2030", "2035"))
 
-repeat_capacities_new$newval <- ifelse(repeat_capacities_new$year == 2026, repeat_capacities_new$newval / 2,
-                                       ifelse(repeat_capacities_new$year == 2030, repeat_capacities_new$newval / 2,
-                                              repeat_capacities_new$newval / 3))
+# Step 4: Annualize the Capacities
+repeat_capacities_new <- mutate(repeat_capacities_new, newval = case_when(
+  year == 2026 ~ newval / 2,
+  year == 2030 ~ newval / 2,
+  year == 2035 ~ newval / 6
+))
 
+# Step 5: Adjust the Year for 2026
+repeat_capacities_new <- mutate(repeat_capacities_new, year = ifelse(year == 2026, 2025, year))
 
-repeat_capacities_new$year <- ifelse(repeat_capacities_new$year == 2026, 2025, repeat_capacities_new$year)
-repeat_capacities_new <- repeat_capacities_new %>%
-  group_by(year, run.name, technology) %>%
-  summarise(newval = sum(newval))
+# Step 6: Final Group and Summarize
+repeat_capacities_new <- group_by(repeat_capacities_new, year, run.name, technology) %>%
+  summarise(newval = sum(newval), .groups = 'drop')
 
 
 ```
