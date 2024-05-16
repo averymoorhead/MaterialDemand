@@ -299,7 +299,7 @@ repeat_capacities_new <- filter(repeat_capacities_new, year %in% c("2026", "2030
 repeat_capacities_new <- mutate(repeat_capacities_new, newval = case_when(
   year == 2026 ~ newval / 2,
   year == 2030 ~ newval / 2,
-  year == 2035 ~ newval / 6
+  year == 2035 ~ newval / 3
 ))
 
 # Step 5: Adjust the Year for 2026
