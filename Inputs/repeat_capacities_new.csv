@@ -2,28 +2,28 @@
 2025,"baseline","Gas",30.288487695
 2025,"baseline","offshore wind",1.25947899
 2025,"baseline","onshore wind",27.245170405
-2025,"baseline","utility-scale solar pv",23.241850185
+2025,"baseline","utility-scale solar pv",23.244147075
 2025,"ira_mid","Gas",28.74712409
 2025,"ira_mid","offshore wind",1.261012455
 2025,"ira_mid","onshore wind",27.245333485
-2025,"ira_mid","utility-scale solar pv",25.344867265
+2025,"ira_mid","utility-scale solar pv",32.861288295
 2030,"baseline","Gas",0.03960913
 2030,"baseline","Nuclear New",0.00586487
 2030,"baseline","offshore wind",2.807361445
 2030,"baseline","onshore wind",14.72588643
-2030,"baseline","utility-scale solar pv",48.187984535
+2030,"baseline","utility-scale solar pv",48.881421475
 2030,"ira_mid","Gas",0.009493355
 2030,"ira_mid","Nuclear New",0.00011524
 2030,"ira_mid","offshore wind",7.81295463
 2030,"ira_mid","onshore wind",56.49591439
-2030,"ira_mid","utility-scale solar pv",52.555196705
+2030,"ira_mid","utility-scale solar pv",63.051589945
 2035,"baseline","Gas",0.00418279333333333
 2035,"baseline","Nuclear New",0.00097044
 2035,"baseline","offshore wind",7.5896764
 2035,"baseline","onshore wind",7.01704037
-2035,"baseline","utility-scale solar pv",30.4957211966667
+2035,"baseline","utility-scale solar pv",31.18745974
 2035,"ira_mid","Gas",0.000982873333333333
 2035,"ira_mid","Nuclear New",0.00052489
 2035,"ira_mid","offshore wind",7.58754683666667
 2035,"ira_mid","onshore wind",24.3587935766667
-2035,"ira_mid","utility-scale solar pv",109.885415123333
+2035,"ira_mid","utility-scale solar pv",115.356665103333
