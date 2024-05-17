@@ -18,13 +18,16 @@ transmission_material_intensity <- transmission_material_intensity[1:5, ]
 Spur_Dist_Delta = read_excel("spur_line_state_distribution_delta_y.xlsx", range= cell_cols(3:17))
 Spur_Dist_Delta <- subset(Spur_Dist_Delta, policy %in% c("baseline", "ira_mid"))
 Spur_Dist_Delta <- Spur_Dist_Delta[!is.na(Spur_Dist_Delta$dist_km_Difference),]
-
 Spur_Dist_Sum <- Spur_Dist_Delta %>%
   group_by(policy, tech, year) %>%
   summarise(totalspurdistance = sum(dist_km_Difference)) %>%
-  filter(year %in% c("2026", "2030", "2035")) %>% 
-  mutate(year = ifelse(year == "2026", "2025", as.character(year))) %>% # Rename 2026 values to 2025
-  mutate(totalspurdistance = totalspurdistance / 2) #as each year is reported in 2 year increments 
+  filter(year %in% c("2026", "2030", "2035")) %>%
+  mutate(year = ifelse(year == "2026", "2025", as.character(year)), # Rename 2026 values to 2025
+         totalspurdistance = case_when(
+           year == "2025" ~ totalspurdistance / 2, # For 2025 (originally 2026)
+           year == "2030" ~ totalspurdistance / 2, # For 2030
+           year == "2035" ~ totalspurdistance / 3  # For 2035
+         ))
 
 #multiplying by material intensity 
 #using conversion from concrete to cement by Wang et al

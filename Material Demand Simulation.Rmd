@@ -165,7 +165,7 @@ repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 
 i <- 1
 #c("Terbium", "Tin", "Vanadium", "Yttrium", "Zinc","Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass","Gallium", "Germanium", "Glass")
 invisible(
-  for (material in "Aluminum" ) {
+  for (material in c("Terbium", "Tin", "Vanadium", "Yttrium", "Zinc","Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass","Gallium", "Germanium", "Glass") ) {
     df_int <- subset(intensity_mean, Material %in% material)
     df_cap <- repeat_capacities_new %>% left_join(df_int, by = 'technology') 
     
