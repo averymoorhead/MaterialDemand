@@ -251,6 +251,7 @@ input_capacities$tech..outputs_group_detailed <- gsub("naturalgas_ccavgcf", "Gas
 input_capacities$tech..outputs_group_detailed <- gsub("naturalgas_ctavgcf", "Gas", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("offshore wind fixed", "offshore wind", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("offshore wind floating", "offshore wind", input_capacities$tech..outputs_group_detailed)
+input_capacities$tech..outputs_group_detailed <- gsub("rooftop solar", "utility-scale solar pv", input_capacities$tech..outputs_group_detailed)
 
 
 
@@ -279,6 +280,8 @@ input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combin
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combustion turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas steam turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 print(unique(input_capacities_delta$tech..outputs_group_detailed))
+input_capacities_delta$tech..outputs_group_detailed <- gsub("rooftop solar", "utility-scale solar pv", input_capacities_delta$tech..outputs_group_detailed)
+
 
 
 
