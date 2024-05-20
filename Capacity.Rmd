@@ -90,6 +90,13 @@ Y_Cap_IRA$scenario <- "IRA"
 Y_Cap_IRA$model[Y_Cap_IRA$model=='0']<-"2021"
 
 ##Cap_Ref: total capacity for each technology, model, and period under reference scenario (units: gigawatts)
+subset_df <- Y_Cap_IRA %>% filter(year == 2025, variable == "Solar Distributed")
+average_value <- Y_Cap_IRA %>%
+  filter(year == 2025, variable == 'Solar Distributed') %>%
+  summarise(across(where(is.numeric), mean, na.rm = TRUE))
+subset_df <- subset_df %>%
+  mutate(average_divided_by_4 = value / 4)
+
 
 #Load data
 Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
@@ -154,9 +161,9 @@ capacities_all$technology <- gsub("Nuclear Existing", "Nuclear New", capacities_
 capacities_all$technology <- gsub("Solar Distributed", "utility-scale solar pv", capacities_all$technology)
 capacities_all$technology <- gsub("NGGT", "Gas", capacities_all$technology)
 capacities_all$technology <- gsub("NGCC", "Gas", capacities_all$technology)
-capacities_all$technology <- gsub("NGCC CCS", "Gas", capacities_all$technology)
-capacities_all$technology <- gsub("Coal CCS", "Coal", capacities_all$technology)
-capacities_all$technology <- gsub("Gas CCS", "Gas", capacities_all$technology)
+capacities_all$technology <- gsub("NGCC CCS", "Gas CCS", capacities_all$technology)
+capacities_all$technology <- gsub("Coal CCS", "Coal CCS", capacities_all$technology)
+#capacities_all$technology <- gsub("Gas CCS", "Gas CCS", capacities_all$technology)
 
 print(unique(capacities_all$technology))
 
@@ -214,9 +221,11 @@ temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
 multi_model_capacities <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
 multi_model_capacities$technology <- ifelse(multi_model_capacities$technology == "wind", "onshore wind", multi_model_capacities$technology)
 multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Utility"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
-multi_model_capacities$technology <- gsub("Coal CCS", "Coal", multi_model_capacities$technology)
-multi_model_capacities$technology <- gsub("Gas CCS", "Gas", multi_model_capacities$technology)
-multi_model_capacities$technology <- gsub("NGCC CCS", "Gas", multi_model_capacities$technology)
+multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Distributed"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
+
+multi_model_capacities$technology <- gsub("Coal CCS", "Coal CCS", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("Gas CCS", "Gas CCS", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("NGCC CCS", "Gas CCS", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("NGCC", "Gas", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("NGGT", "Gas", multi_model_capacities$technology)
 
@@ -279,7 +288,6 @@ print(unique(input_capacities_delta$tech..outputs_group_detailed))
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combined cycle", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combustion turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas steam turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
-print(unique(input_capacities_delta$tech..outputs_group_detailed))
 input_capacities_delta$tech..outputs_group_detailed <- gsub("rooftop solar", "utility-scale solar pv", input_capacities_delta$tech..outputs_group_detailed)
 
 
@@ -311,6 +319,7 @@ repeat_capacities_new <- mutate(repeat_capacities_new, year = ifelse(year == 202
 # Step 6: Final Group and Summarize
 repeat_capacities_new <- group_by(repeat_capacities_new, year, run.name, technology) %>%
   summarise(newval = sum(newval), .groups = 'drop')
+print(unique(input_capacities_delta$tech..outputs_group_detailed))
 
 
 ```
@@ -327,7 +336,7 @@ melted_initial_year$newval <- as.numeric(melted_initial_year$newval)
 
 melted_initial_year$technology <- gsub("Nuclear\\.Existing", "Nuclear Existing", melted_initial_year$technology)
 melted_initial_year$technology <- gsub("Nuclear\\.New", "Nuclear New", melted_initial_year$technology)
-melted_initial_year$technology <- gsub("NGCC.CCS", "Nuclear CCS", melted_initial_year$technology)
+melted_initial_year$technology <- gsub("NGCC.CCS", " Gas CCS", melted_initial_year$technology)
 melted_initial_year$technology <- gsub("Hydrogen.Green", "Hydrogen Green", melted_initial_year$technology)
 melted_initial_year$technology <- gsub("Solar.Utility", "utility-scale solar pv", melted_initial_year$technology)
 melted_initial_year$technology <- gsub("Wind", "onshore wind", melted_initial_year$technology)

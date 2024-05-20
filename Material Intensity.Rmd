@@ -62,6 +62,9 @@ material_intensity["technology"][material_intensity["technology"] == "Wind onsho
 material_intensity["technology"][material_intensity["technology"] == "Wind Onshore"] <- "onshore wind"
 material_intensity["technology"][material_intensity["technology"] == "Onshore Wind"] <- "onshore wind"
 material_intensity["technology"][material_intensity["technology"] == "Offshore Wind"] <- "offshore wind"
+material_intensity["technology"][material_intensity["technology"] == "CoalCCS"] <- "Coal CCS"
+material_intensity["technology"][material_intensity["technology"] == "GasCCS"] <- "Gas CCS"
+
 
 material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <- "utility-scale solar pv"
 material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "offshore wind"
@@ -70,7 +73,7 @@ material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Ne
 material_intensity$Material <- gsub("\\s+", "", material_intensity$Material)
 material_intensity$Material <- gsub("[^[:alnum:]]", "", material_intensity$Material)
 
-print(unique(material_intensity$Material))
+print(unique(material_intensity$technology))
 
 ```
 ```{r}
