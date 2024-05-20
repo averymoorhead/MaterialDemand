@@ -37,7 +37,7 @@ repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
 distribution_fits<- read.csv("distribution_fitting_results.csv")
 
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
-repeat_technologies = c("onshore wind","utility-scale solar pv", "Nuclear New", "offshore wind","Coal","Geothermal","Biomass","Gas", "Hydro")
+repeat_technologies = c("onshore wind","utility-scale solar pv", "Nuclear New", "offshore wind","Coal","Geothermal","Biomass","Gas", "Hydro", "Coal CCS", "Gas CCS")
                         
                         #"Coal","Geothermal","Biomass","Gas", "Hydro")#Define the REPEAT technologies to be included
 repeat_scenarios = c("baseline", "ira_mid")
@@ -150,6 +150,47 @@ invisible(
 )
 merged_material_demand <- merge(materials_demand, materials_demand1, by = c("year", "scenario", "technology"))
 materials_demand<-merged_material_demand
+
+library(dplyr)
+
+library(dplyr)
+
+# Assuming materials_demand is your dataframe
+
+library(dplyr)
+
+# Assuming materials_demand is your dataframe
+
+# Step 1: Filter the dataframe for rows where technology is 'Gas CCS' or 'Coal CCS'
+ccs_df <- materials_demand %>% filter(technology %in% c("Gas CCS", "Coal CCS"))
+
+# Step 2: Loop through each row of ccs_df and add the values to the corresponding 'Gas' or 'Coal' rows
+for (i in seq_len(nrow(ccs_df))) {
+  row <- ccs_df[i, ]
+  year <- row$year
+  scenario <- row$scenario
+  technology <- row$technology
+  
+  # Determine the corresponding technology
+  target_technology <- ifelse(technology == "Gas CCS", "Gas", "Coal")
+
+  # Find the corresponding 'Gas' or 'Coal' row
+  target_row_idx <- which(materials_demand$year == year & 
+                          materials_demand$scenario == scenario & 
+                          materials_demand$technology == target_technology)
+
+  # Add the values from the 'Gas CCS' or 'Coal CCS' row to the 'Gas' or 'Coal' row
+  if (length(target_row_idx) == 1) {
+    materials_demand[target_row_idx, 4:93] <- materials_demand[target_row_idx, 4:93] + row[4:93]
+  }
+}
+
+# Print the updated dataframe
+print(materials_demand)
+materials_demand <- materials_demand %>% filter(!technology %in% c("Gas CCS", "Coal CCS"))
+
+
+
 ```
 
 

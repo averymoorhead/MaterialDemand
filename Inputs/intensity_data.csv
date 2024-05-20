@@ -414,36 +414,36 @@
 "Coal","Cement",7658
 "Coal","Cement",11881
 "Coal","Aluminum",255
-"CoalCCS","Nickel",8
-"CoalCCS","Manganese",199
-"CoalCCS","Copper",565
-"CoalCCS","Cement",16175
-"CoalCCS","Cement",25096
-"CoalCCS","Steel",67695
-"CoalCCS","Nickel",11
-"CoalCCS","Manganese",124
-"CoalCCS","Copper",600
-"CoalCCS","Copper",645
-"CoalCCS","Cement",7141
-"CoalCCS","Cement",10326
-"CoalCCS","Cement",17313
-"CoalCCS","Cement",25033
-"CoalCCS","Aluminum",281
-"CoalCCS","Steel",78550
-"CoalCCS","Cement",25049
-"CoalCCS","Cement",38864
-"CoalCCS","Aluminum",419
-"CoalCCS","Steel",95166
-"CoalCCS","Cement",9814
-"CoalCCS","Cement",43653
-"CoalCCS","Aluminum",624
-"CoalCCS","Steel",61648
-"CoalCCS","Nickel",10
-"CoalCCS","Manganese",112
-"CoalCCS","Copper",545
-"CoalCCS","Cement",11716
-"CoalCCS","Cement",18178
-"CoalCCS","Aluminum",255
+"Coal CCS","Nickel",8
+"Coal CCS","Manganese",199
+"Coal CCS","Copper",565
+"Coal CCS","Cement",16175
+"Coal CCS","Cement",25096
+"Coal CCS","Steel",67695
+"Coal CCS","Nickel",11
+"Coal CCS","Manganese",124
+"Coal CCS","Copper",600
+"Coal CCS","Copper",645
+"Coal CCS","Cement",7141
+"Coal CCS","Cement",10326
+"Coal CCS","Cement",17313
+"Coal CCS","Cement",25033
+"Coal CCS","Aluminum",281
+"Coal CCS","Steel",78550
+"Coal CCS","Cement",25049
+"Coal CCS","Cement",38864
+"Coal CCS","Aluminum",419
+"Coal CCS","Steel",95166
+"Coal CCS","Cement",9814
+"Coal CCS","Cement",43653
+"Coal CCS","Aluminum",624
+"Coal CCS","Steel",61648
+"Coal CCS","Nickel",10
+"Coal CCS","Manganese",112
+"Coal CCS","Copper",545
+"Coal CCS","Cement",11716
+"Coal CCS","Cement",18178
+"Coal CCS","Aluminum",255
 "utility-scale solar pv","Copper",7000
 "utility-scale solar pv","Aluminum",38500
 "utility-scale solar pv","Silicon",4
@@ -562,24 +562,24 @@
 "Gas","Nickel",10
 "Gas","Manganese",112
 "Gas","Copper",454
-"GasCCS","Nickel",8
-"GasCCS","Manganese",199
-"GasCCS","Copper",565
-"GasCCS","Nickel",10
-"GasCCS","Nickel",11
-"GasCCS","Manganese",112
-"GasCCS","Manganese",124
-"GasCCS","Copper",600
-"GasCCS","Copper",645
-"GasCCS","Steel",47476
-"GasCCS","Cement",15423
-"GasCCS","Cement",23929
-"GasCCS","Aluminum",204
-"GasCCS","Steel",78229
-"GasCCS","Cement",8067
-"GasCCS","Cement",17447
-"GasCCS","Aluminum",230
-"GasCCS","Copper",545
+"Gas CCS","Nickel",8
+"Gas CCS","Manganese",199
+"Gas CCS","Copper",565
+"Gas CCS","Nickel",10
+"Gas CCS","Nickel",11
+"Gas CCS","Manganese",112
+"Gas CCS","Manganese",124
+"Gas CCS","Copper",600
+"Gas CCS","Copper",645
+"Gas CCS","Steel",47476
+"Gas CCS","Cement",15423
+"Gas CCS","Cement",23929
+"Gas CCS","Aluminum",204
+"Gas CCS","Steel",78229
+"Gas CCS","Cement",8067
+"Gas CCS","Cement",17447
+"Gas CCS","Aluminum",230
+"Gas CCS","Copper",545
 "Geothermal","Steel",147420
 "Geothermal","Copper",2518
 "Geothermal","Cement",271666
