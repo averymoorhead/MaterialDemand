@@ -201,7 +201,7 @@ repeat_capacities_new <- subset(repeat_capacities_new, year %in% c(2025, 2030, 2
 names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
-
+#print(unique(repeat_materials_demand$technology))
 # Material demand simulation for the first group of materials
 i <- 1
 #c("Terbium", "Tin", "Vanadium", "Yttrium", "Zinc","Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass","Gallium", "Germanium", "Glass")
@@ -424,7 +424,6 @@ mc_material_demand <- mc_material_demand %>%
 mc_material_demand <- mc_material_demand %>%
   mutate(Material = str_extract(Material_Technology, "\\w+"))
 
-
 ```
 ```{r}
 library(dplyr)
@@ -445,8 +444,8 @@ melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar p
 
 # Filter melted_df_mc to include only repeat technologies and remove "Wind Offshore"
 melted_df_mc <- melted_df_mc %>%
-  filter(technology %in% repeat_technologies)
-
+  filter(technology %in% c("utility-scale solar pv", "onshore wind", "offshore wind", "Nuclear New", "Gas"))
+print(repeat_technologies)
 # Filter subset_capacities to include only technologies found in melted_df_mc
 subset_capacities <- subset_capacities %>%
   filter(technology %in% unique(melted_df_mc$technology))
@@ -463,11 +462,10 @@ repeat_mc_material_demand$material_demand = repeat_mc_material_demand$Intensity_
 repeat_mc_material_demand$material_demand <- ifelse(repeat_mc_material_demand$material_demand < 0, 0, repeat_mc_material_demand$material_demand)
 repeat_mc_material_demand <- repeat_mc_material_demand %>%
   rename(capacity_new = newval)
-repeat_mc_material_demand <- mc_material_demand %>%
+repeat_mc_material_demand <- repeat_mc_material_demand %>%
   mutate(Material = str_extract(Material_Technology, "\\w+"))
 
-
-
+print(unique(repeat_mc_material_demand$technology))
 ```
 
 ```{r}
@@ -495,14 +493,15 @@ repeat_mc_material_demand_total <- repeat_mc_material_demand %>%
     values_from = material_demand,
     values_fill = 0  # Fill missing values with 0
   )
+print(unique(repeat_mc_material_demand$technology))
 repeat_mc_material_demand_total <- repeat_mc_material_demand_total %>%
   mutate(
     total_demand = rowSums(select(., 
-                                   c(Coal, Gas, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`)))
+                                   c(`Gas`, `Nuclear New`, `onshore wind`, `offshore wind`, `utility-scale solar pv`)))
   )
 
 
-unique(mc_material_demand_total$Material)
+unique(repeat_mc_material_demand$technology)
 ```
 ```{r}
 
@@ -513,8 +512,8 @@ library(dplyr)
 
 mc_material_demand_total<- mc_material_demand_total %>%
   mutate_at(vars(5:11), ~ ./1000)
-repeat_mc_material_demand_total <-repeat_mc_material_demand_total%>%
-  mutate_at(vars(5:11), ~ ./1000)
+#repeat_mc_material_demand_total <-repeat_mc_material_demand_total%>%
+ # mutate_at(vars(5:10), ~ ./1000)
 # Now columns 5 to 11 have all their values divided by 1000
 
 ```
