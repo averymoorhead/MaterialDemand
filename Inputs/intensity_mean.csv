@@ -1,0 +1,342 @@
+"technology","Material","max","min","value"
+"Biomass","Aluminum",1.3,1.3,1.3
+"Biomass","Boron",0,0,0
+"Biomass","Cadmium",0,0,0
+"Biomass","Cement",25.44,16.397,20.9185
+"Biomass","Chromium",0,0,0
+"Biomass","Copper",0.538,0.454,0.49075
+"Biomass","Dysprosium",0,0,0
+"Biomass","Fiberglass",0,0,0
+"Biomass","Gadium",0,0,0
+"Biomass","Gallium",0,0,0
+"Biomass","Germanium",0,0,0
+"Biomass","Glass",0,0,0
+"Biomass","Indium",0,0,0
+"Biomass","Lead",0,0,0
+"Biomass","Magnesium",0,0,0
+"Biomass","Manganese",0.199,0.112,0.145
+"Biomass","Molybdenum",0,0,0
+"Biomass","Neodymium",0,0,0
+"Biomass","Nickel",0.011,0.008,0.00966666666666667
+"Biomass","Niobium",0,0,0
+"Biomass","Praseodymium",0,0,0
+"Biomass","Selenium",0,0,0
+"Biomass","Silicon",0,0,0
+"Biomass","Silver",0,0,0
+"Biomass","Steel",52,52,52
+"Biomass","Tellurium",0,0,0
+"Biomass","Terbium",0,0,0
+"Biomass","Tin",0,0,0
+"Biomass","Vanadium",0,0,0
+"Biomass","Yttrium",0,0,0
+"Biomass","Zinc",0,0,0
+"Coal","Aluminum",0.624,0.255,0.39475
+"Coal","Boron",0,0,0
+"Coal","Cadmium",0,0,0
+"Coal","Cement",28.531,4.668,14.525
+"Coal","Chromium",0,0,0
+"Coal","Copper",0.538,0.454,0.49075
+"Coal","Dysprosium",0,0,0
+"Coal","Fiberglass",0,0,0
+"Coal","Gadium",0,0,0
+"Coal","Gallium",0,0,0
+"Coal","Germanium",0,0,0
+"Coal","Glass",0,0,0
+"Coal","Indium",0,0,0
+"Coal","Lead",0,0,0
+"Coal","Magnesium",0,0,0
+"Coal","Manganese",0.199,0.112,0.145
+"Coal","Molybdenum",0,0,0
+"Coal","Neodymium",0,0,0
+"Coal","Nickel",0.011,0.008,0.00966666666666667
+"Coal","Niobium",0,0,0
+"Coal","Praseodymium",0,0,0
+"Coal","Selenium",0,0,0
+"Coal","Silicon",0,0,0
+"Coal","Silver",0,0,0
+"Coal","Steel",62.2,44.425,52.655
+"Coal","Tellurium",0,0,0
+"Coal","Terbium",0,0,0
+"Coal","Tin",0,0,0
+"Coal","Vanadium",0,0,0
+"Coal","Yttrium",0,0,0
+"Coal","Zinc",0,0,0
+"Coal CCS","Aluminum",0.624,0.255,0.39475
+"Coal CCS","Boron",0,0,0
+"Coal CCS","Cadmium",0,0,0
+"Coal CCS","Cement",43.653,7.141,20.6965
+"Coal CCS","Chromium",0,0,0
+"Coal CCS","Copper",0.645,0.545,0.58875
+"Coal CCS","Dysprosium",0,0,0
+"Coal CCS","Fiberglass",0,0,0
+"Coal CCS","Gadium",0,0,0
+"Coal CCS","Gallium",0,0,0
+"Coal CCS","Germanium",0,0,0
+"Coal CCS","Glass",0,0,0
+"Coal CCS","Indium",0,0,0
+"Coal CCS","Lead",0,0,0
+"Coal CCS","Magnesium",0,0,0
+"Coal CCS","Manganese",0.199,0.112,0.145
+"Coal CCS","Molybdenum",0,0,0
+"Coal CCS","Neodymium",0,0,0
+"Coal CCS","Nickel",0.011,0.008,0.00966666666666667
+"Coal CCS","Niobium",0,0,0
+"Coal CCS","Praseodymium",0,0,0
+"Coal CCS","Selenium",0,0,0
+"Coal CCS","Silicon",0,0,0
+"Coal CCS","Silver",0,0,0
+"Coal CCS","Steel",95.166,61.648,75.76475
+"Coal CCS","Tellurium",0,0,0
+"Coal CCS","Terbium",0,0,0
+"Coal CCS","Tin",0,0,0
+"Coal CCS","Vanadium",0,0,0
+"Coal CCS","Yttrium",0,0,0
+"Coal CCS","Zinc",0,0,0
+"Gas","Aluminum",0.23,0.204,0.217
+"Gas","Boron",0,0,0
+"Gas","Cadmium",0,0,0
+"Gas","Cement",15.64,7.35,11.11825
+"Gas","Chromium",0,0,0
+"Gas","Copper",0.538,0.454,0.49075
+"Gas","Dysprosium",0,0,0
+"Gas","Fiberglass",0,0,0
+"Gas","Gadium",0,0,0
+"Gas","Gallium",0,0,0
+"Gas","Germanium",0,0,0
+"Gas","Glass",0,0,0
+"Gas","Indium",0,0,0
+"Gas","Lead",0,0,0
+"Gas","Magnesium",0,0,0
+"Gas","Manganese",0.199,0.112,0.145
+"Gas","Molybdenum",0,0,0
+"Gas","Neodymium",0,0,0
+"Gas","Nickel",0.011,0.008,0.00966666666666667
+"Gas","Niobium",0,0,0
+"Gas","Praseodymium",0,0,0
+"Gas","Selenium",0,0,0
+"Gas","Silicon",0,0,0
+"Gas","Silver",0,0,0
+"Gas","Steel",51.13,31.03,41.08
+"Gas","Tellurium",0,0,0
+"Gas","Terbium",0,0,0
+"Gas","Tin",0,0,0
+"Gas","Vanadium",0,0,0
+"Gas","Yttrium",0,0,0
+"Gas","Zinc",0,0,0
+"Gas CCS","Aluminum",0.23,0.204,0.217
+"Gas CCS","Boron",0,0,0
+"Gas CCS","Cadmium",0,0,0
+"Gas CCS","Cement",23.929,8.067,16.2165
+"Gas CCS","Chromium",0,0,0
+"Gas CCS","Copper",0.645,0.545,0.58875
+"Gas CCS","Dysprosium",0,0,0
+"Gas CCS","Fiberglass",0,0,0
+"Gas CCS","Gadium",0,0,0
+"Gas CCS","Gallium",0,0,0
+"Gas CCS","Germanium",0,0,0
+"Gas CCS","Glass",0,0,0
+"Gas CCS","Indium",0,0,0
+"Gas CCS","Lead",0,0,0
+"Gas CCS","Magnesium",0,0,0
+"Gas CCS","Manganese",0.199,0.112,0.145
+"Gas CCS","Molybdenum",0,0,0
+"Gas CCS","Neodymium",0,0,0
+"Gas CCS","Nickel",0.011,0.008,0.00966666666666667
+"Gas CCS","Niobium",0,0,0
+"Gas CCS","Praseodymium",0,0,0
+"Gas CCS","Selenium",0,0,0
+"Gas CCS","Silicon",0,0,0
+"Gas CCS","Silver",0,0,0
+"Gas CCS","Steel",78.229,47.476,62.8525
+"Gas CCS","Tellurium",0,0,0
+"Gas CCS","Terbium",0,0,0
+"Gas CCS","Tin",0,0,0
+"Gas CCS","Vanadium",0,0,0
+"Gas CCS","Yttrium",0,0,0
+"Gas CCS","Zinc",0,0,0
+"Geothermal","Aluminum",45.2,1.448,16.1658571428571
+"Geothermal","Boron",0,0,0
+"Geothermal","Cadmium",0,0,0
+"Geothermal","Cement",988,76.061,393.824625
+"Geothermal","Chromium",0,0,0
+"Geothermal","Copper",18.885,0.597,7.33333333333333
+"Geothermal","Dysprosium",0,0,0
+"Geothermal","Fiberglass",0,0,0
+"Geothermal","Gadium",0,0,0
+"Geothermal","Gallium",0,0,0
+"Geothermal","Germanium",0,0,0
+"Geothermal","Glass",0,0,0
+"Geothermal","Indium",0,0,0
+"Geothermal","Lead",0,0,0
+"Geothermal","Magnesium",0,0,0
+"Geothermal","Manganese",0,0,0
+"Geothermal","Molybdenum",0,0,0
+"Geothermal","Neodymium",0,0,0
+"Geothermal","Nickel",0,0,0
+"Geothermal","Niobium",0,0,0
+"Geothermal","Praseodymium",0,0,0
+"Geothermal","Selenium",0,0,0
+"Geothermal","Silicon",0,0,0
+"Geothermal","Silver",0,0,0
+"Geothermal","Steel",1206,124.933,544.709
+"Geothermal","Tellurium",0,0,0
+"Geothermal","Terbium",0,0,0
+"Geothermal","Tin",0,0,0
+"Geothermal","Vanadium",0,0,0
+"Geothermal","Yttrium",0,0,0
+"Geothermal","Zinc",0,0,0
+"Hydro","Aluminum",0.052,0.052,0.052
+"Hydro","Boron",0,0,0
+"Hydro","Cadmium",0,0,0
+"Hydro","Cement",1685.28,594.619,1007.20975
+"Hydro","Chromium",0,0,0
+"Hydro","Copper",2.97,1.05,1.84066666666667
+"Hydro","Dysprosium",0,0,0
+"Hydro","Fiberglass",0,0,0
+"Hydro","Gadium",0,0,0
+"Hydro","Gallium",0,0,0
+"Hydro","Germanium",0,0,0
+"Hydro","Glass",0,0,0
+"Hydro","Indium",0,0,0
+"Hydro","Lead",0,0,0
+"Hydro","Magnesium",0,0,0
+"Hydro","Manganese",0,0,0
+"Hydro","Molybdenum",0,0,0
+"Hydro","Neodymium",0,0,0
+"Hydro","Nickel",0,0,0
+"Hydro","Niobium",0,0,0
+"Hydro","Praseodymium",0,0,0
+"Hydro","Selenium",0,0,0
+"Hydro","Silicon",0,0,0
+"Hydro","Silver",0,0,0
+"Hydro","Steel",177,24.8,83.575
+"Hydro","Tellurium",0,0,0
+"Hydro","Terbium",0,0,0
+"Hydro","Tin",0,0,0
+"Hydro","Vanadium",0,0,0
+"Hydro","Yttrium",0,0,0
+"Hydro","Zinc",0,0,0
+"Nuclear New","Aluminum",0.054,0.018,0.0375
+"Nuclear New","Boron",0,0,0
+"Nuclear New","Cadmium",0,0,0
+"Nuclear New","Cement",61.42,19.6,36.8528888888889
+"Nuclear New","Chromium",0,0,0
+"Nuclear New","Copper",2,0.726,1.2918
+"Nuclear New","Dysprosium",0,0,0
+"Nuclear New","Fiberglass",0,0,0
+"Nuclear New","Gadium",0,0,0
+"Nuclear New","Gallium",0,0,0
+"Nuclear New","Germanium",0,0,0
+"Nuclear New","Glass",0,0,0
+"Nuclear New","Indium",0,0,0
+"Nuclear New","Lead",0,0,0
+"Nuclear New","Magnesium",0,0,0
+"Nuclear New","Manganese",0.467,0.209,0.343
+"Nuclear New","Molybdenum",0,0,0
+"Nuclear New","Neodymium",0,0,0
+"Nuclear New","Nickel",0.484,0.049,0.2014
+"Nuclear New","Niobium",0,0,0
+"Nuclear New","Praseodymium",0,0,0
+"Nuclear New","Selenium",0,0,0
+"Nuclear New","Silicon",0,0,0
+"Nuclear New","Silver",0.001,0.001,0.001
+"Nuclear New","Steel",50.4,7.407,31.9836666666667
+"Nuclear New","Tellurium",0,0,0
+"Nuclear New","Terbium",0,0,0
+"Nuclear New","Tin",0,0,0
+"Nuclear New","Vanadium",0,0,0
+"Nuclear New","Yttrium",0,0,0
+"Nuclear New","Zinc",0,0,0
+"offshore wind","Aluminum",9.4,0.26,1.97335
+"offshore wind","Boron",0.007,0.007,0.007
+"offshore wind","Cadmium",0,0,0
+"offshore wind","Cement",0.22,0.142,0.181
+"offshore wind","Chromium",0.45,0.29356,0.35239
+"offshore wind","Copper",22.2,0.8916666667,5.44289018464694
+"offshore wind","Dysprosium",0.033,0.003,0.0175555555555556
+"offshore wind","Fiberglass",10.921,5.823,8.8098
+"offshore wind","Gadium",0,0,0
+"offshore wind","Gallium",0,0,0
+"offshore wind","Germanium",0,0,0
+"offshore wind","Glass",0,0,0
+"offshore wind","Indium",0,0,0
+"offshore wind","Lead",6.72,3.79,5.74333333333333
+"offshore wind","Magnesium",0,0,0
+"offshore wind","Manganese",0,0,0
+"offshore wind","Molybdenum",0.075315,0.075315,0.075315
+"offshore wind","Neodymium",0.216,0.034,0.148850975609756
+"offshore wind","Nickel",0.37657,0.111,0.1773925
+"offshore wind","Niobium",0.037657,0.037657,0.037657
+"offshore wind","Praseodymium",0.035,0.0308,0.03245
+"offshore wind","Selenium",0,0,0
+"offshore wind","Silicon",0,0,0
+"offshore wind","Silver",0,0,0
+"offshore wind","Steel",917.224,125,302.45475
+"offshore wind","Tellurium",0,0,0
+"offshore wind","Terbium",0.007,0.006,0.00638666666666667
+"offshore wind","Tin",0,0,0
+"offshore wind","Vanadium",7,7,7
+"offshore wind","Yttrium",0,0,0
+"offshore wind","Zinc",0,0,0
+"onshore wind","Aluminum",13.2,0.05,2.00507894736842
+"onshore wind","Boron",0.006,0.001,0.00266666666666667
+"onshore wind","Cadmium",0,0,0
+"onshore wind","Cement",73.075,38.717,54.0938333333333
+"onshore wind","Chromium",0.902,0.239,0.52649
+"onshore wind","Copper",15.35,0.892,3.50032072644118
+"onshore wind","Dysprosium",0.05,9e-04,0.0134412765957447
+"onshore wind","Fiberglass",9.58,7.4,8.65333333333333
+"onshore wind","Gadium",0,0,0
+"onshore wind","Gallium",0,0,0
+"onshore wind","Germanium",0,0,0
+"onshore wind","Glass",0,0,0
+"onshore wind","Indium",0,0,0
+"onshore wind","Lead",6.72,6.72,6.72
+"onshore wind","Magnesium",0,0,0
+"onshore wind","Manganese",0.8,0.78,0.79
+"onshore wind","Molybdenum",0.119,0.0753,0.100575
+"onshore wind","Neodymium",0.31,0.0062,0.1229474
+"onshore wind","Nickel",0.44,0.111,0.249815384615385
+"onshore wind","Niobium",0.0377,0.0377,0.0377
+"onshore wind","Praseodymium",0.075,0.001,0.0183733333333333
+"onshore wind","Selenium",0,0,0
+"onshore wind","Silicon",0,0,0
+"onshore wind","Silver",0,0,0
+"onshore wind","Steel",204,54,122.3386875
+"onshore wind","Tellurium",0,0,0
+"onshore wind","Terbium",0.03,3e-04,0.0072125
+"onshore wind","Tin",0,0,0
+"onshore wind","Vanadium",0.0904,0.09,0.0902
+"onshore wind","Yttrium",0.002,0.00045,0.001225
+"onshore wind","Zinc",5.5,5.5,5.5
+"utility-scale solar pv","Aluminum",38.5,10.953,21.86325
+"utility-scale solar pv","Boron",0,0,0
+"utility-scale solar pv","Cadmium",0,0,0
+"utility-scale solar pv","Cement",10.512,4.847,7.70516666666667
+"utility-scale solar pv","Chromium",0,0,0
+"utility-scale solar pv","Copper",7.53,0.25,2.61418181818182
+"utility-scale solar pv","Dysprosium",0,0,0
+"utility-scale solar pv","Fiberglass",0,0,0
+"utility-scale solar pv","Gadium",0,0,0
+"utility-scale solar pv","Gallium",0,0,0
+"utility-scale solar pv","Germanium",0,0,0
+"utility-scale solar pv","Glass",70,53.4,63.3666666666667
+"utility-scale solar pv","Indium",0,0,0
+"utility-scale solar pv","Lead",0.336,0.00553,0.077475
+"utility-scale solar pv","Magnesium",0.0535,0.0535,0.0535
+"utility-scale solar pv","Manganese",0,0,0
+"utility-scale solar pv","Molybdenum",0,0,0
+"utility-scale solar pv","Neodymium",0,0,0
+"utility-scale solar pv","Nickel",0.0013,0.001,0.00114
+"utility-scale solar pv","Niobium",0,0,0
+"utility-scale solar pv","Praseodymium",0,0,0
+"utility-scale solar pv","Selenium",0,0,0
+"utility-scale solar pv","Silicon",9,0.004,4.63353333333333
+"utility-scale solar pv","Silver",0.084,0.004,0.0336312916666667
+"utility-scale solar pv","Steel",56,55.9,55.95
+"utility-scale solar pv","Tellurium",0,0,0
+"utility-scale solar pv","Terbium",0,0,0
+"utility-scale solar pv","Tin",0.577,0.577,0.577
+"utility-scale solar pv","Vanadium",0,0,0
+"utility-scale solar pv","Yttrium",0,0,0
+"utility-scale solar pv","Zinc",0,0,0
