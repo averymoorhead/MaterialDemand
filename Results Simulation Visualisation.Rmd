@@ -447,7 +447,7 @@ final_plot_with_title <- cowplot::plot_grid(
 print(final_plot_with_title)
 # Save the combined plot as a PNG file
 print(getwd())
-ggsave("multimodelresultsplotREF.jpg", plot = final_plot_with_title, width = 10, height = 6, units = "in", dpi = 300)
+ggsave("multimodelresultsplotREF.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
 
 ```
 
@@ -540,7 +540,7 @@ final_plot_with_title <- cowplot::plot_grid(
 print(final_plot_with_title)
 # Save the combined plot as a PNG file
 print(getwd())
-ggsave("multimodelresultsplotIRA.jpg", plot = final_plot_with_title, width = 10, height = 6, units = "in", dpi = 300)
+ggsave("multimodelresultsplotIRA.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
 
 ```
 
