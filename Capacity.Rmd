@@ -55,6 +55,20 @@ Cap_IRA <- as.data.frame(Cap_IRA)
 initial_year <- subset(Cap_IRA, year %in% "2021")
 initial_year[is.na(initial_year)] <- '0'
 
+
+initial_year_melted <- melt(initial_year, id.vars = c("year"), variable.name = "variable", value.name = "value")
+
+initial_year_melted <- initial_year_melted %>%
+  mutate(model = NA,  # Add model column with NA
+         scenario = NA,  # Add scenario column with NA
+         year = 2021) %>%  # Ensure year column is 2021
+  select(model, year, variable, value, scenario)  # Select and order columns
+
+
+initial_year_melted$variable <- gsub("Wind", "onshore wind", initial_year_melted$variable)
+
+
+
 #Additional data processing 
 Cap_IRA = Cap_IRA[-1,]
 Cap_IRA[is.na(Cap_IRA)] <- '0'
@@ -62,6 +76,7 @@ Cap_IRA <- rbind(Cap_IRA, initial_year)
 Cap_IRA <- reshape2::melt(Cap_IRA, id = c("model","year")) 
 Cap_IRA$value <- as.numeric(unlist(Cap_IRA$value))
 Cap_IRA$scenario <- "IRA"
+Cap_IRA$variable <- gsub("Wind", "onshore wind", Cap_IRA$variable)
 
 ##Y_Cap_IRA: additional capacity for each technology, model, and period under IRA scenario (units: gigawatts)
 
@@ -122,6 +137,8 @@ Cap_Ref <- rbind(Cap_Ref, initial_year)
 Cap_Ref <- reshape2::melt(Cap_Ref, id = c("model","year")) 
 Cap_Ref$value <- as.numeric(unlist(Cap_Ref$value))
 Cap_Ref$scenario <- "Ref"
+Cap_Ref$variable <- gsub("Wind", "onshore wind", Cap_Ref$variable)
+
 
 ##Y_Cap_Ref: additional capacity for each technology, model, and period under reference scenario (units: gigawatts)
 
@@ -185,9 +202,104 @@ capacities_y_all$newval[capacities_y_all$year == 2035] <- capacities_y_all$value
 ##capacities_y: mean annualized additional capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
 colnames(capacities_y_all)[3] ="technology"
 capacities_y_all$technology <- gsub("Wind", "onshore wind", capacities_y_all$technology)
-capacities_y <- capacities_y_all[c(-1,-4)]
-capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) #calculating mean capacities across models 
 
+
+##linear interpolaion for models E4ST and IPM-E
+interpolation_df_IRA <- Cap_IRA %>%
+  filter(model %in% c("E4ST", "IPM-E"))
+interpolation_df_IRA <- rbind(interpolation_df_IRA, initial_year_melted)
+
+interpolation_df_Ref <- Cap_Ref %>%
+  filter(model %in% c("E4ST", "IPM-E"))
+interpolation_df_Ref <- rbind(interpolation_df_Ref, initial_year_melted)
+
+# Load necessary packages
+library(dplyr)
+
+# Load necessary packages
+library(dplyr)
+
+# Step 1: Filter the dataframe for the years 2021 and 2030
+df_2021 <- interpolation_df_IRA %>% filter(year == 2021)
+df_2030 <- interpolation_df_IRA %>% filter(year == 2030)
+
+df_2030_Ref <- interpolation_df_Ref %>% filter(year == 2030)
+
+# Step 2: Convert the value column to numeric
+df_2021$value <- as.numeric(as.character(df_2021$value))
+df_2030$value <- as.numeric(as.character(df_2030$value))
+df_2030_Ref$value <- as.numeric(as.character(df_2030_Ref$value))
+
+# Ensure the dataframes are aligned correctly for each technology
+df_2021 <- df_2021 %>% arrange(variable)
+df_2030 <- df_2030 %>% arrange(model, variable, scenario)
+df_2030_Ref <- df_2030_Ref %>% arrange(model, variable, scenario)
+
+
+# Check if df_2021 contains unique values per technology
+if (any(duplicated(df_2021$variable))) {
+  stop("df_2021 contains duplicate technologies.")
+}
+
+# Step 3: Perform the interpolation calculation for the year 2025
+# Calculate the interpolated values
+interpolated_values <- df_2030 %>%
+  left_join(df_2021 %>% select(variable, value_2021 = value), by = "variable") %>%
+  mutate(value_2025 = value_2021 + (value - value_2021) * (4/9)) %>%
+  mutate(delta_2025 = value_2025 - value_2021)
+
+interpolated_values_ref <- df_2030_Ref %>%
+  left_join(df_2021 %>% select(variable, value_2021 = value), by = "variable") %>%
+  mutate(value_2025 = value_2021 + (value - value_2021) * (4/9)) %>%
+  mutate(delta_2025 = value_2025 - value_2021)
+
+
+# Step 5: Calculate the new delta value for 2030
+# Subtract the interpolated 2025 values from the 2030 values
+new_delta_2030 <- interpolated_values %>%
+  mutate(newval = value - value_2025) %>%  # Calculate the new delta
+  select(model, year = year, variable, newval, scenario)  # Select and rename columns
+new_delta_2030_ref <- interpolated_values_ref %>%
+  mutate(newval = value - value_2025) %>%  # Calculate the new delta
+  select(model, year = year, variable, newval, scenario)  # Select and rename columns
+
+# Now, we can remove the unnecessary columns
+interpolated_values <- interpolated_values %>%
+  select(-value, -value_2021, -value_2025) %>%
+  rename(newval = delta_2025) %>% mutate(year = 2025)
+final_interpolated_values_IRA <- interpolated_values
+
+interpolated_values_ref <- interpolated_values_ref %>%
+  select(-value, -value_2021, -value_2025) %>%
+  rename(newval = delta_2025) %>% mutate(year = 2025)
+final_interpolated_values_ref <- interpolated_values_ref
+
+
+
+final_interpolated_values_IRA <- rbind(new_delta_2030,final_interpolated_values_IRA) %>% rename(technology = variable) %>%  
+  mutate(newval = ifelse(year == 2025, newval / 4, ifelse(year == 2030, newval / 5, newval)))
+
+final_interpolated_values_ref <- rbind(new_delta_2030_ref,final_interpolated_values_ref) %>% rename(technology = variable) %>%  
+  mutate(newval = ifelse(year == 2025, newval / 4, ifelse(year == 2030, newval / 5, newval)))
+
+# Print column names
+capacities_y_all <- capacities_y_all %>% select(-value)
+print(colnames(interpolated_values))
+capacities_y_all_filtered <- capacities_y_all %>%
+  filter(!(year == 2025 | year == 2030) | !(model %in% c("IPM-E", "E4ST")))
+capacities_y <- rbind(capacities_y_all_filtered,final_interpolated_values_IRA,final_interpolated_values_ref)
+#capacities_y <- capacities_y_all[c(-1,-4)]
+capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) %>% filter(technology != "Wind")
+
+#calculating mean capacities across models 
+
+
+
+
+```
+
+
+```{r}
 ##multi_model_capacities: additional capacity for each technology, model and year under reference and IRA scenarios (units: gigawatts)
 
 #Creating intermediate dataframes for each period and data processing
@@ -234,8 +346,6 @@ multi_model_capacities <- multi_model_capacities %>%
   summarise(newval = sum(newval))
 
 print(unique(multi_model_capacities$technology))
-
-
 ```
 
 **Capacity inputs (Jenkins et al., 2023):** This code uploads and processes electric power capacity input data from Jenkins et al. (2023). The data include total capacity and added capacity by technology, capacity expansion model, and year. All capacity data are in units of gigawatts.
