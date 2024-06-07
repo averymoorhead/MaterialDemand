@@ -353,16 +353,16 @@ for (mat in materials) {
       
       # Generate values based on the distribution type
       if (distribution_info == "triangular") {
-        result <- rtriangle(100, minv, maxv, meanv)
+        result <- rtriangle(10000, minv, maxv, meanv)
       } else if (distribution_info == "gauss") {
-        result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
+        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
       } else if (distribution_info == "weibull") {
-        result <- rweibull(100, shape = 1.5, scale = meanv)
+        result <- rweibull(10000, shape = 1.5, scale = meanv)
       } else if (distribution_info == "gamma") {
-        result <- rgamma(100, shape = 1.5, scale = meanv / 1.5)
+        result <- rgamma(10000, shape = 1.5, scale = meanv / 1.5)
       } else {
         warning(paste("Distribution", distribution_info, " Defaulting to normal distribution."))
-        result <- rnorm(100, mean = meanv, sd = (maxv - minv) / 6)
+        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
       }
       
       # Check if result is negative and replace with 0
@@ -483,8 +483,11 @@ mc_material_demand_total <- mc_material_demand %>%
 mc_material_demand_total <- mc_material_demand_total %>%
   mutate(
     total_demand = rowSums(select(., 
-                                   c(Coal, Gas, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`)))
+                                   c(Coal, 'Coal CCS', 'Gas CCS', Gas, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`)))
   )
+subset_data <- mc_material_demand_total %>%
+  filter(Material == "Steel", scenario == "IRA", year == 2035)
+
 repeat_mc_material_demand_total <- repeat_mc_material_demand %>%
   select(-capacity_new, -Intensity_Distribution_Value) %>%  # Exclude irrelevant columns
   pivot_wider(
@@ -510,8 +513,8 @@ library(dplyr)
 #repeat_materials_demand <- repeat_materials_demand %>%
   #mutate_at(vars(4:50), ~ ./1000)
 
-mc_material_demand_total<- mc_material_demand_total %>%
-  mutate_at(vars(5:11), ~ ./1000)
+#mc_material_demand_total<- mc_material_demand_total %>%
+  #mutate_at(vars(5:11), ~ ./1000)
 #repeat_mc_material_demand_total <-repeat_mc_material_demand_total%>%
  # mutate_at(vars(5:10), ~ ./1000)
 # Now columns 5 to 11 have all their values divided by 1000
@@ -529,6 +532,7 @@ file_path5 <- file.path(folder_path, "materials_demand.csv")
 file_path6 <- file.path(folder_path, "repeat_materials_demand.csv")
 file_path7 <- file.path(folder_path, "repeat_mc_material_demand_total.csv")
 file_path8 <- file.path(folder_path, "multi_model_mc_material_demand_total.csv")
+file_path9 <- file.path(folder_path, "intensity_mean.csv")
 
 unique(mc_material_demand_total$Material)
 
@@ -541,6 +545,7 @@ write.csv(materials_demand, file = file_path5, row.names = FALSE)
 write.csv(repeat_materials_demand, file = file_path6, row.names = FALSE)
 write.csv(repeat_mc_material_demand_total, file = file_path7, row.names = FALSE)
 write.csv(mc_material_demand_total, file = file_path8, row.names = FALSE)
+write.csv(intensity_mean, file = file_path9, row.names = FALSE)
 
 
 ```

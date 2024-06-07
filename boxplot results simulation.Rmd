@@ -45,9 +45,9 @@ setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
 library(ggplot2)
 material_demand_sum <- materials_demand %>%
   group_by(year,scenario) %>%
-  summarise(Aluminum_mean = sum(Aluminum_mean),
-            Aluminum_min = sum(Aluminum_min),
-            Aluminum_max = sum(Aluminum_max))
+  summarise(Steel_mean = sum(Steel_mean),
+            Steel_min = sum(Steel_min),
+            Steel_max = sum(Steel_max))
 material_demand_sum_ira <- material_demand_sum %>%
   filter(scenario == "IRA")
 # Plot the data
@@ -73,15 +73,15 @@ repeat_material_demand_sum_ref <- repeat_material_demand_sum %>%
 # Plot the data for IRA scenario
 p <- ggplot() +
   geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                y = Aluminum_mean, 
+                                                y = Steel_mean, 
                                                 color = "Aluminum_mean (IRA)"), 
             linetype = "solid") +
   geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                y = Aluminum_min, 
+                                                y = Steel_min, 
                                                 color = "Aluminum_min (IRA)"), 
             linetype = "dashed") +
   geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                y = Aluminum_max, 
+                                                y = Steel_max, 
                                                 color = "Aluminum_max (IRA)"), 
             linetype = "dotted") +
   labs(title = "Annual Aluminum Demand",
@@ -102,27 +102,27 @@ p <- ggplot() +
 # Plot the data for Ref scenario and combine with the previous plot
 p1<-p +
   geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                y = Aluminum_mean, 
+                                                y = Steel_mean, 
                                                 color = "Aluminum_mean (Ref)"), 
             linetype = "solid") +
   geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                y = Aluminum_min, 
+                                                y = Steel_min, 
                                                 color = "Aluminum_min (Ref)"), 
             linetype = "dashed") +
   geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                y = Aluminum_max, 
+                                                y = Steel_max, 
                                                 color = "Aluminum_max (Ref)"), 
             linetype = "dotted")
 
 print(p1)
 # Assuming p is your ggplot object representing your existing plot
 aluminum_subset <- multi_model_mc_material_demand_total %>%
-  filter(Material == "Aluminum") %>% filter(year == "2025")%>% filter(scenario =="IRA")%>%
-  select(-Coal, -Gas, -Hydro, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv)
+  filter(Material == "Steel") %>% filter(year == "2035")%>% filter(scenario =="IRA")%>%
+  select(-Coal, -Gas, -Hydro, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv, -Coal.CCS,-Gas.CCS)
 
 # Filter aluminum data for the specified conditions
 aluminum_subset_ira <- multi_model_mc_material_demand_total %>%
-  filter(Material == "Aluminum", year == "2035", scenario == "IRA") %>%
+  filter(Material == "Steel", year == "2035", scenario == "IRA") %>%
   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
   mutate(
     onshore.wind = sort(onshore.wind),
@@ -131,12 +131,14 @@ aluminum_subset_ira <- multi_model_mc_material_demand_total %>%
     utility.scale.solar.pv = sort(utility.scale.solar.pv),
     Coal = sort(Coal),
     Gas = sort(Gas),
-    total_demand = (onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas)/1000,
+    Gas.CCS = sort(Gas.CCS),
+    Coal.CCS = sort(Coal.CCS),
+    total_demand = (Coal.CCS + Gas.CCS + onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas)/1000,
     year = 2035
   )
 # Filter aluminum data for the specified conditions for scenario "Ref"
 aluminum_subset_ref <- multi_model_mc_material_demand_total %>%
-  filter(Material == "Aluminum", year == "2035", scenario == "Ref") %>%
+  filter(Material == "Steel", year == "2035", scenario == "Ref") %>%
   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
   mutate(
     onshore.wind = sort(onshore.wind),
@@ -145,7 +147,9 @@ aluminum_subset_ref <- multi_model_mc_material_demand_total %>%
     utility.scale.solar.pv = sort(utility.scale.solar.pv),
     Coal = sort(Coal),
     Gas = sort(Gas),
-    total_demand = (onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas)/1000,
+    Gas.CCS = sort(Gas.CCS),
+    Coal.CCS = sort(Coal.CCS),
+    total_demand = (Gas.CCS+ Coal.CCS + onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas)/1000,
     year= 2035
   )
 
@@ -361,7 +365,7 @@ p1<-p +
                                                 color = "Aluminum_max (Ref)"), 
             linetype = "dotted")
 
-print(p1)
+#print(p1)
 # Assuming p is your ggplot object representing your existing plot
 aluminum_subset <- multi_model_mc_material_demand_total %>%
   filter(Material == "Steel") %>% filter(year == "2025")%>% filter(scenario =="IRA")%>%
@@ -731,8 +735,8 @@ library(dplyr)
 # Initialize an empty list to store plots
 plot_list <- list()
 
-#materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
-materials <- "Steel"
+materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
+#materials <- "Steel"
 
 for (material in materials) {
   material_demand_sum <- materials_demand %>%
