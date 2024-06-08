@@ -58,19 +58,19 @@
 "Biomass","Nickel",10
 "Biomass","Manganese",112
 "Biomass","Copper",454
-"BiomassCCS","Nickel",8
-"BiomassCCS","Manganese",199
-"BiomassCCS","Nickel",11
-"BiomassCCS","Manganese",124
-"BiomassCCS","Copper",600
-"BiomassCCS","Copper",645
-"BiomassCCS","Steel",79560
-"BiomassCCS","Cement",25087
-"BiomassCCS","Cement",38923
-"BiomassCCS","Aluminum",1300
-"BiomassCCS","Nickel",10
-"BiomassCCS","Manganese",112
-"BiomassCCS","Copper",545
+"Bio CCS","Nickel",8
+"Bio CCS","Manganese",199
+"Bio CCS","Nickel",11
+"Bio CCS","Manganese",124
+"Bio CCS","Copper",600
+"Bio CCS","Copper",645
+"Bio CCS","Steel",79560
+"Bio CCS","Cement",25087
+"Bio CCS","Cement",38923
+"Bio CCS","Aluminum",1300
+"Bio CCS","Nickel",10
+"Bio CCS","Manganese",112
+"Bio CCS","Copper",545
 "CDTE","Copper",7000
 "CDTE","Aluminum",31300
 "CdTe","Cadmium",35
@@ -544,24 +544,24 @@
 "CSP","Aluminum",11000
 "CSP","Silver",13
 "CSP","Silver",16
-"Gas","Nickel",8
-"Gas","Manganese",199
-"Gas","Copper",471
-"Gas","Nickel",11
-"Gas","Manganese",124
-"Gas","Copper",500
-"Gas","Copper",538
-"Gas","Steel",31030
-"Gas","Cement",11403
-"Gas","Cement",15640
-"Gas","Aluminum",204
-"Gas","Steel",51130
-"Gas","Cement",7350
-"Gas","Cement",10080
-"Gas","Aluminum",230
-"Gas","Nickel",10
-"Gas","Manganese",112
-"Gas","Copper",454
+"NGCC","Nickel",8
+"NGCC","Manganese",199
+"NGCC","Copper",471
+"NGCC","Nickel",11
+"NGCC","Manganese",124
+"NGCC","Copper",500
+"NGCC","Copper",538
+"NGCC","Steel",31030
+"NGCC","Cement",11403
+"NGCC","Cement",15640
+"NGCC","Aluminum",204
+"NGCC","Steel",51130
+"NGCC","Cement",7350
+"NGCC","Cement",10080
+"NGCC","Aluminum",230
+"NGCC","Nickel",10
+"NGCC","Manganese",112
+"NGCC","Copper",454
 "Gas CCS","Nickel",8
 "Gas CCS","Manganese",199
 "Gas CCS","Copper",565
@@ -1205,3 +1205,123 @@
 "onshore wind","Copper",5643
 "onshore wind","Copper",4917
 "onshore wind","Copper",4896
+"Solar Distributed","Copper",7000
+"Solar Distributed","Aluminum",38500
+"Solar Distributed","Silicon",4
+"Solar Distributed","Silver",20
+"Solar Distributed","Silver",35.6
+"Solar Distributed","Silicon",6629
+"Solar Distributed","Silver",11
+"Solar Distributed","Silver",80
+"Solar Distributed","Lead",5.53
+"Solar Distributed","Lead",6.32
+"Solar Distributed","Nickel",1.3
+"Solar Distributed","Silver",59
+"Solar Distributed","Silver",68.17
+"Solar Distributed","Copper",825
+"Solar Distributed","Copper",943
+"Solar Distributed","Silicon",2930
+"Solar Distributed","Silicon",3450
+"Solar Distributed","Glass",53400
+"Solar Distributed","Steel",56000
+"Solar Distributed","Silicon",7000
+"Solar Distributed","Glass",70000
+"Solar Distributed","Copper",7000
+"Solar Distributed","Cement",4847
+"Solar Distributed","Cement",7520
+"Solar Distributed","Aluminum",19000
+"Solar Distributed","Cement",6497
+"Solar Distributed","Cement",10080
+"Solar Distributed","Silicon",3347
+"Solar Distributed","Silicon",638
+"Solar Distributed","Silicon",2882
+"Solar Distributed","Silicon",6629
+"Solar Distributed","Silver",54.8125
+"Solar Distributed","Silver",38.36875
+"Solar Distributed","Silver",32.53125
+"Solar Distributed","Silver",29.45625
+"Solar Distributed","Silver",10
+"Solar Distributed","Copper",884
+"Solar Distributed","Steel",55900
+"Solar Distributed","Copper",7530
+"Solar Distributed","Cement",6775
+"Solar Distributed","Cement",10512
+"Solar Distributed","Aluminum",19000
+"Solar Distributed","Aluminum",10953
+"Solar Distributed","Copper",2741
+"Solar Distributed","Lead",336
+"Solar Distributed","Magnesium",53.5
+"Solar Distributed","Silicon",3653
+"Solar Distributed","Silver",24
+"Solar Distributed","Tin",577
+"Solar Distributed","Silver",13
+"Solar Distributed","Silver",15
+"Solar Distributed","Silver",18
+"Solar Distributed","Glass",66700
+"Solar Distributed","Nickel",1
+"Solar Distributed","Silver",84
+"Solar Distributed","Silicon",6630
+"Solar Distributed","Silver",36
+"Solar Distributed","Silver",19
+"Solar Distributed","Silver",36
+"Solar Distributed","Copper",300
+"Solar Distributed","Nickel",1.1
+"Solar Distributed","Silicon",3653
+"Solar Distributed","Silver",19
+"Solar Distributed","Silver",10
+"Solar Distributed","Silver",20
+"Solar Distributed","Silver",80
+"Solar Distributed","Lead",6
+"Solar Distributed","Nickel",1.3
+"Solar Distributed","Silicon",6630
+"Solar Distributed","Silver",4
+"Solar Distributed","Silver",47
+"Solar Distributed","Silver",57
+"Solar Distributed","Silver",17
+"Solar Distributed","Copper",250
+"Solar Distributed","Lead",72
+"Solar Distributed","Silver",5
+"Solar Distributed","Silicon",9000
+"Solar Distributed","Copper",825
+"Solar Distributed","Copper",458
+"Solar Distributed","Lead",39
+"Solar Distributed","Nickel",1
+"Solar Distributed","Silicon",6428
+"Solar Distributed","Silver",36
+"Solar Distributed","Silver",30
+"NGGT","Nickel",8
+"NGGT","Manganese",199
+"NGGT","Copper",471
+"NGGT","Nickel",11
+"NGGT","Manganese",124
+"NGGT","Copper",500
+"NGGT","Copper",538
+"NGGT","Steel",31030
+"NGGT","Cement",11403
+"NGGT","Cement",15640
+"NGGT","Aluminum",204
+"NGGT","Steel",51130
+"NGGT","Cement",7350
+"NGGT","Cement",10080
+"NGGT","Aluminum",230
+"NGGT","Nickel",10
+"NGGT","Manganese",112
+"NGGT","Copper",454
+"Gas","Nickel",8
+"Gas","Manganese",199
+"Gas","Copper",471
+"Gas","Nickel",11
+"Gas","Manganese",124
+"Gas","Copper",500
+"Gas","Copper",538
+"Gas","Steel",31030
+"Gas","Cement",11403
+"Gas","Cement",15640
+"Gas","Aluminum",204
+"Gas","Steel",51130
+"Gas","Cement",7350
+"Gas","Cement",10080
+"Gas","Aluminum",230
+"Gas","Nickel",10
+"Gas","Manganese",112
+"Gas","Copper",454

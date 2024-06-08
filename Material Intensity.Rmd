@@ -64,14 +64,39 @@ material_intensity["technology"][material_intensity["technology"] == "Onshore Wi
 material_intensity["technology"][material_intensity["technology"] == "Offshore Wind"] <- "offshore wind"
 material_intensity["technology"][material_intensity["technology"] == "CoalCCS"] <- "Coal CCS"
 material_intensity["technology"][material_intensity["technology"] == "GasCCS"] <- "Gas CCS"
+material_intensity["technology"][material_intensity["technology"] == "Gas"] <- "NGCC"
 
 
 material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <- "utility-scale solar pv"
+material_intensity["technology"][material_intensity["technology"] == "BiomassCCS"] <- "Bio CCS"
+
 material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "offshore wind"
 material_intensity$technology[material_intensity$technology == "Offshore_AG"] <- "offshore wind"
 material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Neodymium"
 material_intensity$Material <- gsub("\\s+", "", material_intensity$Material)
 material_intensity$Material <- gsub("[^[:alnum:]]", "", material_intensity$Material)
+
+print(unique(material_intensity$technology))
+
+solar_pv_rows <- material_intensity %>%
+  filter(technology == 'utility-scale solar pv') %>%
+  mutate(technology = 'Solar Distributed')
+
+
+NGCC_rows <- material_intensity %>%
+  filter(technology == 'NGCC') %>%
+  mutate(technology = 'NGGT')
+Gas_rows <- material_intensity %>%
+  filter(technology == 'NGCC') %>%
+  mutate(technology = 'Gas')
+
+
+
+
+
+material_intensity <- bind_rows(material_intensity, solar_pv_rows)
+material_intensity <- bind_rows(material_intensity, NGCC_rows)
+material_intensity <- bind_rows(material_intensity, Gas_rows)
 
 print(unique(material_intensity$technology))
 

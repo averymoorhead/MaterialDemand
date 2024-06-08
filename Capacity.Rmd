@@ -175,11 +175,13 @@ capacities_all$technology <- gsub("Wind", "onshore wind", capacities_all$technol
 capacities_all$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_all$technology)
 capacities_all$technology <- gsub("Nuclear Existing", "Nuclear New", capacities_all$technology)
 
-capacities_all$technology <- gsub("Solar Distributed", "utility-scale solar pv", capacities_all$technology)
-capacities_all$technology <- gsub("NGGT", "Gas", capacities_all$technology)
-capacities_all$technology <- gsub("NGCC", "Gas", capacities_all$technology)
+#capacities_all$technology <- gsub("Solar Distributed", "utility-scale solar pv", capacities_all$technology)
+#capacities_all$technology <- gsub("NGGT", "Gas", capacities_all$technology)
+#capacities_all$technology <- gsub("NGCC", "Gas", capacities_all$technology)
 capacities_all$technology <- gsub("NGCC CCS", "Gas CCS", capacities_all$technology)
 capacities_all$technology <- gsub("Coal CCS", "Coal CCS", capacities_all$technology)
+capacities_all$technology <- gsub("Bio/Other", "Biomass", capacities_all$technology)
+
 #capacities_all$technology <- gsub("Gas CCS", "Gas CCS", capacities_all$technology)
 
 print(unique(capacities_all$technology))
@@ -333,13 +335,13 @@ temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
 multi_model_capacities <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
 multi_model_capacities$technology <- ifelse(multi_model_capacities$technology == "wind", "onshore wind", multi_model_capacities$technology)
 multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Utility"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
-multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Distributed"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
+#multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Distributed"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
 
 multi_model_capacities$technology <- gsub("Coal CCS", "Coal CCS", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("Gas CCS", "Gas CCS", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("NGCC CCS", "Gas CCS", multi_model_capacities$technology)
-multi_model_capacities$technology <- gsub("NGCC", "Gas", multi_model_capacities$technology)
-multi_model_capacities$technology <- gsub("NGGT", "Gas", multi_model_capacities$technology)
+#multi_model_capacities$technology <- gsub("NGCC", "Gas", multi_model_capacities$technology)
+multi_model_capacities$technology <- gsub("Bio/Other", "Biomass", multi_model_capacities$technology)
 
 multi_model_capacities <- multi_model_capacities %>%
   group_by(year, scenario, technology) %>%
@@ -429,6 +431,17 @@ repeat_capacities_new <- mutate(repeat_capacities_new, year = ifelse(year == 202
 # Step 6: Final Group and Summarize
 repeat_capacities_new <- group_by(repeat_capacities_new, year, run.name, technology) %>%
   summarise(newval = sum(newval), .groups = 'drop')
+# Create the new rows with the specified values
+new_rows <- data.frame(
+  year = c(2025, 2025),
+  run.name = c('ira_mid', 'baseline'),
+  technology = c('Nuclear New', 'Nuclear New'),
+  newval = c(0, 0)
+)
+
+# Add the new rows to the dataframe
+repeat_capacities_new <- bind_rows(repeat_capacities_new, new_rows)
+
 print(unique(input_capacities_delta$tech..outputs_group_detailed))
 
 

@@ -37,8 +37,13 @@ repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
 distribution_fits<- read.csv("distribution_fitting_results.csv")
 
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
-repeat_technologies = c("onshore wind","utility-scale solar pv", "Nuclear New", "offshore wind","Coal","Geothermal","Biomass","Gas", "Hydro", "Coal CCS", "Gas CCS")
-                        
+ 
+
+multi_model_technologies= c("onshore wind","utility-scale solar pv", "Nuclear New", "offshore wind","Coal","Geothermal","Biomass", "Hydro", "Coal CCS", "Gas CCS", "NGGT", "NGCC", "Solar Distributed", "Bio CCS","Gas")
+ repeat_technologies = c("offshore wind", "onshore wind","utility-scale solar pv", "Nuclear New", "Coal","Gas")
+ 
+
+                       
                         #"Coal","Geothermal","Biomass","Gas", "Hydro")#Define the REPEAT technologies to be included
 repeat_scenarios = c("baseline", "ira_mid")
 usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export - US")
@@ -49,9 +54,6 @@ usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export
 **Material intensity summary statistics and distribution fitting:** This code estimates summary statistics and fits probability distributions to material intensity data from Liang et al. (202X) and Wang et al. (202X).
 
 ```{r message=FALSE, warning=FALSE}
-#materials <- c("Aluminum","Cement","Steel","Copper", "Silicon", "Indium","Neodymium","Silver","Dysprosium","Gallium","Selenium","Nickel","Manganese")
-#print(materials)# Print the unique materials
-#intensity = subset(material_intensity, Material %in% materials)
 intensity = material_intensity 
 materials <- c(unique(intensity$Material))
 #Check if all material/technology scenarios are present, if not add 0.
@@ -70,18 +72,40 @@ intensity_mean <- subset(intensity_mean_df, technology %in% repeat_technologies)
 
 intensity_mean <- intensity_mean %>%
   mutate_at(vars(value, min, max), ~ . / 1000)
+#same thing but for multimodel
+multi_model_intensity = material_intensity 
+
+#Check if all material/technology scenarios are present, if not add 0.
+for (material in materials) {
+  for (tech in multi_model_technologies){  
+    check_empty_frame = subset(multi_model_intensity, technology %in% tech & Material %in% material)
+    if (nrow(check_empty_frame)==0){
+      multi_model_intensity[nrow(multi_model_intensity) + 1,] <- list(tech, material, 0)
+    }
+  }
+}
+
+#Estimate summary statistics of material intensity data
+multimodel_intensity_mean_df = multi_model_intensity%>% group_by(technology,Material) %>% summarise(max = max(value),min = min(value),value = mean(value)) 
+multimodel_intensity_mean_df <- subset(multimodel_intensity_mean_df, technology %in% multi_model_technologies) #take the mean of intensity values to get one value per tech/material combo.
+
+multi_model_intensity_mean <- multimodel_intensity_mean_df %>%
+  mutate_at(vars(value, min, max), ~ . / 1000)
+
 
 ```
 
 **Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
 ```{r}
 # Material demand simulation
- capacities_new <- subset(multi_model_capacities, technology %in% repeat_technologies)
+#print(unique(capacities_new$technology))
+
+ capacities_new <- subset(multi_model_capacities, technology %in% multi_model_technologies)
  capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
 i <- 1
 #print(unique(intensity_mean$Material))
-Listofmaterials <-unique(intensity_mean$Material)
-Listofmaterials <- unique(trimws(intensity_mean$Material))
+Listofmaterials <-unique(multi_model_intensity_mean$Material)
+Listofmaterials <- unique(trimws(multi_model_intensity_mean$Material))
 
 invisible(
   for (material in c("Terbium", "Tin", "Vanadium", "Yttrium", "Zinc","Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass","Gallium", "Germanium", "Glass"
@@ -89,7 +113,7 @@ invisible(
     #print(material)
 
    # material = "Aluminum"
-    df_int <- subset(intensity_mean, Material %in% material)
+    df_int <- subset(multi_model_intensity_mean, Material %in% material)
     df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
     # Prevent negative values
     df_cap[df_cap < 0] <- 0
@@ -122,7 +146,7 @@ invisible(
     #print(material)
 
    # material = "Aluminum"
-    df_int <- subset(intensity_mean, Material %in% material)
+    df_int <- subset(multi_model_intensity_mean, Material %in% material)
     df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
     # Prevent negative values
     df_cap[df_cap < 0] <- 0
@@ -151,20 +175,9 @@ invisible(
 merged_material_demand <- merge(materials_demand, materials_demand1, by = c("year", "scenario", "technology"))
 materials_demand<-merged_material_demand
 
-library(dplyr)
+ccs_df <- materials_demand %>% filter(technology %in% c("Gas CCS", "Coal CCS", "Solar Distributed", "NGGT", "Bio CCS"))
 
-library(dplyr)
-
-# Assuming materials_demand is your dataframe
-
-library(dplyr)
-
-# Assuming materials_demand is your dataframe
-
-# Step 1: Filter the dataframe for rows where technology is 'Gas CCS' or 'Coal CCS'
-ccs_df <- materials_demand %>% filter(technology %in% c("Gas CCS", "Coal CCS"))
-
-# Step 2: Loop through each row of ccs_df and add the values to the corresponding 'Gas' or 'Coal' rows
+# Loop through each row of ccs_df and add the values to the corresponding 'Gas', 'Coal', or 'utility-scale solar pv' rows
 for (i in seq_len(nrow(ccs_df))) {
   row <- ccs_df[i, ]
   year <- row$year
@@ -172,24 +185,31 @@ for (i in seq_len(nrow(ccs_df))) {
   technology <- row$technology
   
   # Determine the corresponding technology
-  target_technology <- ifelse(technology == "Gas CCS", "Gas", "Coal")
+  target_technology <- ifelse(technology == "Gas CCS" | technology == "NGGT", "NGCC",
+                       ifelse(technology == "Coal CCS", "Coal",
+                       ifelse(technology == "Bio CCS", "Biomass",
+                       ifelse(technology == "Solar Distributed", "utility-scale solar pv", NA))))
 
-  # Find the corresponding 'Gas' or 'Coal' row
+  # Find the corresponding row
   target_row_idx <- which(materials_demand$year == year & 
                           materials_demand$scenario == scenario & 
                           materials_demand$technology == target_technology)
 
-  # Add the values from the 'Gas CCS' or 'Coal CCS' row to the 'Gas' or 'Coal' row
+  # Add the values from the 'Gas CCS', 'Coal CCS', 'Solar Distributed', or 'NGGT' row to the corresponding row
   if (length(target_row_idx) == 1) {
     materials_demand[target_row_idx, 4:93] <- materials_demand[target_row_idx, 4:93] + row[4:93]
   }
 }
 
+# Remove the redundant rows after merging
+materials_demand <- materials_demand %>% filter(!technology %in% c("Bio CCS", "Gas CCS", "Coal CCS", "Solar Distributed", "NGGT"))
+materials_demand$technology <- gsub("NGCC", "Gas", materials_demand$technology)
+
+
 # Print the updated dataframe
-print(materials_demand)
-materials_demand <- materials_demand %>% filter(!technology %in% c("Gas CCS", "Coal CCS"))
+print(unique(materials_demand$technology))
 
-
+print(unique(capacities_new$technology))
 
 ```
 
@@ -201,6 +221,7 @@ repeat_capacities_new <- subset(repeat_capacities_new, year %in% c(2025, 2030, 2
 names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
 repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
+print(unique(repeat_capacities_new$technology))
 #print(unique(repeat_materials_demand$technology))
 # Material demand simulation for the first group of materials
 i <- 1
@@ -320,7 +341,7 @@ n <- 1 # number of iterations
 df_mc <- data.frame() 
 
 for (mat in materials) {
-  for (tech in repeat_technologies) {
+  for (tech in multi_model_technologies) {
     loc <- subset(intensity, Material %in% mat & technology %in% tech)
     if (nrow(loc) > 1) {
       
@@ -403,7 +424,7 @@ melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar p
 
 # Filter melted_df_mc to include only repeat technologies and remove "Wind Offshore"
 melted_df_mc <- melted_df_mc %>%
-  filter(technology %in% repeat_technologies)
+  filter(technology %in% multi_model_technologies)
 
 # Filter subset_capacities to include only technologies found in melted_df_mc
 subset_capacities <- subset_capacities %>%
@@ -425,6 +446,74 @@ mc_material_demand <- mc_material_demand %>%
   mutate(Material = str_extract(Material_Technology, "\\w+"))
 
 ```
+```{r}
+#same thing but for repeat
+
+n <- 1 # number of iterations
+df_mc <- data.frame() 
+
+for (mat in materials) {
+  for (tech in repeat_technologies) {
+    loc <- subset(intensity, Material %in% mat & technology %in% tech)
+    if (nrow(loc) > 1) {
+      
+      tryCatch({
+        distribution_info <- subset(distribution_fits, Material == mat & technology == tech)$Distribution
+      }, error = function(e) {
+        distribution_info <- NA
+      })
+      
+      if (length(distribution_info) == 0) {  # Handle empty dataframe
+        distribution_info <- NA
+      }
+      
+      if (is.na(distribution_info)) {  # If no distribution info found, default to normal
+        distribution_info <- "normal"
+      }
+      
+      minv <- min(loc$value)
+      maxv <- max(loc$value)
+      meanv <- mean(loc$value)
+      index_name <- paste(mat, gsub("[[:space:]]", ".", tech), sep = ".") # addressing issues with spaces and dashes
+      index_name <- gsub("-", ".", index_name)
+      df2 <- data.frame(index = index_name, min = minv, max = maxv, mean = meanv)
+      
+      if (n == 1) {
+        mc_values <- df2
+      } else {
+        mc_values <- rbind(mc_values, df2)
+      }
+      
+      # Generate values based on the distribution type
+      if (distribution_info == "triangular") {
+        result <- rtriangle(10000, minv, maxv, meanv)
+      } else if (distribution_info == "gauss") {
+        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
+      } else if (distribution_info == "weibull") {
+        result <- rweibull(10000, shape = 1.5, scale = meanv)
+      } else if (distribution_info == "gamma") {
+        result <- rgamma(10000, shape = 1.5, scale = meanv / 1.5)
+      } else {
+        warning(paste("Distribution", distribution_info, " Defaulting to normal distribution."))
+        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
+      }
+      
+      # Check if result is negative and replace with 0
+      result[result < 0] <- 0
+      
+      if (n == 1) {
+        df_mc <- data.frame(result)
+      } else {
+        df_mc <- cbind(df_mc, result)
+      }
+      colnames(df_mc)[colnames(df_mc) == "result"] <- index_name
+      n <- n + 1
+    }
+  }
+}
+```
+
+
 ```{r}
 library(dplyr)
 
@@ -471,7 +560,7 @@ print(unique(repeat_mc_material_demand$technology))
 ```{r}
 library(dplyr)
 library(tidyr)
-
+print(unique(mc_material_demand$Material_Technology))
 mc_material_demand_total <- mc_material_demand %>%
   select(-capacity_new, -Intensity_Distribution_Value) %>%  # Exclude irrelevant columns
   pivot_wider(
@@ -483,7 +572,7 @@ mc_material_demand_total <- mc_material_demand %>%
 mc_material_demand_total <- mc_material_demand_total %>%
   mutate(
     total_demand = rowSums(select(., 
-                                   c(Coal, 'Coal CCS', 'Gas CCS', Gas, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`)))
+                                   c(Biomass, 'Bio CCS', Coal, 'Coal CCS', 'Gas CCS', NGGT,NGCC, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`,'Solar Distributed',)))
   )
 subset_data <- mc_material_demand_total %>%
   filter(Material == "Steel", scenario == "IRA", year == 2035)
