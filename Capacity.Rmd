@@ -215,36 +215,26 @@ interpolation_df_Ref <- Cap_Ref %>%
   filter(model %in% c("E4ST", "IPM-E"))
 interpolation_df_Ref <- rbind(interpolation_df_Ref, initial_year_melted)
 
-# Load necessary packages
-library(dplyr)
 
-# Load necessary packages
-library(dplyr)
 
-# Step 1: Filter the dataframe for the years 2021 and 2030
 df_2021 <- interpolation_df_IRA %>% filter(year == 2021)
 df_2030 <- interpolation_df_IRA %>% filter(year == 2030)
 
 df_2030_Ref <- interpolation_df_Ref %>% filter(year == 2030)
 
-# Step 2: Convert the value column to numeric
 df_2021$value <- as.numeric(as.character(df_2021$value))
 df_2030$value <- as.numeric(as.character(df_2030$value))
 df_2030_Ref$value <- as.numeric(as.character(df_2030_Ref$value))
 
-# Ensure the dataframes are aligned correctly for each technology
 df_2021 <- df_2021 %>% arrange(variable)
 df_2030 <- df_2030 %>% arrange(model, variable, scenario)
 df_2030_Ref <- df_2030_Ref %>% arrange(model, variable, scenario)
 
 
-# Check if df_2021 contains unique values per technology
 if (any(duplicated(df_2021$variable))) {
   stop("df_2021 contains duplicate technologies.")
 }
 
-# Step 3: Perform the interpolation calculation for the year 2025
-# Calculate the interpolated values
 interpolated_values <- df_2030 %>%
   left_join(df_2021 %>% select(variable, value_2021 = value), by = "variable") %>%
   mutate(value_2025 = value_2021 + (value - value_2021) * (4/9)) %>%
@@ -255,9 +245,6 @@ interpolated_values_ref <- df_2030_Ref %>%
   mutate(value_2025 = value_2021 + (value - value_2021) * (4/9)) %>%
   mutate(delta_2025 = value_2025 - value_2021)
 
-
-# Step 5: Calculate the new delta value for 2030
-# Subtract the interpolated 2025 values from the 2030 values
 new_delta_2030 <- interpolated_values %>%
   mutate(newval = value - value_2025) %>%  # Calculate the new delta
   select(model, year = year, variable, newval, scenario)  # Select and rename columns
@@ -265,7 +252,6 @@ new_delta_2030_ref <- interpolated_values_ref %>%
   mutate(newval = value - value_2025) %>%  # Calculate the new delta
   select(model, year = year, variable, newval, scenario)  # Select and rename columns
 
-# Now, we can remove the unnecessary columns
 interpolated_values <- interpolated_values %>%
   select(-value, -value_2021, -value_2025) %>%
   rename(newval = delta_2025) %>% mutate(year = 2025)
@@ -284,7 +270,6 @@ final_interpolated_values_IRA <- rbind(new_delta_2030,final_interpolated_values_
 final_interpolated_values_ref <- rbind(new_delta_2030_ref,final_interpolated_values_ref) %>% rename(technology = variable) %>%  
   mutate(newval = ifelse(year == 2025, newval / 4, ifelse(year == 2030, newval / 5, newval)))
 
-# Print column names
 capacities_y_all <- capacities_y_all %>% select(-value)
 print(colnames(interpolated_values))
 capacities_y_all_filtered <- capacities_y_all %>%
@@ -292,8 +277,6 @@ capacities_y_all_filtered <- capacities_y_all %>%
 capacities_y <- rbind(capacities_y_all_filtered,final_interpolated_values_IRA,final_interpolated_values_ref)
 #capacities_y <- capacities_y_all[c(-1,-4)]
 capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) %>% filter(technology != "Wind")
-
-#calculating mean capacities across models 
 
 
 
@@ -406,41 +389,27 @@ input_capacities_delta$tech..outputs_group_detailed <- gsub("rooftop solar", "ut
 
 
 
-
-# Step 1: Filter and Group the Data
 repeat_capacities_new <- subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
   group_by(run.name, year, tech..outputs_group_detailed) %>%
   summarise(newval = sum(value))
 
-# Step 2: Rename the Column
 repeat_capacities_new <- rename(repeat_capacities_new, technology = tech..outputs_group_detailed)
-
-# Step 3: Filter for Specific Years
 repeat_capacities_new <- filter(repeat_capacities_new, year %in% c("2026", "2030", "2035"))
-
-# Step 4: Annualize the Capacities
 repeat_capacities_new <- mutate(repeat_capacities_new, newval = case_when(
   year == 2026 ~ newval / 2,
   year == 2030 ~ newval / 2,
   year == 2035 ~ newval / 3
 ))
-
-# Step 5: Adjust the Year for 2026
 repeat_capacities_new <- mutate(repeat_capacities_new, year = ifelse(year == 2026, 2025, year))
 
-# Step 6: Final Group and Summarize
 repeat_capacities_new <- group_by(repeat_capacities_new, year, run.name, technology) %>%
   summarise(newval = sum(newval), .groups = 'drop')
-# Create the new rows with the specified values
 new_rows <- data.frame(
   year = c(2025, 2025),
   run.name = c('ira_mid', 'baseline'),
   technology = c('Nuclear New', 'Nuclear New'),
   newval = c(0, 0)
 )
-
-# Add the new rows to the dataframe
-repeat_capacities_new <- bind_rows(repeat_capacities_new, new_rows)
 
 print(unique(input_capacities_delta$tech..outputs_group_detailed))
 

@@ -153,7 +153,6 @@ folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
 file_path1 <- file.path(folder_path, "input_usgs.csv")
 file_path2 <- file.path(folder_path, "intensity_data.csv")
 
-# Write each dataframe to its respective CSV file in the specified folder
 write.csv(input_usgs, file = file_path1, row.names = FALSE)
 write.csv(material_intensity, file = file_path2, row.names = FALSE)
 

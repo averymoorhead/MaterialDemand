@@ -49,7 +49,6 @@ library(dplyr)
 ```{r}
 library(tidyr)
 
-# Modify the transmission_material_sum data frame and create transmission_for_plot
 transmission_for_plot <- transmission_material_sum %>%
   mutate(
     technology = "transmission",  # Add a new column "technology" with value "transmission"
@@ -64,21 +63,17 @@ transmission_for_plot <- transmission_material_sum %>%
 
 
 
-# Identify columns that exist in repeat_material_demand but not in transmission_for_plot
 missing_columns <- setdiff(names(repeat_materials_demand), names(transmission_for_plot))
 
-# Add missing columns to transmission_for_plot if they don't already exist
 for (col in missing_columns) {
   if (!col %in% names(transmission_for_plot)) {
     transmission_for_plot[[col]] <- 0
   }
 }
 
-# Print the updated transmission_for_plot data frame
 print(transmission_for_plot)
 
 repeat_materials_demand<-rbind(transmission_for_plot,repeat_materials_demand)
-# Identify columns that exist in repeat_material_demand but not in transmission_for_plot
 missing_columns <- setdiff(names(repeat_materials_demand), names(transmission_for_plot))
 
 library(dplyr)
@@ -142,7 +137,6 @@ repeat_materials_demand <- repeat_materials_demand %>%
 
 
 
-# Convert year to integer
 plot_df$year <- as.integer(plot_df$year)
 
 
@@ -156,7 +150,7 @@ ggplot(plot_df, aes(x = year, y = Aluminum_mean, fill = technology)) +
   scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
   scale_x_continuous(breaks = c(2025, 2030, 2035))  # Set specific x-axis breaks
 
-# Create the plot
+
 
 
 ```
@@ -210,7 +204,6 @@ for (material in materials) {
   # Subset the data for the current material and scenario "IRA"
   plot_df <- subset(repeat_materials_demand, scenario == "Ref", select = c('year', 'technology', paste0(material, "_mean")))
   
-  # Convert year to integer
   plot_df$year <- as.integer(plot_df$year)
   
   # Create the plot for the current material
@@ -232,33 +225,25 @@ for (material in materials) {
   plot_list[[material]] <- p
 }
 
-# Combine all plots in the plot list
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
 
-# Create a common legend plot
-# Extract the legend from the Aluminum plot
 legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
 
-# Manually adjust the widths of the legend and the combined plot
 final_plot <- cowplot::ggdraw() +
   cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
   cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
 
-# Display the final plot
 print(final_plot)
 
-# Adjust the width of each plot
-plot_width <- 10  # Adjust this value as needed
+plot_width <- 10 
 
-# Arrange the plots using patchwork
+
 final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
 
-# Add a common y-axis title using cowplot
 common_y_axis_title <- ggdraw() +
   draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
-# Combine the common y-axis title with the final plot
 final_plot_with_title <- cowplot::plot_grid(
   common_y_axis_title,
   final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
@@ -266,7 +251,6 @@ final_plot_with_title <- cowplot::plot_grid(
   rel_widths = c(0.1, 0.9)
 )
 
-# Print or display the final plot with the common y-axis title
 print(final_plot_with_title)
 # Save the combined plot as a PNG file
 print(getwd())
@@ -286,18 +270,15 @@ tech_colors <- c("Coal" = "#F8766D",
 
 materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
 
-# Create an empty list to store plots
+
 plot_list <- list()
 
 # Loop through each material
 for (material in materials) {
-  # Subset the data for the current material and scenario "IRA"
   plot_df <- subset(repeat_materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
   
-  # Convert year to integer
   plot_df$year <- as.integer(plot_df$year)
   
-  # Create the plot for the current material
   p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
     geom_area() +
     labs(title = paste(material),
@@ -312,37 +293,27 @@ for (material in materials) {
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
   
-  # Store the plot in the plot list
   plot_list[[material]] <- p
 }
 
-# Combine all plots in the plot list
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
 
-# Create a common legend plot
-# Extract the legend from the Aluminum plot
 legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
 
-# Manually adjust the widths of the legend and the combined plot
 final_plot <- cowplot::ggdraw() +
   cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
   cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
 
-# Display the final plot
 print(final_plot)
 
-# Adjust the width of each plot
 plot_width <- 10  # Adjust this value as needed
 
-# Arrange the plots using patchwork
 final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
 
-# Add a common y-axis title using cowplot
 common_y_axis_title <- ggdraw() +
   draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
-# Combine the common y-axis title with the final plot
 final_plot_with_title <- cowplot::plot_grid(
   common_y_axis_title,
   final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
@@ -350,9 +321,7 @@ final_plot_with_title <- cowplot::plot_grid(
   rel_widths = c(0.1, 0.9)
 )
 
-# Print or display the final plot with the common y-axis title
 print(final_plot_with_title)
-# Save the combined plot as a PNG file
 print(getwd())
 ggsave("repeatresultsplotIRA.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
 
@@ -379,15 +348,12 @@ tech_colors <- c("Coal" = "#F8766D",
 
 materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
 
-# Create an empty list to store plots
+
 plot_list <- list()
 
-# Loop through each material
 for (material in materials) {
-  # Subset the data for the current material and scenario "IRA"
   plot_df <- subset(materials_demand, scenario == "Ref", select = c('year', 'technology', paste0(material, "_mean")))
 
-  # Convert year to integer
   plot_df$year <- as.integer(plot_df$year)
   
   # Create the plot for the current material
@@ -405,37 +371,29 @@ for (material in materials) {
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
   
-  # Store the plot in the plot list
   plot_list[[material]] <- p
 }
 
 # Combine all plots in the plot list
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
 
-# Create a common legend plot
-# Extract the legend from the Aluminum plot
 legend_plot <- cowplot::get_legend(plot_list[["Nickel"]] + theme(legend.position = "right"))
 
-# Manually adjust the widths of the legend and the combined plot
 final_plot <- cowplot::ggdraw() +
   cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
   cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
 
-# Display the final plot
 print(final_plot)
 
-# Adjust the width of each plot
-plot_width <- 10  # Adjust this value as needed
 
-# Arrange the plots using patchwork
+plot_width <- 10  
+
 final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
 
-# Add a common y-axis title using cowplot
 common_y_axis_title <- ggdraw() +
   draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
-# Combine the common y-axis title with the final plot
 final_plot_with_title <- cowplot::plot_grid(
   common_y_axis_title,
   final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
@@ -443,9 +401,7 @@ final_plot_with_title <- cowplot::plot_grid(
   rel_widths = c(0.1, 0.9)
 )
 
-# Print or display the final plot with the common y-axis title
 print(final_plot_with_title)
-# Save the combined plot as a PNG file
 print(getwd())
 ggsave("multimodelresultsplotREF.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
 
@@ -457,8 +413,7 @@ library(scales)  # For number formatting
 library(cowplot)
 library(patchwork)
 
-# Define colors for each technology
-# Define colors for each technology
+
 tech_colors <- c("Coal" = "#F8766D", 
                  "Gas" = "#C49A00", 
                  "Hydro" = "#53B400", 
@@ -472,18 +427,13 @@ tech_colors <- c("Coal" = "#F8766D",
 
 materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
 
-# Create an empty list to store plots
 plot_list <- list()
 
-# Loop through each material
 for (material in materials) {
-  # Subset the data for the current material and scenario "IRA"
   plot_df <- subset(materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
 
-  # Convert year to integer
   plot_df$year <- as.integer(plot_df$year)
   
-  # Create the plot for the current material
   p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
     geom_area() +
     labs(title = paste(material),
@@ -498,37 +448,27 @@ for (material in materials) {
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
   
-  # Store the plot in the plot list
   plot_list[[material]] <- p
 }
 
-# Combine all plots in the plot list
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
 
-# Create a common legend plot
-# Extract the legend from the Aluminum plot
 legend_plot <- cowplot::get_legend(plot_list[["Nickel"]] + theme(legend.position = "right"))
 
-# Manually adjust the widths of the legend and the combined plot
 final_plot <- cowplot::ggdraw() +
   cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
   cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
 
-# Display the final plot
 print(final_plot)
 
-# Adjust the width of each plot
-plot_width <- 10  # Adjust this value as needed
+plot_width <- 10  
 
-# Arrange the plots using patchwork
 final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
 
-# Add a common y-axis title using cowplot
 common_y_axis_title <- ggdraw() +
   draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
-# Combine the common y-axis title with the final plot
 final_plot_with_title <- cowplot::plot_grid(
   common_y_axis_title,
   final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
@@ -536,9 +476,7 @@ final_plot_with_title <- cowplot::plot_grid(
   rel_widths = c(0.1, 0.9)
 )
 
-# Print or display the final plot with the common y-axis title
 print(final_plot_with_title)
-# Save the combined plot as a PNG file
 print(getwd())
 ggsave("multimodelresultsplotIRA.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
 
