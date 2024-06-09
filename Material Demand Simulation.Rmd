@@ -177,36 +177,30 @@ materials_demand<-merged_material_demand
 
 ccs_df <- materials_demand %>% filter(technology %in% c("Gas CCS", "Coal CCS", "Solar Distributed", "NGGT", "Bio CCS"))
 
-# Loop through each row of ccs_df and add the values to the corresponding 'Gas', 'Coal', or 'utility-scale solar pv' rows
 for (i in seq_len(nrow(ccs_df))) {
   row <- ccs_df[i, ]
   year <- row$year
   scenario <- row$scenario
   technology <- row$technology
   
-  # Determine the corresponding technology
   target_technology <- ifelse(technology == "Gas CCS" | technology == "NGGT", "NGCC",
                        ifelse(technology == "Coal CCS", "Coal",
                        ifelse(technology == "Bio CCS", "Biomass",
                        ifelse(technology == "Solar Distributed", "utility-scale solar pv", NA))))
 
-  # Find the corresponding row
   target_row_idx <- which(materials_demand$year == year & 
                           materials_demand$scenario == scenario & 
                           materials_demand$technology == target_technology)
 
-  # Add the values from the 'Gas CCS', 'Coal CCS', 'Solar Distributed', or 'NGGT' row to the corresponding row
   if (length(target_row_idx) == 1) {
     materials_demand[target_row_idx, 4:93] <- materials_demand[target_row_idx, 4:93] + row[4:93]
   }
 }
 
-# Remove the redundant rows after merging
 materials_demand <- materials_demand %>% filter(!technology %in% c("Bio CCS", "Gas CCS", "Coal CCS", "Solar Distributed", "NGGT"))
 materials_demand$technology <- gsub("NGCC", "Gas", materials_demand$technology)
 
 
-# Print the updated dataframe
 print(unique(materials_demand$technology))
 
 print(unique(capacities_new$technology))
@@ -416,17 +410,14 @@ melted_df_mc <- df_mc %>%
   mutate(Technology = gsub("^[^.]+\\.", "", Material_Technology),  # Extract word after the first dot
          Technology = gsub("\\.", " ", Technology))  # Replace periods with spaces
 
-# Rename column to 'technology'
 melted_df_mc <- melted_df_mc %>%
   rename(technology = Technology)
 melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar pv", melted_df_mc$technology)
 
 
-# Filter melted_df_mc to include only repeat technologies and remove "Wind Offshore"
 melted_df_mc <- melted_df_mc %>%
   filter(technology %in% multi_model_technologies)
 
-# Filter subset_capacities to include only technologies found in melted_df_mc
 subset_capacities <- subset_capacities %>%
   filter(technology %in% unique(melted_df_mc$technology))
 
@@ -531,7 +522,6 @@ melted_df_mc <- melted_df_mc %>%
 melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar pv", melted_df_mc$technology)
 
 
-# Filter melted_df_mc to include only repeat technologies and remove "Wind Offshore"
 melted_df_mc <- melted_df_mc %>%
   filter(technology %in% c("utility-scale solar pv", "onshore wind", "offshore wind", "Nuclear New", "Gas"))
 print(repeat_technologies)
