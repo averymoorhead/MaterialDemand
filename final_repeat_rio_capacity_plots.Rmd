@@ -1,0 +1,142 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
+
+rm(list = ls())
+#Load libraries
+library(readxl)
+library(data.table)
+library(dplyr)
+library(tidyverse)
+library(triangle)
+library(stringr)
+library(knitr)
+print(getwd())
+input_usgs<- read.csv("input_usgs.csv")
+material_intensity<- read.csv("intensity_data.csv")
+initial_year<- read.csv("initial_year.csv")
+multi_model_capacities<- read.csv("multi_model_capacities.csv")
+repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
+distribution_fits<- read.csv("distribution_fitting_results.csv")
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
+
+transmission_distance<-read.csv("spur_dist_sum.csv")
+
+transmission_distance <- transmission_distance %>%
+  rename(
+    run.name = scenario,
+    newval = totalspurdistance
+  ) %>%
+  select(-Cu, -Glass,-Aluminum,-Cement,-Steel) %>%
+  mutate(run.name = case_when(
+    run.name == "REF" ~ "baseline",
+    run.name == "IRA" ~ "ira_mid",
+    TRUE ~ run.name  # Keep other values unchanged
+  )) %>% group_by(year, run.name) %>%
+  summarise(newval = sum(newval, na.rm = TRUE))
+
+
+
+
+
+```
+```{r}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+# Subset data for "onshore wind"
+subset_df_onshore_wind <- repeat_capacities_new %>%
+  filter(technology == "onshore wind" & year %in% c(2025, 2030, 2035) & run.name %in% c("ira_mid", "baseline"))
+
+# Subset data for "utility-scale solar pv"
+subset_df_solar_pv <- repeat_capacities_new %>%
+  filter(technology == "utility-scale solar pv" & year %in% c(2025, 2030, 2035) & run.name %in% c("ira_mid", "baseline"))
+
+# Subset data for "offshore wind"
+subset_df_offshore_wind <- repeat_capacities_new %>%
+  filter(technology == "offshore wind" & year %in% c(2025, 2030, 2035) & run.name %in% c("ira_mid", "baseline"))
+
+# Create plot for "onshore wind"
+plot_onshore_wind <- ggplot(subset_df_onshore_wind, aes(x = year, y = newval, color = run.name)) +
+  geom_point(size = 3) +
+  geom_line(aes(group = run.name)) +
+  labs(title = "Onshore Wind",
+       x = "",
+       y = "Capacity (GW)",
+       color = "") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and increase the size
+        axis.title.y = element_text(size = 14),             # Increase y-axis label size
+        axis.text = element_text(size = 12),                # Increase x and y axis data tick size
+        legend.position = "bottom") +  
+  scale_x_continuous(breaks = c(2025, 2030, 2035)) +
+  scale_color_manual(values = c("ira_mid" = "red", "baseline" = "blue"), labels = c("IRA", "Ref"))
+
+# Create plot for "utility-scale solar pv"
+plot_solar_pv <- ggplot(subset_df_solar_pv, aes(x = year, y = newval, color = run.name)) +
+  geom_point(size = 3) +
+  geom_line(aes(group = run.name)) +
+  labs(title = "Solar PV",
+       x = "",
+       y = "Capacity (GW)",
+       color = "") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and increase the size
+        axis.title.y = element_text(size = 14),             # Increase y-axis label size
+        axis.text = element_text(size = 12),                # Increase x and y axis data tick size
+        legend.position = "bottom") +  
+  scale_x_continuous(breaks = c(2025, 2030, 2035)) +
+  scale_color_manual(values = c("ira_mid" = "red", "baseline" = "blue"), labels = c("IRA", "Ref"))
+
+# Create plot for "offshore wind"
+plot_offshore_wind <- ggplot(subset_df_offshore_wind, aes(x = year, y = newval, color = run.name)) +
+  geom_point(size = 3) +
+  geom_line(aes(group = run.name)) +
+  labs(title = "Offshore Wind",
+       x = "",
+       y = "Capacity (GW)",
+       color = "") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and increase the size
+        axis.title.y = element_text(size = 14),             # Increase y-axis label size
+        axis.text = element_text(size = 12),                # Increase x and y axis data tick size
+        legend.position = "bottom") +  
+  scale_x_continuous(breaks = c(2025, 2030, 2035)) +
+  scale_color_manual(values = c("ira_mid" = "red", "baseline" = "blue"), labels = c("IRA", "Ref"))
+
+# Create plot for "transmission"
+plot_transmission <- ggplot(transmission_distance, aes(x = year, y = newval, color = run.name)) +
+  geom_point(size = 3) +
+  geom_line(aes(group = run.name)) +
+  labs(title = "Transmission",
+       x = "",
+       y = "Total Line Length (km)",
+       color = "") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and increase the size
+        axis.title.y = element_text(size = 14),             # Increase y-axis label size
+        axis.text = element_text(size = 12),                # Increase x and y axis data tick size
+        legend.position = "bottom") +  
+  scale_x_continuous(breaks = c(2025, 2030, 2035)) +
+  scale_color_manual(values = c("ira_mid" = "red", "baseline" = "blue"), labels = c("IRA", "Ref"))
+
+# Combine plots with a common legend using patchwork
+combined_plot <- (plot_onshore_wind | plot_solar_pv | plot_transmission | plot_offshore_wind) + plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
+
+# Print the combined plot
+print(combined_plot)
+
+# Save the plot
+ggsave("combined_plot_with_legend.jpg", plot = combined_plot, width = 10, height = 7.5, units = "in", dpi = 300)
+
+```
+

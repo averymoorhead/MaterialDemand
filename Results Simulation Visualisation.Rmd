@@ -23,6 +23,12 @@ repeat_materials_demand<- read.csv("repeat_materials_demand.csv")
 materials_demand<-read.csv("materials_demand.csv")
 #multi_model_mc_material_demand_total<-read.csv("multi_model_mc_material_demand_total.csv")
 transmission_material_sum<-read.csv("transmission_material_sum.csv")
+materials_demand <- materials_demand %>%
+  mutate(technology = case_when(
+    technology == "utility-scale solar pv" ~ "Solar",
+    technology == "onshore wind" ~ "Onshore Wind",
+    TRUE ~ technology  # Keep all other values unchanged
+  ))
 
 
 #repeat_mc_material_demand_total<-read.csv("repeat_mc_material_demand_total.csv")
@@ -121,7 +127,7 @@ plot_df <- plot_df %>%
       technology == "onshore wind" ~ "Wind",
       technology == "offshore wind" ~ "Offshore Wind",
       technology == "transmission" ~ "Transmission",
-      technology == "utility-scale solar pv" ~ "Utility-scale Solar PV",
+      technology == "Solar" ~ "Solar",
       TRUE ~ technology
     )
   )
@@ -161,10 +167,10 @@ materials_demand <- materials_demand %>%
   mutate(
     technology = case_when(
       technology == "Nuclear New" ~ "Nuclear",
-      technology == "onshore wind" ~ "Wind",
+      technology == "onshore wind" ~ "Onshore Wind",
       technology == "offshore wind" ~ "Offshore Wind",
       technology == "transmission" ~ "Transmission",
-      technology == "utility-scale solar pv" ~ "Utility-scale Solar PV",
+      technology == "utility-scale solar pv" ~ "Solar",
       TRUE ~ technology
     )
   )
@@ -173,10 +179,10 @@ repeat_materials_demand <- repeat_materials_demand %>%
   mutate(
     technology = case_when(
       technology == "Nuclear New" ~ "Nuclear",
-      technology == "onshore wind" ~ "Wind",
+      technology == "onshore wind" ~ "Onshore Wind",
       technology == "offshore wind" ~ "Offshore Wind",
       technology == "transmission" ~ "Transmission",
-      technology == "utility-scale solar pv" ~ "Utility-scale Solar PV",
+      technology == "utility-scale solar pv" ~ "Solar",
       TRUE ~ technology
     )
   )
@@ -185,16 +191,15 @@ repeat_materials_demand <- repeat_materials_demand %>%
 ```
 
 ```{r}
-tech_colors <- c("Coal" = "#F8766D", 
+tech_colors <- c(
                  "Gas" = "#C49A00", 
-                 "Hydro" = "#53B400", 
                  "Nuclear" = "#00C094", 
-                 "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
+                 "Offshore Wind" = "#EA8331",  
                  "Transmission" = "#A58AFF", 
-                 "Utility-scale Solar PV" = "#FB61D7",
-                 "Wind" = "#00B6EB")
+                 "Solar" = "#FB61D7",
+                 "Onshore Wind" = "#00B6EB")
 
-materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
+materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead", "Magnesium", "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Tin", "Vanadium", "Yttrium", "Zinc")
 
 # Create an empty list to store plots
 plot_list <- list()
@@ -217,7 +222,11 @@ for (material in materials) {
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
     theme(
       legend.position = "none",  # Remove the legend
-      plot.title = element_text(size = 10)  # Adjust the size of the plot title
+             axis.text.x = element_text(size = 14), # Increase size of x-axis text
+      axis.text.y = element_text(size = 14), # Increase size of y-axis text
+      axis.title.x = element_text(size = 16), # Increase size of x-axis title
+      axis.title.y = element_text(size = 16), # Increase size of y-axis title
+      plot.title = element_text(size = 20, hjust = 0.5)# Adjust the size of the plot title
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
   
@@ -238,10 +247,10 @@ print(final_plot)
 plot_width <- 10 
 
 
-final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
+final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
 
 common_y_axis_title <- ggdraw() +
-  draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  draw_label("Thousand Metric Tonnes/year", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
 final_plot_with_title <- cowplot::plot_grid(
@@ -254,21 +263,24 @@ final_plot_with_title <- cowplot::plot_grid(
 print(final_plot_with_title)
 # Save the combined plot as a PNG file
 print(getwd())
-ggsave("repeatresultsplotREF.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
+ggsave("repeatresultsplotREF.jpg", plot = final_plot_with_title, width = 13.5, height = 15, units = "in", dpi = 300)
 
 ```
 
 ```{r}
-tech_colors <- c("Coal" = "#F8766D", 
-                 "Gas" = "#C49A00", 
-                 "Hydro" = "#53B400", 
-                 "Nuclear" = "#00C094", 
-                 "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
-                 "Transmission" = "#A58AFF", 
-                 "Utility-scale Solar PV" = "#FB61D7",
-                 "Wind" = "#00B6EB")
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+library(scales)
 
-materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
+tech_colors <- c(
+  "Gas" = "#C49A00",
+  "Nuclear" = "#00C094",
+  "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
+  "Transmission" = "#A58AFF",
+  "Solar" = "#FB61D7",
+  "Onshore Wind" = "#00B6EB"
+)
 
 
 plot_list <- list()
@@ -276,9 +288,19 @@ plot_list <- list()
 # Loop through each material
 for (material in materials) {
   plot_df <- subset(repeat_materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
-  
+
   plot_df$year <- as.integer(plot_df$year)
   
+  # Ensure technology names match exactly
+  unique_technologies <- unique(plot_df$technology)
+  print(unique_technologies)  # Print to debug
+  
+  # Check for unmatched technologies
+  unmatched_tech <- setdiff(unique_technologies, names(tech_colors))
+  if(length(unmatched_tech) > 0) {
+    warning("Unmatched technologies: ", paste(unmatched_tech, collapse = ", "))
+  }
+
   p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
     geom_area() +
     labs(title = paste(material),
@@ -289,10 +311,14 @@ for (material in materials) {
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
     theme(
       legend.position = "none",  # Remove the legend
-      plot.title = element_text(size = 10)  # Adjust the size of the plot title
+      axis.text.x = element_text(size = 14), # Increase size of x-axis text
+      axis.text.y = element_text(size = 14), # Increase size of y-axis text
+      axis.title.x = element_text(size = 16), # Increase size of x-axis title
+      axis.title.y = element_text(size = 16), # Increase size of y-axis title
+      plot.title = element_text(size = 20, hjust = 0.5)  # Adjust the size of the plot title
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
-  
+
   plot_list[[material]] <- p
 }
 
@@ -308,10 +334,10 @@ print(final_plot)
 
 plot_width <- 10  # Adjust this value as needed
 
-final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
+final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
 
 common_y_axis_title <- ggdraw() +
-  draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  draw_label("Thousand Metric Tonnes/year", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
 final_plot_with_title <- cowplot::plot_grid(
@@ -323,7 +349,8 @@ final_plot_with_title <- cowplot::plot_grid(
 
 print(final_plot_with_title)
 print(getwd())
-ggsave("repeatresultsplotIRA.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
+ggsave("repeatresultsplotIRA.jpg", plot = final_plot_with_title, width = 13.5, height = 15, units = "in", dpi = 300)
+
 
 ```
 
@@ -335,18 +362,19 @@ library(patchwork)
 
 # Define colors for each technology
 # Define colors for each technology
-tech_colors <- c("Coal" = "#F8766D", 
+tech_colors <- c("Biomass" = "#d3d3d3",
+
+                "Coal" = "#F8766D", 
                  "Gas" = "#C49A00", 
                  "Hydro" = "#53B400", 
                  "Nuclear" = "#00C094", 
                  "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
                  "Transmission" = "#A58AFF", 
-                 "Utility-scale Solar PV" = "#FB61D7",
-                 "Wind" = "#00B6EB")
+                 "Solar" = "#FB61D7",
+                 "Onshore Wind" = "#00B6EB")
 
  #show_col(hue_pal()(20))
 
-materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
 
 
 plot_list <- list()
@@ -367,7 +395,11 @@ for (material in materials) {
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
     theme(
       legend.position = "none",  # Remove the legend
-      plot.title = element_text(size = 10)  # Adjust the size of the plot title
+             axis.text.x = element_text(size = 14), # Increase size of x-axis text
+      axis.text.y = element_text(size = 14), # Increase size of y-axis text
+      axis.title.x = element_text(size = 16), # Increase size of x-axis title
+      axis.title.y = element_text(size = 16), # Increase size of y-axis title
+      plot.title = element_text(size = 20, hjust = 0.5)# Adjust the size of the plot title
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
   
@@ -388,10 +420,10 @@ print(final_plot)
 
 plot_width <- 10  
 
-final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
+final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
 
 common_y_axis_title <- ggdraw() +
-  draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  draw_label("Thousand Metric Tonnes/year", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
 final_plot_with_title <- cowplot::plot_grid(
@@ -403,7 +435,7 @@ final_plot_with_title <- cowplot::plot_grid(
 
 print(final_plot_with_title)
 print(getwd())
-ggsave("multimodelresultsplotREF.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
+ggsave("multimodelresultsplotREF.jpg", plot = final_plot_with_title, width = 13, height = 15, units = "in", dpi = 300)
 
 ```
 
@@ -414,18 +446,18 @@ library(cowplot)
 library(patchwork)
 
 
-tech_colors <- c("Coal" = "#F8766D", 
+tech_colors <- c("Biomass" = "#d3d3d3",
+  "Coal" = "#F8766D", 
                  "Gas" = "#C49A00", 
                  "Hydro" = "#53B400", 
                  "Nuclear" = "#00C094", 
                  "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
                  "Transmission" = "#A58AFF", 
-                 "Utility-scale Solar PV" = "#FB61D7",
-                 "Wind" = "#00B6EB")
+                 "Solar" = "#FB61D7",
+                 "Onshore Wind" = "#00B6EB")
 
  #show_col(hue_pal()(20))
 
-materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
 
 plot_list <- list()
 
@@ -444,7 +476,11 @@ for (material in materials) {
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
     theme(
       legend.position = "none",  # Remove the legend
-      plot.title = element_text(size = 10)  # Adjust the size of the plot title
+       axis.text.x = element_text(size = 1), # Increase size of x-axis text
+      axis.text.y = element_text(size = 1), # Increase size of y-axis text
+      axis.title.x = element_text(size = 1), # Increase size of x-axis title
+      axis.title.y = element_text(size = 1), # Increase size of y-axis title
+      plot.title = element_text(size = 2, hjust = 0.5)# Adjust the size of the plot title
     ) +
     scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
   
@@ -463,10 +499,10 @@ print(final_plot)
 
 plot_width <- 10  
 
-final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 4, widths = rep(plot_width, length(plot_list)))
+final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
 
 common_y_axis_title <- ggdraw() +
-  draw_label("Thousand Metric Tonnes", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  draw_label("Thousand Metric Tonnes/year", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
 final_plot_with_title <- cowplot::plot_grid(
@@ -478,7 +514,7 @@ final_plot_with_title <- cowplot::plot_grid(
 
 print(final_plot_with_title)
 print(getwd())
-ggsave("multimodelresultsplotIRA.jpg", plot = final_plot_with_title, width = 10, height = 12, units = "in", dpi = 300)
+ggsave("multimodelresultsplotIRA.jpg", plot = final_plot_with_title, width = 12, height = 15, units = "in", dpi = 300)
 
 ```
 

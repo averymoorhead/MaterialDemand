@@ -92,7 +92,6 @@ multimodel_intensity_mean_df <- subset(multimodel_intensity_mean_df, technology 
 multi_model_intensity_mean <- multimodel_intensity_mean_df %>%
   mutate_at(vars(value, min, max), ~ . / 1000)
 
-
 ```
 
 **Material demand simulation (using mean material intensity values and Bistline et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Bistline et al. (2023).
@@ -368,16 +367,16 @@ for (mat in materials) {
       
       # Generate values based on the distribution type
       if (distribution_info == "triangular") {
-        result <- rtriangle(10000, minv, maxv, meanv)
+        result <- rtriangle(1000, minv, maxv, meanv)
       } else if (distribution_info == "gauss") {
-        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
+        result <- rnorm(1000, mean = meanv, sd = (maxv - minv) / 6)
       } else if (distribution_info == "weibull") {
-        result <- rweibull(10000, shape = 1.5, scale = meanv)
+        result <- rweibull(1000, shape = 1.5, scale = meanv)
       } else if (distribution_info == "gamma") {
-        result <- rgamma(10000, shape = 1.5, scale = meanv / 1.5)
+        result <- rgamma(1000, shape = 1.5, scale = meanv / 1.5)
       } else {
         warning(paste("Distribution", distribution_info, " Defaulting to normal distribution."))
-        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
+        result <- rnorm(1000, mean = meanv, sd = (maxv - minv) / 6)
       }
       
       # Check if result is negative and replace with 0
@@ -477,16 +476,16 @@ for (mat in materials) {
       
       # Generate values based on the distribution type
       if (distribution_info == "triangular") {
-        result <- rtriangle(10000, minv, maxv, meanv)
+        result <- rtriangle(1000, minv, maxv, meanv)
       } else if (distribution_info == "gauss") {
-        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
+        result <- rnorm(1000, mean = meanv, sd = (maxv - minv) / 6)
       } else if (distribution_info == "weibull") {
-        result <- rweibull(10000, shape = 1.5, scale = meanv)
+        result <- rweibull(1000, shape = 1.5, scale = meanv)
       } else if (distribution_info == "gamma") {
-        result <- rgamma(10000, shape = 1.5, scale = meanv / 1.5)
+        result <- rgamma(1000, shape = 1.5, scale = meanv / 1.5)
       } else {
         warning(paste("Distribution", distribution_info, " Defaulting to normal distribution."))
-        result <- rnorm(10000, mean = meanv, sd = (maxv - minv) / 6)
+        result <- rnorm(1000, mean = meanv, sd = (maxv - minv) / 6)
       }
       
       # Check if result is negative and replace with 0

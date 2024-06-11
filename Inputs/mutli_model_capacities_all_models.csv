@@ -1,0 +1,1089 @@
+"model","year","technology","scenario","newval"
+"2021","2021","Nuclear Existing","IRA",0
+"EPS","2025","Nuclear Existing","IRA",-0.0952500000000001
+"EPS","2030","Nuclear Existing","IRA",0
+"EPS","2035","Nuclear Existing","IRA",-18.8
+"E4ST","2035","Nuclear Existing","IRA",-0.347204412819983
+"GCAM","2025","Nuclear Existing","IRA",0.0142271433458738
+"GCAM","2030","Nuclear Existing","IRA",-0.180894214518179
+"GCAM","2035","Nuclear Existing","IRA",0.543296878959541
+"Haiku","2025","Nuclear Existing","IRA",0.385400000000001
+"Haiku","2030","Nuclear Existing","IRA",-1.25946
+"Haiku","2035","Nuclear Existing","IRA",-3.75854
+"IPM-E","2035","Nuclear Existing","IRA",-1.65698
+"IPM-N","2025","Nuclear Existing","IRA",-0.863474008749979
+"IPM-N","2030","Nuclear Existing","IRA",-1.3888198738
+"IPM-N","2035","Nuclear Existing","IRA",-15.1420009192
+"MARKAL","2025","Nuclear Existing","IRA",0.355
+"MARKAL","2030","Nuclear Existing","IRA",-0.218000000000001
+"MARKAL","2035","Nuclear Existing","IRA",0
+"NEMS-RHG","2025","Nuclear Existing","IRA",0.1296845
+"NEMS-RHG","2030","Nuclear Existing","IRA",-0.177096599999999
+"NEMS-RHG","2035","Nuclear Existing","IRA",-14.4216504
+"ReEDS","2025","Nuclear Existing","IRA",0.361699999999999
+"ReEDS","2030","Nuclear Existing","IRA",-0.447999999999999
+"ReEDS","2035","Nuclear Existing","IRA",-0.153999999999999
+"REGEN","2025","Nuclear Existing","IRA",-0.692608250000003
+"REGEN","2030","Nuclear Existing","IRA",0
+"REGEN","2035","Nuclear Existing","IRA",0
+"RIO","2025","Nuclear Existing","IRA",0.125
+"RIO","2030","Nuclear Existing","IRA",-0.2
+"RIO","2035","Nuclear Existing","IRA",-0.2
+"2021","2021","Nuclear New","IRA",0
+"EPS","2025","Nuclear New","IRA",0.75
+"EPS","2030","Nuclear New","IRA",0.2
+"EPS","2035","Nuclear New","IRA",0
+"E4ST","2035","Nuclear New","IRA",1.180728572632e-06
+"GCAM","2025","Nuclear New","IRA",0
+"GCAM","2030","Nuclear New","IRA",0
+"GCAM","2035","Nuclear New","IRA",0
+"Haiku","2025","Nuclear New","IRA",0
+"Haiku","2030","Nuclear New","IRA",0
+"Haiku","2035","Nuclear New","IRA",0
+"IPM-E","2035","Nuclear New","IRA",0
+"IPM-N","2025","Nuclear New","IRA",0
+"IPM-N","2030","Nuclear New","IRA",0
+"IPM-N","2035","Nuclear New","IRA",0
+"MARKAL","2025","Nuclear New","IRA",0
+"MARKAL","2030","Nuclear New","IRA",0
+"MARKAL","2035","Nuclear New","IRA",0
+"NEMS-RHG","2025","Nuclear New","IRA",0
+"NEMS-RHG","2030","Nuclear New","IRA",0
+"NEMS-RHG","2035","Nuclear New","IRA",0
+"ReEDS","2025","Nuclear New","IRA",0
+"ReEDS","2030","Nuclear New","IRA",0
+"ReEDS","2035","Nuclear New","IRA",0
+"REGEN","2025","Nuclear New","IRA",0.908749998922595
+"REGEN","2030","Nuclear New","IRA",-4.35984937041667e-10
+"REGEN","2035","Nuclear New","IRA",-9.59762047614277e-11
+"RIO","2025","Nuclear New","IRA",0
+"RIO","2030","Nuclear New","IRA",0.2
+"RIO","2035","Nuclear New","IRA",0
+"2021","2021","Hydro","IRA",0
+"EPS","2025","Hydro","IRA",-0.0447500000000005
+"EPS","2030","Hydro","IRA",-0.126599999999999
+"EPS","2035","Hydro","IRA",-0.103999999999999
+"E4ST","2035","Hydro","IRA",0
+"GCAM","2025","Hydro","IRA",7.16693516121675
+"GCAM","2030","Hydro","IRA",-0.0130759216185993
+"GCAM","2035","Hydro","IRA",-0.537391327574599
+"Haiku","2025","Hydro","IRA",-0.23228525
+"Haiku","2030","Hydro","IRA",0.000799999999998136
+"Haiku","2035","Hydro","IRA",0
+"IPM-E","2035","Hydro","IRA",0.862499999800002
+"IPM-N","2025","Hydro","IRA",5.89714505725
+"IPM-N","2030","Hydro","IRA",0.709521354199998
+"IPM-N","2035","Hydro","IRA",-0.000279999999997926
+"MARKAL","2025","Hydro","IRA",-0.295000000000002
+"MARKAL","2030","Hydro","IRA",0
+"MARKAL","2035","Hydro","IRA",0
+"NEMS-RHG","2025","Hydro","IRA",-0.172378500000001
+"NEMS-RHG","2030","Hydro","IRA",0.000288399999999456
+"NEMS-RHG","2035","Hydro","IRA",0
+"ReEDS","2025","Hydro","IRA",0.77110025
+"ReEDS","2030","Hydro","IRA",0.27191018
+"ReEDS","2035","Hydro","IRA",0.11739
+"REGEN","2025","Hydro","IRA",0.159978994458129
+"REGEN","2030","Hydro","IRA",0
+"REGEN","2035","Hydro","IRA",0
+"RIO","2025","Hydro","IRA",1
+"RIO","2030","Hydro","IRA",0.2
+"RIO","2035","Hydro","IRA",0
+"2021","2021","Bio/Other","IRA",0
+"EPS","2025","Bio/Other","IRA",-11.74275
+"EPS","2030","Bio/Other","IRA",-0.0036
+"EPS","2035","Bio/Other","IRA",0
+"E4ST","2035","Bio/Other","IRA",0
+"GCAM","2025","Bio/Other","IRA",-7.30647593016232
+"GCAM","2030","Bio/Other","IRA",-0.00566092906594022
+"GCAM","2035","Bio/Other","IRA",-0.26270108669594
+"Haiku","2025","Bio/Other","IRA",-8.909455
+"Haiku","2030","Bio/Other","IRA",0
+"Haiku","2035","Bio/Other","IRA",0
+"IPM-E","2035","Bio/Other","IRA",0
+"IPM-N","2025","Bio/Other","IRA",-10.260223
+"IPM-N","2030","Bio/Other","IRA",-0.0016
+"IPM-N","2035","Bio/Other","IRA",0.000220000000000198
+"MARKAL","2025","Bio/Other","IRA",-9.4275
+"MARKAL","2030","Bio/Other","IRA",0
+"MARKAL","2035","Bio/Other","IRA",0
+"NEMS-RHG","2025","Bio/Other","IRA",-9.45320025
+"NEMS-RHG","2030","Bio/Other","IRA",0.2843224
+"NEMS-RHG","2035","Bio/Other","IRA",0.2536436
+"ReEDS","2025","Bio/Other","IRA",-10.152825
+"ReEDS","2030","Bio/Other","IRA",-0.10622
+"ReEDS","2035","Bio/Other","IRA",-0.16642
+"REGEN","2025","Bio/Other","IRA",-10.0658603081222
+"REGEN","2030","Bio/Other","IRA",0.0149593455248779
+"REGEN","2035","Bio/Other","IRA",-0.00272991838915182
+"RIO","2025","Bio/Other","IRA",-9.625
+"RIO","2030","Bio/Other","IRA",-0.1
+"RIO","2035","Bio/Other","IRA",-0.4
+"2021","2021","Bio CCS","IRA",0
+"EPS","2025","Bio CCS","IRA",0
+"EPS","2030","Bio CCS","IRA",0
+"EPS","2035","Bio CCS","IRA",0
+"E4ST","2035","Bio CCS","IRA",0
+"GCAM","2025","Bio CCS","IRA",0
+"GCAM","2030","Bio CCS","IRA",0
+"GCAM","2035","Bio CCS","IRA",0
+"Haiku","2025","Bio CCS","IRA",0
+"Haiku","2030","Bio CCS","IRA",0
+"Haiku","2035","Bio CCS","IRA",0
+"IPM-E","2035","Bio CCS","IRA",0
+"IPM-N","2025","Bio CCS","IRA",0
+"IPM-N","2030","Bio CCS","IRA",0
+"IPM-N","2035","Bio CCS","IRA",0
+"MARKAL","2025","Bio CCS","IRA",0
+"MARKAL","2030","Bio CCS","IRA",0
+"MARKAL","2035","Bio CCS","IRA",0
+"NEMS-RHG","2025","Bio CCS","IRA",0
+"NEMS-RHG","2030","Bio CCS","IRA",0
+"NEMS-RHG","2035","Bio CCS","IRA",0
+"ReEDS","2025","Bio CCS","IRA",0
+"ReEDS","2030","Bio CCS","IRA",0
+"ReEDS","2035","Bio CCS","IRA",0
+"REGEN","2025","Bio CCS","IRA",0.00275567285192286
+"REGEN","2030","Bio CCS","IRA",0.160555256901668
+"REGEN","2035","Bio CCS","IRA",3.1035867209539e-10
+"RIO","2025","Bio CCS","IRA",0
+"RIO","2030","Bio CCS","IRA",0
+"RIO","2035","Bio CCS","IRA",0
+"2021","2021","Coal","IRA",0
+"EPS","2025","Coal","IRA",-15.6855
+"EPS","2030","Coal","IRA",-17.6736
+"EPS","2035","Coal","IRA",-10.3096
+"E4ST","2035","Coal","IRA",-0.19662325630355
+"GCAM","2025","Coal","IRA",-14.9199873971852
+"GCAM","2030","Coal","IRA",-16.7507865356551
+"GCAM","2035","Coal","IRA",-13.2329628110996
+"Haiku","2025","Coal","IRA",-11.5320693681715
+"Haiku","2030","Coal","IRA",-6.14338286413075
+"Haiku","2035","Coal","IRA",-1.3388230157243
+"IPM-E","2035","Coal","IRA",-5.25695349414745
+"IPM-N","2025","Coal","IRA",-25.8596577273195
+"IPM-N","2030","Coal","IRA",-8.57735753209348
+"IPM-N","2035","Coal","IRA",-1.8178962584
+"MARKAL","2025","Coal","IRA",-19.095
+"MARKAL","2030","Coal","IRA",-7.504
+"MARKAL","2035","Coal","IRA",-7.49599999999999
+"NEMS-RHG","2025","Coal","IRA",-19.7128205
+"NEMS-RHG","2030","Coal","IRA",-11.3658828
+"NEMS-RHG","2035","Coal","IRA",-2.5003602
+"ReEDS","2025","Coal","IRA",-6.848563192154
+"ReEDS","2030","Coal","IRA",-15.150183692879
+"ReEDS","2035","Coal","IRA",-1.43835284071846
+"REGEN","2025","Coal","IRA",-15.0054412563198
+"REGEN","2030","Coal","IRA",-13.9237768222656
+"REGEN","2035","Coal","IRA",-10.5686168246509
+"RIO","2025","Coal","IRA",-9.4
+"RIO","2030","Coal","IRA",-12.8
+"RIO","2035","Coal","IRA",-6.2
+"2021","2021","Coal CCS","IRA",0
+"EPS","2025","Coal CCS","IRA",0
+"EPS","2030","Coal CCS","IRA",0
+"EPS","2035","Coal CCS","IRA",0
+"E4ST","2035","Coal CCS","IRA",0.0968702312702391
+"GCAM","2025","Coal CCS","IRA",0
+"GCAM","2030","Coal CCS","IRA",0
+"GCAM","2035","Coal CCS","IRA",0
+"Haiku","2025","Coal CCS","IRA",0
+"Haiku","2030","Coal CCS","IRA",0.155644859933099
+"Haiku","2035","Coal CCS","IRA",0.0252504353536785
+"IPM-E","2035","Coal CCS","IRA",0.270273209799999
+"IPM-N","2025","Coal CCS","IRA",1.5
+"IPM-N","2030","Coal CCS","IRA",2.7334845772
+"IPM-N","2035","Coal CCS","IRA",0
+"MARKAL","2025","Coal CCS","IRA",0
+"MARKAL","2030","Coal CCS","IRA",3.236
+"MARKAL","2035","Coal CCS","IRA",25.624
+"NEMS-RHG","2025","Coal CCS","IRA",0
+"NEMS-RHG","2030","Coal CCS","IRA",0
+"NEMS-RHG","2035","Coal CCS","IRA",0
+"ReEDS","2025","Coal CCS","IRA",0
+"ReEDS","2030","Coal CCS","IRA",7.61373215854114
+"ReEDS","2035","Coal CCS","IRA",0.58481600367798
+"REGEN","2025","Coal CCS","IRA",2.05555658698097
+"REGEN","2030","Coal CCS","IRA",4.02072994583455
+"REGEN","2035","Coal CCS","IRA",8.10854906774239e-08
+"RIO","2025","Coal CCS","IRA",0
+"RIO","2030","Coal CCS","IRA",0
+"RIO","2035","Coal CCS","IRA",0
+"2021","2021","NGCC","IRA",0
+"EPS","2025","NGCC","IRA",-2.0485
+"EPS","2030","NGCC","IRA",-14.1024
+"EPS","2035","NGCC","IRA",-15.3816
+"E4ST","2035","NGCC","IRA",-2.58164790489402
+"GCAM","2025","NGCC","IRA",21.9625355316586
+"GCAM","2030","NGCC","IRA",-9.07190014007788
+"GCAM","2035","NGCC","IRA",-2.86362957943227
+"Haiku","2025","NGCC","IRA",22.2355444965405
+"Haiku","2030","NGCC","IRA",-1.52545027421556
+"Haiku","2035","NGCC","IRA",-1.42746141492069
+"IPM-E","2035","NGCC","IRA",-0.735316772800604
+"IPM-N","2025","NGCC","IRA",5.56509403299992
+"IPM-N","2030","NGCC","IRA",1.2848750614
+"IPM-N","2035","NGCC","IRA",0.854571212799999
+"MARKAL","2025","NGCC","IRA",41.1125
+"MARKAL","2030","NGCC","IRA",-10.656
+"MARKAL","2035","NGCC","IRA",-13.152
+"NEMS-RHG","2025","NGCC","IRA",6.59346725
+"NEMS-RHG","2030","NGCC","IRA",5.821422
+"NEMS-RHG","2035","NGCC","IRA",4.13149539999999
+"ReEDS","2025","NGCC","IRA",2.5458650860585
+"ReEDS","2030","NGCC","IRA",-0.302899727653801
+"ReEDS","2035","NGCC","IRA",-0.441073160594408
+"REGEN","2025","NGCC","IRA",-1.2363428129445
+"REGEN","2030","NGCC","IRA",1.38364342017991
+"REGEN","2035","NGCC","IRA",-1.90916742048322
+"RIO","2025","NGCC","IRA",8.09999999999999
+"RIO","2030","NGCC","IRA",4.5
+"RIO","2035","NGCC","IRA",-3.8
+"2021","2021","NGCC CCS","IRA",0
+"EPS","2025","NGCC CCS","IRA",0
+"EPS","2030","NGCC CCS","IRA",0
+"EPS","2035","NGCC CCS","IRA",0
+"E4ST","2035","NGCC CCS","IRA",6.44182692851864e-05
+"GCAM","2025","NGCC CCS","IRA",8.18306028915367
+"GCAM","2030","NGCC CCS","IRA",6.27117088908818
+"GCAM","2035","NGCC CCS","IRA",0.21243166282074
+"Haiku","2025","NGCC CCS","IRA",0
+"Haiku","2030","NGCC CCS","IRA",0
+"Haiku","2035","NGCC CCS","IRA",0
+"IPM-E","2035","NGCC CCS","IRA",0.742611759
+"IPM-N","2025","NGCC CCS","IRA",0
+"IPM-N","2030","NGCC CCS","IRA",0
+"IPM-N","2035","NGCC CCS","IRA",0
+"MARKAL","2025","NGCC CCS","IRA",0
+"MARKAL","2030","NGCC CCS","IRA",1.986
+"MARKAL","2035","NGCC CCS","IRA",0
+"NEMS-RHG","2025","NGCC CCS","IRA",0
+"NEMS-RHG","2030","NGCC CCS","IRA",0
+"NEMS-RHG","2035","NGCC CCS","IRA",0
+"ReEDS","2025","NGCC CCS","IRA",0
+"ReEDS","2030","NGCC CCS","IRA",0
+"ReEDS","2035","NGCC CCS","IRA",0
+"REGEN","2025","NGCC CCS","IRA",0.0221444551049644
+"REGEN","2030","NGCC CCS","IRA",5.32476780876201e-07
+"REGEN","2035","NGCC CCS","IRA",7.60560362439433e-08
+"RIO","2025","NGCC CCS","IRA",0.125
+"RIO","2030","NGCC CCS","IRA",0.1
+"RIO","2035","NGCC CCS","IRA",0
+"2021","2021","NGGT","IRA",0
+"EPS","2025","NGGT","IRA",-7.67525
+"EPS","2030","NGGT","IRA",7.68
+"EPS","2035","NGGT","IRA",26.7
+"E4ST","2035","NGGT","IRA",-0.267407521364171
+"GCAM","2025","NGGT","IRA",-8.7097051143866
+"GCAM","2030","NGGT","IRA",-4.36795191929676
+"GCAM","2035","NGGT","IRA",-1.37878461231924
+"Haiku","2025","NGGT","IRA",-19.330362842768
+"Haiku","2030","NGGT","IRA",0.260240000000005
+"Haiku","2035","NGGT","IRA",0.153980000000001
+"IPM-E","2035","NGGT","IRA",1.5265750218
+"IPM-N","2025","NGGT","IRA",-0.807203152
+"IPM-N","2030","NGGT","IRA",-1.027943246
+"IPM-N","2035","NGGT","IRA",0.574514379599998
+"MARKAL","2025","NGGT","IRA",-53
+"MARKAL","2030","NGGT","IRA",0
+"MARKAL","2035","NGGT","IRA",0
+"NEMS-RHG","2025","NGGT","IRA",9.796813
+"NEMS-RHG","2030","NGGT","IRA",12.1828578
+"NEMS-RHG","2035","NGGT","IRA",11.0092214
+"ReEDS","2025","NGGT","IRA",-23.2150518648617
+"ReEDS","2030","NGGT","IRA",-1.0863782260856
+"ReEDS","2035","NGGT","IRA",0.549115368086601
+"REGEN","2025","NGGT","IRA",-4.81929172819466
+"REGEN","2030","NGGT","IRA",-0.967095758938962
+"REGEN","2035","NGGT","IRA",-2.1868409731449
+"RIO","2025","NGGT","IRA",-17.375
+"RIO","2030","NGGT","IRA",-0.3
+"RIO","2035","NGGT","IRA",-0.4
+"2021","2021","Hydrogen Blue","IRA",0
+"EPS","2025","Hydrogen Blue","IRA",0
+"EPS","2030","Hydrogen Blue","IRA",0
+"EPS","2035","Hydrogen Blue","IRA",0
+"E4ST","2035","Hydrogen Blue","IRA",0
+"GCAM","2025","Hydrogen Blue","IRA",0
+"GCAM","2030","Hydrogen Blue","IRA",0
+"GCAM","2035","Hydrogen Blue","IRA",0
+"Haiku","2025","Hydrogen Blue","IRA",0
+"Haiku","2030","Hydrogen Blue","IRA",0
+"Haiku","2035","Hydrogen Blue","IRA",0
+"IPM-E","2035","Hydrogen Blue","IRA",0
+"IPM-N","2025","Hydrogen Blue","IRA",0
+"IPM-N","2030","Hydrogen Blue","IRA",0
+"IPM-N","2035","Hydrogen Blue","IRA",0
+"MARKAL","2025","Hydrogen Blue","IRA",0
+"MARKAL","2030","Hydrogen Blue","IRA",0
+"MARKAL","2035","Hydrogen Blue","IRA",0
+"NEMS-RHG","2025","Hydrogen Blue","IRA",0
+"NEMS-RHG","2030","Hydrogen Blue","IRA",0
+"NEMS-RHG","2035","Hydrogen Blue","IRA",0
+"ReEDS","2025","Hydrogen Blue","IRA",0
+"ReEDS","2030","Hydrogen Blue","IRA",0
+"ReEDS","2035","Hydrogen Blue","IRA",0
+"REGEN","2025","Hydrogen Blue","IRA",0
+"REGEN","2030","Hydrogen Blue","IRA",0
+"REGEN","2035","Hydrogen Blue","IRA",0
+"RIO","2025","Hydrogen Blue","IRA",0
+"RIO","2030","Hydrogen Blue","IRA",0
+"RIO","2035","Hydrogen Blue","IRA",0
+"2021","2021","onshore wind","IRA",0
+"EPS","2025","onshore wind","IRA",17.0145
+"EPS","2030","onshore wind","IRA",45.256
+"EPS","2035","onshore wind","IRA",52.902
+"E4ST","2035","onshore wind","IRA",12.2022907563741
+"GCAM","2025","onshore wind","IRA",34.4058
+"GCAM","2030","onshore wind","IRA",28.24622
+"GCAM","2035","onshore wind","IRA",9.54766
+"Haiku","2025","onshore wind","IRA",32.9007845047318
+"Haiku","2030","onshore wind","IRA",18.5333651523734
+"Haiku","2035","onshore wind","IRA",11.1828335466804
+"IPM-E","2035","onshore wind","IRA",32.4512832182
+"IPM-N","2025","onshore wind","IRA",-0.987976409750004
+"IPM-N","2030","onshore wind","IRA",16.9692737274
+"IPM-N","2035","onshore wind","IRA",22.7148000002
+"MARKAL","2025","onshore wind","IRA",2.46
+"MARKAL","2030","onshore wind","IRA",0
+"MARKAL","2035","onshore wind","IRA",0
+"NEMS-RHG","2025","onshore wind","IRA",3.4318635
+"NEMS-RHG","2030","onshore wind","IRA",42.953723
+"NEMS-RHG","2035","onshore wind","IRA",14.9143124
+"ReEDS","2025","onshore wind","IRA",10.886376621417
+"ReEDS","2030","onshore wind","IRA",29.263421571605
+"ReEDS","2035","onshore wind","IRA",17.3830609584772
+"REGEN","2025","onshore wind","IRA",0.169133364025832
+"REGEN","2030","onshore wind","IRA",3.81108235171417
+"REGEN","2035","onshore wind","IRA",31.1390000157776
+"RIO","2025","onshore wind","IRA",11.125
+"RIO","2030","onshore wind","IRA",47.1
+"RIO","2035","onshore wind","IRA",37.4
+"2021","2021","Solar Utility","IRA",0
+"EPS","2025","Solar Utility","IRA",27.06725
+"EPS","2030","Solar Utility","IRA",50.0064
+"EPS","2035","Solar Utility","IRA",49.1664
+"E4ST","2035","Solar Utility","IRA",16.0823916293537
+"GCAM","2025","Solar Utility","IRA",45.1647003140743
+"GCAM","2030","Solar Utility","IRA",47.6982856860964
+"GCAM","2035","Solar Utility","IRA",29.6563739081907
+"Haiku","2025","Solar Utility","IRA",47.476152129817
+"Haiku","2030","Solar Utility","IRA",34.4876662322179
+"Haiku","2035","Solar Utility","IRA",14.1536570965278
+"IPM-E","2035","Solar Utility","IRA",20.3869727112
+"IPM-N","2025","Solar Utility","IRA",16.4727391156475
+"IPM-N","2030","Solar Utility","IRA",7.0039242932
+"IPM-N","2035","Solar Utility","IRA",25.7999999996
+"MARKAL","2025","Solar Utility","IRA",26.2425
+"MARKAL","2030","Solar Utility","IRA",2.486
+"MARKAL","2035","Solar Utility","IRA",2.49
+"NEMS-RHG","2025","Solar Utility","IRA",24.52150175
+"NEMS-RHG","2030","Solar Utility","IRA",45.7812898
+"NEMS-RHG","2035","Solar Utility","IRA",65.6080638
+"ReEDS","2025","Solar Utility","IRA",20.9611949197793
+"ReEDS","2030","Solar Utility","IRA",45.1046195207974
+"ReEDS","2035","Solar Utility","IRA",20.567501354372
+"REGEN","2025","Solar Utility","IRA",18.7313801018639
+"REGEN","2030","Solar Utility","IRA",1.51507910364622
+"REGEN","2035","Solar Utility","IRA",22.9102586084222
+"RIO","2025","Solar Utility","IRA",16.25
+"RIO","2030","Solar Utility","IRA",40.6
+"RIO","2035","Solar Utility","IRA",95.6
+"2021","2021","Solar Distributed","IRA",0
+"EPS","2025","Solar Distributed","IRA",8.410825
+"EPS","2030","Solar Distributed","IRA",6.29156
+"EPS","2035","Solar Distributed","IRA",5.88878
+"E4ST","2035","Solar Distributed","IRA",0
+"GCAM","2025","Solar Distributed","IRA",-4.60997531407427
+"GCAM","2030","Solar Distributed","IRA",2.36291431390359
+"GCAM","2035","Solar Distributed","IRA",3.41872609180928
+"Haiku","2025","Solar Distributed","IRA",-8.25
+"Haiku","2030","Solar Distributed","IRA",0
+"Haiku","2035","Solar Distributed","IRA",0
+"IPM-E","2035","Solar Distributed","IRA",3.99275287189066
+"IPM-N","2025","Solar Distributed","IRA",-8.25
+"IPM-N","2030","Solar Distributed","IRA",0
+"IPM-N","2035","Solar Distributed","IRA",0
+"MARKAL","2025","Solar Distributed","IRA",-8.25
+"MARKAL","2030","Solar Distributed","IRA",0
+"MARKAL","2035","Solar Distributed","IRA",0
+"NEMS-RHG","2025","Solar Distributed","IRA",7.25556375
+"NEMS-RHG","2030","Solar Distributed","IRA",10.4022278
+"NEMS-RHG","2035","Solar Distributed","IRA",3.7090134
+"ReEDS","2025","Solar Distributed","IRA",3.56456818181817
+"ReEDS","2030","Solar Distributed","IRA",9.81447272727272
+"ReEDS","2035","Solar Distributed","IRA",6.92880909090894
+"REGEN","2025","Solar Distributed","IRA",7.90347862894795
+"REGEN","2030","Solar Distributed","IRA",6.74941565821954
+"REGEN","2035","Solar Distributed","IRA",4.97748431769681
+"RIO","2025","Solar Distributed","IRA",13.125
+"RIO","2030","Solar Distributed","IRA",8.9
+"RIO","2035","Solar Distributed","IRA",7.4
+"2021","2021","Hydrogen Green","IRA",0
+"EPS","2025","Hydrogen Green","IRA",0
+"EPS","2030","Hydrogen Green","IRA",0
+"EPS","2035","Hydrogen Green","IRA",0
+"E4ST","2035","Hydrogen Green","IRA",0.00812170875633651
+"GCAM","2025","Hydrogen Green","IRA",0
+"GCAM","2030","Hydrogen Green","IRA",0
+"GCAM","2035","Hydrogen Green","IRA",0
+"Haiku","2025","Hydrogen Green","IRA",0
+"Haiku","2030","Hydrogen Green","IRA",0
+"Haiku","2035","Hydrogen Green","IRA",0
+"IPM-E","2035","Hydrogen Green","IRA",0
+"IPM-N","2025","Hydrogen Green","IRA",0
+"IPM-N","2030","Hydrogen Green","IRA",0
+"IPM-N","2035","Hydrogen Green","IRA",0
+"MARKAL","2025","Hydrogen Green","IRA",0
+"MARKAL","2030","Hydrogen Green","IRA",0
+"MARKAL","2035","Hydrogen Green","IRA",0
+"NEMS-RHG","2025","Hydrogen Green","IRA",0
+"NEMS-RHG","2030","Hydrogen Green","IRA",0
+"NEMS-RHG","2035","Hydrogen Green","IRA",0
+"ReEDS","2025","Hydrogen Green","IRA",0
+"ReEDS","2030","Hydrogen Green","IRA",0
+"ReEDS","2035","Hydrogen Green","IRA",0
+"REGEN","2025","Hydrogen Green","IRA",2.47372445052898e-07
+"REGEN","2030","Hydrogen Green","IRA",0.00456725069554337
+"REGEN","2035","Hydrogen Green","IRA",7.53799018399226e-08
+"RIO","2025","Hydrogen Green","IRA",0
+"RIO","2030","Hydrogen Green","IRA",0
+"RIO","2035","Hydrogen Green","IRA",0
+"2021","2021","Storage","IRA",0
+"EPS","2025","Storage","IRA",-3.374575
+"EPS","2030","Storage","IRA",9.4642
+"EPS","2035","Storage","IRA",12.49186
+"E4ST","2035","Storage","IRA",6.16843898037564
+"GCAM","2025","Storage","IRA",-5.88320662994864
+"GCAM","2030","Storage","IRA",1.92409486943855
+"GCAM","2035","Storage","IRA",0.552901486406512
+"Haiku","2025","Storage","IRA",2.56249540565109
+"Haiku","2030","Storage","IRA",1.87302755826014
+"Haiku","2035","Storage","IRA",1.66596913753353
+"IPM-E","2035","Storage","IRA",6.0320134422
+"IPM-N","2025","Storage","IRA",-0.308210775249999
+"IPM-N","2030","Storage","IRA",3.7379276264
+"IPM-N","2035","Storage","IRA",12.9
+"MARKAL","2025","Storage","IRA",1.26
+"MARKAL","2030","Storage","IRA",0.223999999999999
+"MARKAL","2035","Storage","IRA",0.289999999999999
+"NEMS-RHG","2025","Storage","IRA",4.14856325
+"NEMS-RHG","2030","Storage","IRA",7.6321838
+"NEMS-RHG","2035","Storage","IRA",6.7120492
+"ReEDS","2025","Storage","IRA",2.2447564183572
+"ReEDS","2030","Storage","IRA",15.0520473908038
+"ReEDS","2035","Storage","IRA",14.2011178097492
+"REGEN","2025","Storage","IRA",5.64867508976289
+"REGEN","2030","Storage","IRA",4.40166392688919
+"REGEN","2035","Storage","IRA",16.4744542179856
+"RIO","2025","Storage","IRA",1.05
+"RIO","2030","Storage","IRA",11.8
+"RIO","2035","Storage","IRA",37.8
+"2021","2021","Nuclear Existing","Ref",0
+"EPS","2025","Nuclear Existing","Ref",-0.47025
+"EPS","2030","Nuclear Existing","Ref",-2.2
+"EPS","2035","Nuclear Existing","Ref",-1.4
+"E4ST","2035","Nuclear Existing","Ref",-1.98169779233207
+"GCAM","2025","Nuclear Existing","Ref",1.188937895138
+"GCAM","2030","Nuclear Existing","Ref",0.0796648238860001
+"GCAM","2035","Nuclear Existing","Ref",-0.0140238860314014
+"Haiku","2025","Nuclear Existing","Ref",0.385400000000001
+"Haiku","2030","Nuclear Existing","Ref",-1.25946
+"Haiku","2035","Nuclear Existing","Ref",-3.75854
+"IPM-E","2035","Nuclear Existing","Ref",-3.5475506572
+"IPM-N","2025","Nuclear Existing","Ref",-1.14909999999998
+"IPM-N","2030","Nuclear Existing","Ref",-5.50956608100001
+"IPM-N","2035","Nuclear Existing","Ref",-10.9799246838
+"MARKAL","2025","Nuclear Existing","Ref",0.350000000000001
+"MARKAL","2030","Nuclear Existing","Ref",-0.220000000000002
+"MARKAL","2035","Nuclear Existing","Ref",0
+"NEMS-RHG","2025","Nuclear Existing","Ref",0.1296845
+"NEMS-RHG","2030","Nuclear Existing","Ref",-2.6807984
+"NEMS-RHG","2035","Nuclear Existing","Ref",-1.3466064
+"ReEDS","2025","Nuclear Existing","Ref",0.361699999999999
+"ReEDS","2030","Nuclear Existing","Ref",-0.447999999999999
+"ReEDS","2035","Nuclear Existing","Ref",0
+"REGEN","2025","Nuclear Existing","Ref",-0.692608250000003
+"REGEN","2030","Nuclear Existing","Ref",0
+"REGEN","2035","Nuclear Existing","Ref",0
+"RIO","2025","Nuclear Existing","Ref",0.125
+"RIO","2030","Nuclear Existing","Ref",-0.2
+"RIO","2035","Nuclear Existing","Ref",-0.2
+"2021","2021","Nuclear New","Ref",0
+"EPS","2025","Nuclear New","Ref",0.75
+"EPS","2030","Nuclear New","Ref",0
+"EPS","2035","Nuclear New","Ref",0
+"E4ST","2035","Nuclear New","Ref",0.0164900826542097
+"GCAM","2025","Nuclear New","Ref",0
+"GCAM","2030","Nuclear New","Ref",0
+"GCAM","2035","Nuclear New","Ref",0
+"Haiku","2025","Nuclear New","Ref",0
+"Haiku","2030","Nuclear New","Ref",0
+"Haiku","2035","Nuclear New","Ref",0
+"IPM-E","2035","Nuclear New","Ref",0
+"IPM-N","2025","Nuclear New","Ref",0
+"IPM-N","2030","Nuclear New","Ref",0
+"IPM-N","2035","Nuclear New","Ref",0
+"MARKAL","2025","Nuclear New","Ref",0
+"MARKAL","2030","Nuclear New","Ref",0
+"MARKAL","2035","Nuclear New","Ref",0
+"NEMS-RHG","2025","Nuclear New","Ref",0
+"NEMS-RHG","2030","Nuclear New","Ref",0
+"NEMS-RHG","2035","Nuclear New","Ref",0
+"ReEDS","2025","Nuclear New","Ref",0
+"ReEDS","2030","Nuclear New","Ref",0
+"ReEDS","2035","Nuclear New","Ref",0
+"REGEN","2025","Nuclear New","Ref",0.908749999556538
+"REGEN","2030","Nuclear New","Ref",5.68607383399922e-11
+"REGEN","2035","Nuclear New","Ref",5.69420066653947e-11
+"RIO","2025","Nuclear New","Ref",0
+"RIO","2030","Nuclear New","Ref",0
+"RIO","2035","Nuclear New","Ref",0
+"2021","2021","Hydro","Ref",0
+"EPS","2025","Hydro","Ref",-0.0447500000000005
+"EPS","2030","Hydro","Ref",-0.126599999999999
+"EPS","2035","Hydro","Ref",-0.00300000000000011
+"E4ST","2035","Hydro","Ref",0
+"GCAM","2025","Hydro","Ref",7.4354132792265
+"GCAM","2030","Hydro","Ref",-0.00906793382899878
+"GCAM","2035","Hydro","Ref",-0.4495239724382
+"Haiku","2025","Hydro","Ref",-0.23228525
+"Haiku","2030","Hydro","Ref",0.000799999999998136
+"Haiku","2035","Hydro","Ref",0
+"IPM-E","2035","Hydro","Ref",0.575
+"IPM-N","2025","Hydro","Ref",6.15711045675
+"IPM-N","2030","Hydro","Ref",0.2506690346
+"IPM-N","2035","Hydro","Ref",-0.000280000000000769
+"MARKAL","2025","Hydro","Ref",-0.300000000000001
+"MARKAL","2030","Hydro","Ref",0
+"MARKAL","2035","Hydro","Ref",0
+"NEMS-RHG","2025","Hydro","Ref",-0.160312749999999
+"NEMS-RHG","2030","Hydro","Ref",-0.00391999999999939
+"NEMS-RHG","2035","Hydro","Ref",0
+"ReEDS","2025","Hydro","Ref",0.808449
+"ReEDS","2030","Hydro","Ref",0.15528210750256
+"ReEDS","2035","Hydro","Ref",0.0997710000000012
+"REGEN","2025","Hydro","Ref",0.159978994458129
+"REGEN","2030","Hydro","Ref",0
+"REGEN","2035","Hydro","Ref",0
+"RIO","2025","Hydro","Ref",1
+"RIO","2030","Hydro","Ref",0.2
+"RIO","2035","Hydro","Ref",0
+"2021","2021","Bio/Other","Ref",0
+"EPS","2025","Bio/Other","Ref",-10.49625
+"EPS","2030","Bio/Other","Ref",0.0180000000000001
+"EPS","2035","Bio/Other","Ref",0
+"E4ST","2035","Bio/Other","Ref",0
+"GCAM","2025","Bio/Other","Ref",-7.03236041398628
+"GCAM","2030","Bio/Other","Ref",0.09038269889856
+"GCAM","2035","Bio/Other","Ref",-0.16378841585252
+"Haiku","2025","Bio/Other","Ref",-8.909455
+"Haiku","2030","Bio/Other","Ref",0
+"Haiku","2035","Bio/Other","Ref",0
+"IPM-E","2035","Bio/Other","Ref",0.0178985605999999
+"IPM-N","2025","Bio/Other","Ref",-10.240723
+"IPM-N","2030","Bio/Other","Ref",0.0185000000000001
+"IPM-N","2035","Bio/Other","Ref",0.0172999999999998
+"MARKAL","2025","Bio/Other","Ref",-9.425
+"MARKAL","2030","Bio/Other","Ref",0
+"MARKAL","2035","Bio/Other","Ref",0
+"NEMS-RHG","2025","Bio/Other","Ref",-9.463086
+"NEMS-RHG","2030","Bio/Other","Ref",0.1990084
+"NEMS-RHG","2035","Bio/Other","Ref",0.208511
+"ReEDS","2025","Bio/Other","Ref",-10.152825
+"ReEDS","2030","Bio/Other","Ref",-0.10622
+"ReEDS","2035","Bio/Other","Ref",-0.16642
+"REGEN","2025","Bio/Other","Ref",-10.0624558025361
+"REGEN","2030","Bio/Other","Ref",0.0177350081531962
+"REGEN","2035","Bio/Other","Ref",0.0168051419914946
+"RIO","2025","Bio/Other","Ref",-9.625
+"RIO","2030","Bio/Other","Ref",-0.1
+"RIO","2035","Bio/Other","Ref",0
+"2021","2021","Bio CCS","Ref",0
+"EPS","2025","Bio CCS","Ref",0
+"EPS","2030","Bio CCS","Ref",0
+"EPS","2035","Bio CCS","Ref",0
+"E4ST","2035","Bio CCS","Ref",0
+"GCAM","2025","Bio CCS","Ref",0
+"GCAM","2030","Bio CCS","Ref",0
+"GCAM","2035","Bio CCS","Ref",0
+"Haiku","2025","Bio CCS","Ref",0
+"Haiku","2030","Bio CCS","Ref",0
+"Haiku","2035","Bio CCS","Ref",0
+"IPM-E","2035","Bio CCS","Ref",0
+"IPM-N","2025","Bio CCS","Ref",0
+"IPM-N","2030","Bio CCS","Ref",0
+"IPM-N","2035","Bio CCS","Ref",0
+"MARKAL","2025","Bio CCS","Ref",0
+"MARKAL","2030","Bio CCS","Ref",0
+"MARKAL","2035","Bio CCS","Ref",0
+"NEMS-RHG","2025","Bio CCS","Ref",0
+"NEMS-RHG","2030","Bio CCS","Ref",0
+"NEMS-RHG","2035","Bio CCS","Ref",0
+"ReEDS","2025","Bio CCS","Ref",0
+"ReEDS","2030","Bio CCS","Ref",0
+"ReEDS","2035","Bio CCS","Ref",0
+"REGEN","2025","Bio CCS","Ref",4.82734388648094e-09
+"REGEN","2030","Bio CCS","Ref",7.66692530795916e-09
+"REGEN","2035","Bio CCS","Ref",0.111827005188847
+"RIO","2025","Bio CCS","Ref",0
+"RIO","2030","Bio CCS","Ref",0
+"RIO","2035","Bio CCS","Ref",0
+"2021","2021","Coal","Ref",0
+"EPS","2025","Coal","Ref",-11.2145
+"EPS","2030","Coal","Ref",-8.416
+"EPS","2035","Coal","Ref",-1.6832
+"E4ST","2035","Coal","Ref",-2.15262574667013
+"GCAM","2025","Coal","Ref",5.47598435483175
+"GCAM","2030","Coal","Ref",-1.7985833350146
+"GCAM","2035","Coal","Ref",-3.2532657934428
+"Haiku","2025","Coal","Ref",-9.31933109601165
+"Haiku","2030","Coal","Ref",-2.70238771779506
+"Haiku","2035","Coal","Ref",-0.769209104023622
+"IPM-E","2035","Coal","Ref",-4.7068273958
+"IPM-N","2025","Coal","Ref",-26.2426821588755
+"IPM-N","2030","Coal","Ref",-4.02566693779999
+"IPM-N","2035","Coal","Ref",-3.20341193480001
+"MARKAL","2025","Coal","Ref",-16.0375
+"MARKAL","2030","Coal","Ref",-3.222
+"MARKAL","2035","Coal","Ref",-4.274
+"NEMS-RHG","2025","Coal","Ref",-11.8497985
+"NEMS-RHG","2030","Coal","Ref",-12.0436188
+"NEMS-RHG","2035","Coal","Ref",-2.2260406
+"ReEDS","2025","Coal","Ref",-6.20192287311825
+"ReEDS","2030","Coal","Ref",-5.7811121340788
+"ReEDS","2035","Coal","Ref",-1.67996
+"REGEN","2025","Coal","Ref",-10.2909532703406
+"REGEN","2030","Coal","Ref",-10.2283679184246
+"REGEN","2035","Coal","Ref",-3.58216343534349
+"RIO","2025","Coal","Ref",-8.4
+"RIO","2030","Coal","Ref",-11.2
+"RIO","2035","Coal","Ref",-3.6
+"2021","2021","Coal CCS","Ref",0
+"EPS","2025","Coal CCS","Ref",0
+"EPS","2030","Coal CCS","Ref",0
+"EPS","2035","Coal CCS","Ref",0
+"E4ST","2035","Coal CCS","Ref",0.359477139553592
+"GCAM","2025","Coal CCS","Ref",0
+"GCAM","2030","Coal CCS","Ref",0
+"GCAM","2035","Coal CCS","Ref",0
+"Haiku","2025","Coal CCS","Ref",0
+"Haiku","2030","Coal CCS","Ref",0
+"Haiku","2035","Coal CCS","Ref",0
+"IPM-E","2035","Coal CCS","Ref",0
+"IPM-N","2025","Coal CCS","Ref",0.60072776325
+"IPM-N","2030","Coal CCS","Ref",0
+"IPM-N","2035","Coal CCS","Ref",0
+"MARKAL","2025","Coal CCS","Ref",0
+"MARKAL","2030","Coal CCS","Ref",0
+"MARKAL","2035","Coal CCS","Ref",0
+"NEMS-RHG","2025","Coal CCS","Ref",0
+"NEMS-RHG","2030","Coal CCS","Ref",0
+"NEMS-RHG","2035","Coal CCS","Ref",0
+"ReEDS","2025","Coal CCS","Ref",0
+"ReEDS","2030","Coal CCS","Ref",0
+"ReEDS","2035","Coal CCS","Ref",0
+"REGEN","2025","Coal CCS","Ref",3.10474456631902e-07
+"REGEN","2030","Coal CCS","Ref",1.69864227999264e-07
+"REGEN","2035","Coal CCS","Ref",1.00329502142158e-07
+"RIO","2025","Coal CCS","Ref",0
+"RIO","2030","Coal CCS","Ref",0
+"RIO","2035","Coal CCS","Ref",0
+"2021","2021","NGCC","Ref",0
+"EPS","2025","NGCC","Ref",14.0975
+"EPS","2030","NGCC","Ref",-1.0296
+"EPS","2035","NGCC","Ref",-0.249599999999998
+"E4ST","2035","NGCC","Ref",-3.9760780335517
+"GCAM","2025","NGCC","Ref",34.6599366503771
+"GCAM","2030","NGCC","Ref",-3.54295816492944
+"GCAM","2035","NGCC","Ref",6.2790824396308
+"Haiku","2025","NGCC","Ref",27.4721942841609
+"Haiku","2030","NGCC","Ref",-0.0645129018043235
+"Haiku","2035","NGCC","Ref",1.18573658822392
+"IPM-E","2035","NGCC","Ref",2.799385755
+"IPM-N","2025","NGCC","Ref",6.27607895074989
+"IPM-N","2030","NGCC","Ref",8.87700365700001
+"IPM-N","2035","NGCC","Ref",5.5446173324
+"MARKAL","2025","NGCC","Ref",47.55
+"MARKAL","2030","NGCC","Ref",-7.7
+"MARKAL","2035","NGCC","Ref",-1.96
+"NEMS-RHG","2025","NGCC","Ref",4.39913374999999
+"NEMS-RHG","2030","NGCC","Ref",6.2963452
+"NEMS-RHG","2035","NGCC","Ref",4.11224360000001
+"ReEDS","2025","NGCC","Ref",3.28794471833724
+"ReEDS","2030","NGCC","Ref",7.3864868574046
+"ReEDS","2035","NGCC","Ref",4.953271303773
+"REGEN","2025","NGCC","Ref",-4.91916002244446
+"REGEN","2030","NGCC","Ref",4.12853906443286
+"REGEN","2035","NGCC","Ref",10.811866440323
+"RIO","2025","NGCC","Ref",8.22499999999999
+"RIO","2030","NGCC","Ref",9.2
+"RIO","2035","NGCC","Ref",1.4
+"2021","2021","NGCC CCS","Ref",0
+"EPS","2025","NGCC CCS","Ref",0
+"EPS","2030","NGCC CCS","Ref",0
+"EPS","2035","NGCC CCS","Ref",0
+"E4ST","2035","NGCC CCS","Ref",1.26130371968268
+"GCAM","2025","NGCC CCS","Ref",0.042897876206954
+"GCAM","2030","NGCC CCS","Ref",0.0162206826801116
+"GCAM","2035","NGCC CCS","Ref",-0.0505389836456748
+"Haiku","2025","NGCC CCS","Ref",0
+"Haiku","2030","NGCC CCS","Ref",0
+"Haiku","2035","NGCC CCS","Ref",0
+"IPM-E","2035","NGCC CCS","Ref",0
+"IPM-N","2025","NGCC CCS","Ref",0
+"IPM-N","2030","NGCC CCS","Ref",0
+"IPM-N","2035","NGCC CCS","Ref",0
+"MARKAL","2025","NGCC CCS","Ref",0
+"MARKAL","2030","NGCC CCS","Ref",0
+"MARKAL","2035","NGCC CCS","Ref",0
+"NEMS-RHG","2025","NGCC CCS","Ref",0
+"NEMS-RHG","2030","NGCC CCS","Ref",0.0412742
+"NEMS-RHG","2035","NGCC CCS","Ref",0
+"ReEDS","2025","NGCC CCS","Ref",0
+"ReEDS","2030","NGCC CCS","Ref",0
+"ReEDS","2035","NGCC CCS","Ref",0
+"REGEN","2025","NGCC CCS","Ref",1.44247254779172e-07
+"REGEN","2030","NGCC CCS","Ref",2.82715344184529e-07
+"REGEN","2035","NGCC CCS","Ref",2.17277219033965e-07
+"RIO","2025","NGCC CCS","Ref",0.125
+"RIO","2030","NGCC CCS","Ref",0.1
+"RIO","2035","NGCC CCS","Ref",0
+"2021","2021","NGGT","Ref",0
+"EPS","2025","NGGT","Ref",-19.61275
+"EPS","2030","NGGT","Ref",9.12
+"EPS","2035","NGGT","Ref",6.42
+"E4ST","2035","NGGT","Ref",-1.10745836564259
+"GCAM","2025","NGGT","Ref",-2.59614161278139
+"GCAM","2030","NGGT","Ref",-1.70586874607714
+"GCAM","2035","NGGT","Ref",3.02326191537779
+"Haiku","2025","NGGT","Ref",-18.0697615453525
+"Haiku","2030","NGGT","Ref",-0.449041037932369
+"Haiku","2035","NGGT","Ref",0.275999999999999
+"IPM-E","2035","NGGT","Ref",3.75933497100001
+"IPM-N","2025","NGGT","Ref",-2.73403053925
+"IPM-N","2030","NGGT","Ref",-0.128412867399999
+"IPM-N","2035","NGGT","Ref",0.0431031902000029
+"MARKAL","2025","NGGT","Ref",-53
+"MARKAL","2030","NGGT","Ref",0
+"MARKAL","2035","NGGT","Ref",0
+"NEMS-RHG","2025","NGGT","Ref",7.0709825
+"NEMS-RHG","2030","NGGT","Ref",6.46328139999999
+"NEMS-RHG","2035","NGGT","Ref",5.4638018
+"ReEDS","2025","NGGT","Ref",-22.2499014565733
+"ReEDS","2030","NGGT","Ref",-1.2752728292
+"ReEDS","2035","NGGT","Ref",-0.3864914800696
+"REGEN","2025","NGGT","Ref",-8.22224577530523
+"REGEN","2030","NGGT","Ref",-1.52563225759925
+"REGEN","2035","NGGT","Ref",-3.10406963458217
+"RIO","2025","NGGT","Ref",-17.375
+"RIO","2030","NGGT","Ref",0.1
+"RIO","2035","NGGT","Ref",-0.6
+"2021","2021","Hydrogen Blue","Ref",0
+"EPS","2025","Hydrogen Blue","Ref",0
+"EPS","2030","Hydrogen Blue","Ref",0
+"EPS","2035","Hydrogen Blue","Ref",0
+"E4ST","2035","Hydrogen Blue","Ref",0
+"GCAM","2025","Hydrogen Blue","Ref",0
+"GCAM","2030","Hydrogen Blue","Ref",0
+"GCAM","2035","Hydrogen Blue","Ref",0
+"Haiku","2025","Hydrogen Blue","Ref",0
+"Haiku","2030","Hydrogen Blue","Ref",0
+"Haiku","2035","Hydrogen Blue","Ref",0
+"IPM-E","2035","Hydrogen Blue","Ref",0
+"IPM-N","2025","Hydrogen Blue","Ref",0
+"IPM-N","2030","Hydrogen Blue","Ref",0
+"IPM-N","2035","Hydrogen Blue","Ref",0
+"MARKAL","2025","Hydrogen Blue","Ref",0
+"MARKAL","2030","Hydrogen Blue","Ref",0
+"MARKAL","2035","Hydrogen Blue","Ref",0
+"NEMS-RHG","2025","Hydrogen Blue","Ref",0
+"NEMS-RHG","2030","Hydrogen Blue","Ref",0
+"NEMS-RHG","2035","Hydrogen Blue","Ref",0
+"ReEDS","2025","Hydrogen Blue","Ref",0
+"ReEDS","2030","Hydrogen Blue","Ref",0
+"ReEDS","2035","Hydrogen Blue","Ref",0
+"REGEN","2025","Hydrogen Blue","Ref",0
+"REGEN","2030","Hydrogen Blue","Ref",0
+"REGEN","2035","Hydrogen Blue","Ref",0
+"RIO","2025","Hydrogen Blue","Ref",0
+"RIO","2030","Hydrogen Blue","Ref",0
+"RIO","2035","Hydrogen Blue","Ref",0
+"2021","2021","onshore wind","Ref",0
+"EPS","2025","onshore wind","Ref",-1.50675
+"EPS","2030","onshore wind","Ref",11.614
+"EPS","2035","onshore wind","Ref",8.19800000000001
+"E4ST","2035","onshore wind","Ref",12.9710093583425
+"GCAM","2025","onshore wind","Ref",2.5573
+"GCAM","2030","onshore wind","Ref",9.66598
+"GCAM","2035","onshore wind","Ref",3.40554
+"Haiku","2025","onshore wind","Ref",21.0288352646491
+"Haiku","2030","onshore wind","Ref",7.23537268639079
+"Haiku","2035","onshore wind","Ref",5.78079017441142
+"IPM-E","2035","onshore wind","Ref",10.4143060144
+"IPM-N","2025","onshore wind","Ref",5.93557925024999
+"IPM-N","2030","onshore wind","Ref",5.54569081459999
+"IPM-N","2035","onshore wind","Ref",10.9409677052
+"MARKAL","2025","onshore wind","Ref",5.225
+"MARKAL","2030","onshore wind","Ref",1.88
+"MARKAL","2035","onshore wind","Ref",0.839999999999998
+"NEMS-RHG","2025","onshore wind","Ref",13.211188
+"NEMS-RHG","2030","onshore wind","Ref",4.292998
+"NEMS-RHG","2035","onshore wind","Ref",3.2393188
+"ReEDS","2025","onshore wind","Ref",1.74255594207575
+"ReEDS","2030","onshore wind","Ref",4.739100534185
+"ReEDS","2035","onshore wind","Ref",7.247630787721
+"REGEN","2025","onshore wind","Ref",-0.0484085029282539
+"REGEN","2030","onshore wind","Ref",3.86400031679509
+"REGEN","2035","onshore wind","Ref",-0.419722110427625
+"RIO","2025","onshore wind","Ref",11.125
+"RIO","2030","onshore wind","Ref",16.7
+"RIO","2035","onshore wind","Ref",16.2
+"2021","2021","Solar Utility","Ref",0
+"EPS","2025","Solar Utility","Ref",14.26775
+"EPS","2030","Solar Utility","Ref",15.7212
+"EPS","2035","Solar Utility","Ref",15.2328
+"E4ST","2035","Solar Utility","Ref",21.8862385029126
+"GCAM","2025","Solar Utility","Ref",31.642461079607
+"GCAM","2030","Solar Utility","Ref",22.1044889202003
+"GCAM","2035","Solar Utility","Ref",11.601507365494
+"Haiku","2025","Solar Utility","Ref",27.3307675945974
+"Haiku","2030","Solar Utility","Ref",15.1548459612293
+"Haiku","2035","Solar Utility","Ref",19.2513673283822
+"IPM-E","2035","Solar Utility","Ref",13.6413310252
+"IPM-N","2025","Solar Utility","Ref",18.3808439216475
+"IPM-N","2030","Solar Utility","Ref",2.37152455080001
+"IPM-N","2035","Solar Utility","Ref",19.5918269292
+"MARKAL","2025","Solar Utility","Ref",34.45
+"MARKAL","2030","Solar Utility","Ref",2.48
+"MARKAL","2035","Solar Utility","Ref",2.5
+"NEMS-RHG","2025","Solar Utility","Ref",38.162928
+"NEMS-RHG","2030","Solar Utility","Ref",6.8777452
+"NEMS-RHG","2035","Solar Utility","Ref",24.3861384
+"ReEDS","2025","Solar Utility","Ref",13.7408610731055
+"ReEDS","2030","Solar Utility","Ref",12.5101738923886
+"ReEDS","2035","Solar Utility","Ref",3.7677310883894
+"REGEN","2025","Solar Utility","Ref",20.1071349295326
+"REGEN","2030","Solar Utility","Ref",1.01655161240481
+"REGEN","2035","Solar Utility","Ref",0.260556798045144
+"RIO","2025","Solar Utility","Ref",14.25
+"RIO","2030","Solar Utility","Ref",28.2
+"RIO","2035","Solar Utility","Ref",39.6
+"2021","2021","Solar Distributed","Ref",0
+"EPS","2025","Solar Distributed","Ref",5.8745
+"EPS","2030","Solar Distributed","Ref",2.9098
+"EPS","2035","Solar Distributed","Ref",2.764
+"E4ST","2035","Solar Distributed","Ref",0
+"GCAM","2025","Solar Distributed","Ref",-5.092186079607
+"GCAM","2030","Solar Distributed","Ref",3.44903107979967
+"GCAM","2035","Solar Distributed","Ref",1.720272634506
+"Haiku","2025","Solar Distributed","Ref",-8.25
+"Haiku","2030","Solar Distributed","Ref",0
+"Haiku","2035","Solar Distributed","Ref",0
+"IPM-E","2035","Solar Distributed","Ref",3.99275287189066
+"IPM-N","2025","Solar Distributed","Ref",-8.25
+"IPM-N","2030","Solar Distributed","Ref",0
+"IPM-N","2035","Solar Distributed","Ref",0
+"MARKAL","2025","Solar Distributed","Ref",-8.25
+"MARKAL","2030","Solar Distributed","Ref",0
+"MARKAL","2035","Solar Distributed","Ref",0
+"NEMS-RHG","2025","Solar Distributed","Ref",6.68325525
+"NEMS-RHG","2030","Solar Distributed","Ref",9.741471
+"NEMS-RHG","2035","Solar Distributed","Ref",5.5539292
+"ReEDS","2025","Solar Distributed","Ref",-0.27536363636365
+"ReEDS","2030","Solar Distributed","Ref",5.65292727272728
+"ReEDS","2035","Solar Distributed","Ref",5.35491818181818
+"REGEN","2025","Solar Distributed","Ref",5.98335578795452
+"REGEN","2030","Solar Distributed","Ref",4.39413812150399
+"REGEN","2035","Solar Distributed","Ref",4.39596529208997
+"RIO","2025","Solar Distributed","Ref",9.875
+"RIO","2030","Solar Distributed","Ref",5.5
+"RIO","2035","Solar Distributed","Ref",6.2
+"2021","2021","Hydrogen Green","Ref",0
+"EPS","2025","Hydrogen Green","Ref",0
+"EPS","2030","Hydrogen Green","Ref",0
+"EPS","2035","Hydrogen Green","Ref",0
+"E4ST","2035","Hydrogen Green","Ref",0.393393990934421
+"GCAM","2025","Hydrogen Green","Ref",0
+"GCAM","2030","Hydrogen Green","Ref",0
+"GCAM","2035","Hydrogen Green","Ref",0
+"Haiku","2025","Hydrogen Green","Ref",0
+"Haiku","2030","Hydrogen Green","Ref",0
+"Haiku","2035","Hydrogen Green","Ref",0
+"IPM-E","2035","Hydrogen Green","Ref",0
+"IPM-N","2025","Hydrogen Green","Ref",0
+"IPM-N","2030","Hydrogen Green","Ref",0
+"IPM-N","2035","Hydrogen Green","Ref",0
+"MARKAL","2025","Hydrogen Green","Ref",0
+"MARKAL","2030","Hydrogen Green","Ref",0
+"MARKAL","2035","Hydrogen Green","Ref",0
+"NEMS-RHG","2025","Hydrogen Green","Ref",0
+"NEMS-RHG","2030","Hydrogen Green","Ref",0
+"NEMS-RHG","2035","Hydrogen Green","Ref",0
+"ReEDS","2025","Hydrogen Green","Ref",0
+"ReEDS","2030","Hydrogen Green","Ref",0
+"ReEDS","2035","Hydrogen Green","Ref",0
+"REGEN","2025","Hydrogen Green","Ref",2.77630391126813e-07
+"REGEN","2030","Hydrogen Green","Ref",1.49582998055414e-07
+"REGEN","2035","Hydrogen Green","Ref",8.61980090503495e-08
+"RIO","2025","Hydrogen Green","Ref",0
+"RIO","2030","Hydrogen Green","Ref",0
+"RIO","2035","Hydrogen Green","Ref",0
+"2021","2021","Storage","Ref",0
+"EPS","2025","Storage","Ref",-4.444
+"EPS","2030","Storage","Ref",1.0012
+"EPS","2035","Storage","Ref",0.706
+"E4ST","2035","Storage","Ref",14.1878100478802
+"GCAM","2025","Storage","Ref",-6.22338008337095
+"GCAM","2030","Storage","Ref",0.669929787004466
+"GCAM","2035","Storage","Ref",0.418938365731306
+"Haiku","2025","Storage","Ref",2.59475381770242
+"Haiku","2030","Storage","Ref",1.85622082861908
+"Haiku","2035","Storage","Ref",0.839466304659679
+"IPM-E","2035","Storage","Ref",3.1784689896
+"IPM-N","2025","Storage","Ref",-0.000573475999998685
+"IPM-N","2030","Storage","Ref",1.3631009406
+"IPM-N","2035","Storage","Ref",9.25586258
+"MARKAL","2025","Storage","Ref",2.7
+"MARKAL","2030","Storage","Ref",0.52
+"MARKAL","2035","Storage","Ref",0.439999999999999
+"NEMS-RHG","2025","Storage","Ref",2.11479925
+"NEMS-RHG","2030","Storage","Ref",0.834947199999999
+"NEMS-RHG","2035","Storage","Ref",0.907419000000002
+"ReEDS","2025","Storage","Ref",1.2278796661262
+"ReEDS","2030","Storage","Ref",1.51947976440274
+"ReEDS","2035","Storage","Ref",2.69725217091194
+"REGEN","2025","Storage","Ref",5.64867516421257
+"REGEN","2030","Storage","Ref",0.426829553916572
+"REGEN","2035","Storage","Ref",0.453021851118203
+"RIO","2025","Storage","Ref",0.0499999999999998
+"RIO","2030","Storage","Ref",4
+"RIO","2035","Storage","Ref",17.4
+"E4ST","2030","Bio CCS","IRA",0
+"E4ST","2030","Bio/Other","IRA",-3.87387777777778
+"E4ST","2030","Coal","IRA",-23.0803462528991
+"E4ST","2030","Coal CCS","IRA",7.70339342592483
+"E4ST","2030","Hydro","IRA",-0.142343353474178
+"E4ST","2030","Hydrogen Blue","IRA",0
+"E4ST","2030","Hydrogen Green","IRA",0.320861718532943
+"E4ST","2030","NGCC","IRA",3.96481184828033
+"E4ST","2030","NGCC CCS","IRA",3.69737782870863e-05
+"E4ST","2030","NGGT","IRA",-11.579049027912
+"E4ST","2030","Nuclear Existing","IRA",-1.72506532736323
+"E4ST","2030","Nuclear New","IRA",5.92698232332802e-07
+"E4ST","2030","Solar Distributed","IRA",-3.66666666666667
+"E4ST","2030","Solar Utility","IRA",41.9192950992161
+"E4ST","2030","Storage","IRA",9.01005014047678
+"E4ST","2030","onshore wind","IRA",17.1256131171104
+"IPM-E","2030","Bio CCS","IRA",0
+"IPM-E","2030","Bio/Other","IRA",-4.56973555577778
+"IPM-E","2030","Coal","IRA",-16.6655267562672
+"IPM-E","2030","Coal CCS","IRA",1.03754238177778
+"IPM-E","2030","Hydro","IRA",0.068188889000001
+"IPM-E","2030","Hydrogen Blue","IRA",0
+"IPM-E","2030","Hydrogen Green","IRA",0
+"IPM-E","2030","NGCC","IRA",2.08658026730267
+"IPM-E","2030","NGCC CCS","IRA",0.740194848555556
+"IPM-E","2030","NGGT","IRA",0.435240925762554
+"IPM-E","2030","Nuclear Existing","IRA",-0.404288888888888
+"IPM-E","2030","Nuclear New","IRA",0
+"IPM-E","2030","Solar Distributed","IRA",4.5769458352115
+"IPM-E","2030","Solar Utility","IRA",11.0085076717778
+"IPM-E","2030","Storage","IRA",7.02789037555555
+"IPM-E","2030","onshore wind","IRA",7.94113697544445
+"E4ST","2025","Bio CCS","IRA",0
+"E4ST","2025","Bio/Other","IRA",-3.87387777777778
+"E4ST","2025","Coal","IRA",-23.0803462528991
+"E4ST","2025","Coal CCS","IRA",7.70339342592483
+"E4ST","2025","Hydro","IRA",-0.142343353474178
+"E4ST","2025","Hydrogen Blue","IRA",0
+"E4ST","2025","Hydrogen Green","IRA",0.320861718532943
+"E4ST","2025","NGCC","IRA",3.96481184828033
+"E4ST","2025","NGCC CCS","IRA",3.69737782870863e-05
+"E4ST","2025","NGGT","IRA",-11.579049027912
+"E4ST","2025","Nuclear Existing","IRA",-1.72506532736323
+"E4ST","2025","Nuclear New","IRA",5.92698232332802e-07
+"E4ST","2025","Solar Distributed","IRA",-3.66666666666667
+"E4ST","2025","Solar Utility","IRA",41.9192950992161
+"E4ST","2025","Storage","IRA",9.01005014047678
+"E4ST","2025","onshore wind","IRA",17.1256131171104
+"IPM-E","2025","Bio CCS","IRA",0
+"IPM-E","2025","Bio/Other","IRA",-4.56973555577778
+"IPM-E","2025","Coal","IRA",-16.6655267562672
+"IPM-E","2025","Coal CCS","IRA",1.03754238177778
+"IPM-E","2025","Hydro","IRA",0.0681888889999982
+"IPM-E","2025","Hydrogen Blue","IRA",0
+"IPM-E","2025","Hydrogen Green","IRA",0
+"IPM-E","2025","NGCC","IRA",2.08658026730266
+"IPM-E","2025","NGCC CCS","IRA",0.740194848555556
+"IPM-E","2025","NGGT","IRA",0.435240925762557
+"IPM-E","2025","Nuclear Existing","IRA",-0.404288888888889
+"IPM-E","2025","Nuclear New","IRA",0
+"IPM-E","2025","Solar Distributed","IRA",4.5769458352115
+"IPM-E","2025","Solar Utility","IRA",11.0085076717778
+"IPM-E","2025","Storage","IRA",7.02789037555556
+"IPM-E","2025","onshore wind","IRA",7.94113697544444
+"E4ST","2030","Bio CCS","Ref",0
+"E4ST","2030","Bio/Other","Ref",-3.87387777777778
+"E4ST","2030","Coal","Ref",-11.301856296153
+"E4ST","2030","Coal CCS","Ref",3.25493753905473e-07
+"E4ST","2030","Hydro","Ref",-0.14283528290361
+"E4ST","2030","Hydrogen Blue","Ref",0
+"E4ST","2030","Hydrogen Green","Ref",7.41958201292686e-07
+"E4ST","2030","NGCC","Ref",9.33489116462922
+"E4ST","2030","NGCC CCS","Ref",1.57630371885977e-06
+"E4ST","2030","NGGT","Ref",-12.0411155926232
+"E4ST","2030","Nuclear Existing","Ref",-4.65562834219477
+"E4ST","2030","Nuclear New","Ref",0.190067515392283
+"E4ST","2030","Solar Distributed","Ref",-3.66666666666667
+"E4ST","2030","Solar Utility","Ref",13.5207763524359
+"E4ST","2030","Storage","Ref",-0.140379095852544
+"E4ST","2030","onshore wind","Ref",5.68914515467478
+"IPM-E","2030","Bio CCS","Ref",0
+"IPM-E","2030","Bio/Other","Ref",-4.567254606
+"IPM-E","2030","Coal","Ref",-10.9229817512972
+"IPM-E","2030","Coal CCS","Ref",0.0595126198888889
+"IPM-E","2030","Hydro","Ref",0.0311333334444441
+"IPM-E","2030","Hydrogen Blue","Ref",0
+"IPM-E","2030","Hydrogen Green","Ref",0
+"IPM-E","2030","NGCC","Ref",1.08660578230978
+"IPM-E","2030","NGCC CCS","Ref",0.364573748222222
+"IPM-E","2030","NGGT","Ref",4.17210721122222
+"IPM-E","2030","Nuclear Existing","Ref",-1.93504478833333
+"IPM-E","2030","Nuclear New","Ref",0
+"IPM-E","2030","Solar Distributed","Ref",4.5769458352115
+"IPM-E","2030","Solar Utility","Ref",9.57699648633333
+"IPM-E","2030","Storage","Ref",3.08286278466667
+"IPM-E","2030","onshore wind","Ref",4.73580104188889
+"E4ST","2025","Bio CCS","Ref",0
+"E4ST","2025","Bio/Other","Ref",-3.87387777777778
+"E4ST","2025","Coal","Ref",-11.301856296153
+"E4ST","2025","Coal CCS","Ref",3.25493753905473e-07
+"E4ST","2025","Hydro","Ref",-0.142835282903611
+"E4ST","2025","Hydrogen Blue","Ref",0
+"E4ST","2025","Hydrogen Green","Ref",7.41958201292686e-07
+"E4ST","2025","NGCC","Ref",9.33489116462921
+"E4ST","2025","NGCC CCS","Ref",1.57630371885977e-06
+"E4ST","2025","NGGT","Ref",-12.0411155926232
+"E4ST","2025","Nuclear Existing","Ref",-4.65562834219477
+"E4ST","2025","Nuclear New","Ref",0.190067515392283
+"E4ST","2025","Solar Distributed","Ref",-3.66666666666667
+"E4ST","2025","Solar Utility","Ref",13.5207763524359
+"E4ST","2025","Storage","Ref",-0.140379095852545
+"E4ST","2025","onshore wind","Ref",5.68914515467478
+"IPM-E","2025","Bio CCS","Ref",0
+"IPM-E","2025","Bio/Other","Ref",-4.567254606
+"IPM-E","2025","Coal","Ref",-10.9229817512972
+"IPM-E","2025","Coal CCS","Ref",0.0595126198888889
+"IPM-E","2025","Hydro","Ref",0.0311333334444441
+"IPM-E","2025","Hydrogen Blue","Ref",0
+"IPM-E","2025","Hydrogen Green","Ref",0
+"IPM-E","2025","NGCC","Ref",1.08660578230977
+"IPM-E","2025","NGCC CCS","Ref",0.364573748222222
+"IPM-E","2025","NGGT","Ref",4.17210721122223
+"IPM-E","2025","Nuclear Existing","Ref",-1.93504478833333
+"IPM-E","2025","Nuclear New","Ref",0
+"IPM-E","2025","Solar Distributed","Ref",4.5769458352115
+"IPM-E","2025","Solar Utility","Ref",9.57699648633333
+"IPM-E","2025","Storage","Ref",3.08286278466667
+"IPM-E","2025","onshore wind","Ref",4.73580104188889

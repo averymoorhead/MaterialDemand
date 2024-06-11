@@ -274,9 +274,9 @@ capacities_y_all <- capacities_y_all %>% select(-value)
 print(colnames(interpolated_values))
 capacities_y_all_filtered <- capacities_y_all %>%
   filter(!(year == 2025 | year == 2030) | !(model %in% c("IPM-E", "E4ST")))
-capacities_y <- rbind(capacities_y_all_filtered,final_interpolated_values_IRA,final_interpolated_values_ref)
+capacities_y_all_models <- rbind(capacities_y_all_filtered,final_interpolated_values_IRA,final_interpolated_values_ref)
 #capacities_y <- capacities_y_all[c(-1,-4)]
-capacities_y <-   capacities_y %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) %>% filter(technology != "Wind")
+capacities_y <-   capacities_y_all_models %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) %>% filter(technology != "Wind")
 
 
 
@@ -454,12 +454,14 @@ folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
 file_path1 <- file.path(folder_path, "initial_year.csv")
 file_path2 <- file.path(folder_path, "multi_model_capacities.csv")
 file_path3 <- file.path(folder_path, "repeat_capacities_new.csv")
+file_path4 <- file.path(folder_path, "mutli_model_capacities_all_models.csv")
 
 
 # Write each dataframe to its respective CSV file in the specified folder
 write.csv(initial_year, file = file_path1, row.names = FALSE)
 write.csv(multi_model_capacities, file = file_path2, row.names = FALSE)
 write.csv(repeat_capacities_new, file = file_path3, row.names = FALSE)
+write.csv(capacities_y_all_models, file = file_path4, row.names = FALSE)
 
 ```
 ```{r}

@@ -8,6 +8,12 @@ description: "Material intensity plot with jitters for methods section"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
+
+intensity<- read.csv("intensity_data.csv")
+
 ```
 
 
@@ -18,8 +24,8 @@ library(ggplot2)
 library(dplyr)
 library(purrr)
 
-
-df <- subset(intensity, technology %in% c("onshore wind", "utility-scale solar pv", "Nuclear New"))
+print(unique(intensity$technology))
+df <- subset(intensity, technology %in% c("onshore wind", "utility-scale solar pv", "Nuclear New", "offshore wind", "Gas", "Biomass", "Coal"))
 df$Material[df$Material == "Cu"] <- "Copper"
 df$Material[df$Material == "Al"] <- "Aluminum"
 df$Material[df$Material == "Mn"] <- "Manganese"
@@ -31,7 +37,7 @@ df$Material[df$Material == "Ag"] <- "Silver"
 df$Material[df$Material == "Ga"] <- "Gallium"
 df$Material[df$Material == "Se"] <- "Selenium"
 df$Material[df$Material == "Ni"] <- "Nickel"
-df <- df[!(df$Material %in%  "Fiberglass"), ]
+#df <- df[!(df$Material %in%  "Fiberglass"), ]
 df <- df[df$value != 0, ]
 df <- df %>% arrange(Material)
 
@@ -39,13 +45,13 @@ y_min_values <-   df %>% group_by(Material) %>% summarise(max = max(value)) #ave
 y_min_values <- (y_min_values$max)*-0.25
 ymin_df <- data.frame(
   Material = unique(df$Material),
-  ymin = sample(seq(-100, -10000, length.out = 21))
+  ymin = sample(seq(-100, -10000, length.out = 24))
 )
 
 count_numbers <- aggregate(value ~ Material + technology, data = df, FUN = function(x) sum(x >= 0))
 
 # Create a mapping for the x-axis labels with abbreviations
-x_label_mapping <- c("onshore wind" = "OW", "utility-scale solar pv" = "PV", "Nuclear New" = "NU")
+x_label_mapping <- c("onshore wind" = "ON", "utility-scale solar pv" = "PV", "Nuclear New" = "NU", "offshore wind" = "OFF", "Gas" = "GA", "Coal" = "CO", "Biomass" = "BI" )
 
 # Create a mapping for the y-axis label
 y_label_mapping <- "Material Intensity (tonnes/GW)"
@@ -65,12 +71,18 @@ library(cowplot)
 # Define a fixed width for each plot
 plot_width <- 4  # Adjust this value as needed
 
-# Create a color scale for technologies
-tech_colors <- c("onshore wind" = "#00BA38", "Nuclear New" = "#F8766D", "utility-scale solar pv" = "#619CFF")
+# Create a color scale for technologies, including "offshore wind"
+tech_colors <- c(
+  "onshore wind" = "#00BA38",
+  "Nuclear New" = "#F8766D",
+  "utility-scale solar pv" = "#619CFF",
+  "offshore wind" = "#FF69B4",
+  "Gas" = "#00B4F0",
+  "Coal" ="#C77CFF",
+  "Biomass" = "#DE8C00"
+)
 
 # Create individual plot function
-
-  
 create_individual_plot <- function(material_name, y_min_limit) {
   material_df <- subset(df, Material == material_name)
   count_numbers_material <- subset(count_numbers, Material == material_name)
@@ -89,15 +101,21 @@ create_individual_plot <- function(material_name, y_min_limit) {
       strip.text = element_text(size = 12),
       legend.position = "none",
       ylab = NULL,
-      axis.title.y = element_text(angle = 0, vjust = 0.5, hjust = 0),
-      plot.background = element_rect(fill = "white")
+      #axis.title.y = element_text(angle = 0, vjust = 0.5, hjust = 0),
+      plot.background = element_rect(fill = "white"),
+       
+             axis.text.x = element_text(size = 14), # Increase size of x-axis text
+      axis.text.y = element_text(size = 14), # Increase size of y-axis text
+      axis.title.x = element_text(size = 16), # Increase size of x-axis title
+      axis.title.y = element_text(size = 16), # Increase size of y-axis title
+      plot.title = element_text(size = 20, hjust = 0.5)
     ) +
     scale_fill_manual(values = tech_colors)
   
   # Check if each technology has only one unique value within the material
   for (tech in unique(material_df$technology)) {
     if (tech_counts[tech_counts$Var1 == tech, "Freq"] == 1) {
-  p <- p + geom_point(data = subset(material_df, technology == tech), aes(fill = technology))
+      p <- p + geom_point(data = subset(material_df, technology == tech), aes(fill = technology))
     } else if (material_name == "Zinc" && length(unique(subset(material_df, technology == tech)$value)) == 1) {
       p <- p + geom_jitter(data = subset(material_df, technology == tech), position = position_dodge(width = 0.2), aes(fill = technology))
     } else {
@@ -112,15 +130,6 @@ create_individual_plot <- function(material_name, y_min_limit) {
   
   return(p)
 }
-
- 
-
-
-# Create individual plots using purrr::map2
-plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
-
-# Arrange the plots using patchwork
-final_plot <- wrap_plots(plotlist = plot_list, ncol = 4)
 
 # Create individual plots using purrr::map2
 plot_list <- map2(ymin_df$Material, ymin_df$ymin, create_individual_plot)
@@ -143,29 +152,29 @@ final_plot_with_title <- cowplot::plot_grid(
 
 # Print or display the final plot with the common y-axis title
 final_plot_1 <- wrap_plots(plotlist = plot_list, ncol = 4)
-ggsave("materialintensityplot.png", plot = final_plot_1, width = 8, height = 10, units = "in", dpi = 300)
+#ggsave("materialintensityplot.png", plot = final_plot_1, width = 8, height = 10, units = "in", dpi = 300)
 
 
 ```
 ```{r}
 # Splitting into two sets of plots
-plot_list_1 <- plot_list[1:12]
-plot_list_2 <- plot_list[13:21]
+plot_list_1 <- plot_list[1:24]
+#plot_list_2 <- plot_list[13:21]
 
 # Arrange the first set of plots using patchwork
-final_plot_1 <- wrap_plots(plotlist = plot_list_1, ncol = 4)
+final_plot_1 <- wrap_plots(plotlist = plot_list_1, ncol = 3)
 
 # Arrange the second set of plots using patchwork
-final_plot_2 <- wrap_plots(plotlist = plot_list_2, ncol = 4)
+#final_plot_2 <- wrap_plots(plotlist = plot_list_2, ncol = 4)
 
 # Add common y-axis titles for both plots
 common_y_axis_title_1 <- ggdraw() +
-  draw_label("Material Intensity (tonnes/GW)", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  draw_label("Material Intensity (metric tonnes/GW)", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
-common_y_axis_title_2 <- ggdraw() +
-  draw_label("Material Intensity (tonnes/GW)", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
-  theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
+#common_y_axis_title_2 <- ggdraw() +
+  # draw_label("Material Intensity (tonnes/GW)", angle = 90, size = 10, hjust = 0.5, vjust = 0.5) +
+  # theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
 
 # Combine each set of plots with its corresponding common y-axis title
 final_plot_with_title_1 <- cowplot::plot_grid(
@@ -174,17 +183,19 @@ final_plot_with_title_1 <- cowplot::plot_grid(
   nrow = 1,
   rel_widths = c(0.1, 0.9)
 )
-
-final_plot_with_title_2 <- cowplot::plot_grid(
-  common_y_axis_title_2,
-  final_plot_2 + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
-  nrow = 1,
-  rel_widths = c(0.1, 0.9)
-)
+#
+# #final_plot_with_title_2 <- cowplot::plot_grid(
+#   common_y_axis_title_2,
+#   final_plot_2 + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
+#   nrow = 1,
+#   rel_widths = c(0.1, 0.9)
+# )
 
 # Display or print the two plots separately
 final_plot_with_title_1
-final_plot_with_title_2
+# final_plot_with_title_2
+
+ggsave("materialintensityplot.png", plot = final_plot_with_title_1, width = 13, height = 17, units = "in", dpi = 300)
 
 ```
 

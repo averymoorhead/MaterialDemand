@@ -695,7 +695,12 @@ for (material in materials) {
                        breaks = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref")) +
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +
     theme_minimal() +
-    theme(legend.position = "none")
+    theme(legend.position = "none",
+           axis.text.x = element_text(size = 14), # Increase size of x-axis text
+      axis.text.y = element_text(size = 14), # Increase size of y-axis text
+      axis.title.x = element_text(size = 16), # Increase size of x-axis title
+      axis.title.y = element_text(size = 16), # Increase size of y-axis title
+      plot.title = element_text(size = 20, hjust = 0.5))
   
   # Filter data for the specified conditions for IRA scenario
   material_subset_ira <- repeat_mc_material_demand_total %>%
@@ -729,12 +734,12 @@ for (material in materials) {
 }
 
 # Combine all plots in the plot list into one greater plot with subplots
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5)
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
 
 # Print the combined plot
 print(combined_plot)
 
-ggsave("repeat_complete_boxplot.jpg", plot = combined_plot, width = 15, height = 10, units = "in", dpi = 300)
+ggsave("repeat_complete_boxplot.jpg", plot = combined_plot, width = 11, height = 14, units = "in", dpi = 300)
 
 
 ```
@@ -909,7 +914,12 @@ for (material in materials) {
                        breaks = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref")) +
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +
     theme_minimal() +
-    theme(legend.position = "none")
+    theme(legend.position = "none",
+          axis.text.x = element_text(size = 14), # Increase size of x-axis text
+      axis.text.y = element_text(size = 14), # Increase size of y-axis text
+      axis.title.x = element_text(size = 16), # Increase size of x-axis title
+      axis.title.y = element_text(size = 16), # Increase size of y-axis title
+      plot.title = element_text(size = 20, hjust = 0.5) )
   #print(unique(multi_model_mc_material_demand_total$technology))
   # Filter data for the specified conditions for IRA scenario
   material_subset_ira <- multi_model_mc_material_demand_total %>%
@@ -942,12 +952,12 @@ for (material in materials) {
 }
 print(p)
 # Combine all plots in the plot list into one greater plot with subplots
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5)
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
 
 # Print the combined plot
 print(combined_plot)
 
-ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 15, height = 10, units = "in", dpi = 300)
+ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 11, height = 14, units = "in", dpi = 300)
 
 
 ```
