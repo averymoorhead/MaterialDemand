@@ -33,6 +33,8 @@ input_usgs<- read.csv("input_usgs.csv")
 material_intensity<- read.csv("intensity_data.csv")
 initial_year<- read.csv("initial_year.csv")
 multi_model_capacities<- read.csv("multi_model_capacities.csv")
+all_multi_model_capacities<- read.csv("mutli_model_capacities_all_models.csv")
+
 repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
 distribution_fits<- read.csv("distribution_fitting_results.csv")
 
@@ -56,6 +58,8 @@ usgs_variables = c("Consumption - US", "Production - US", "Import - US", "Export
 ```{r message=FALSE, warning=FALSE}
 intensity = material_intensity 
 materials <- c(unique(intensity$Material))
+print(materials)
+
 #Check if all material/technology scenarios are present, if not add 0.
 for (material in materials) {
   for (tech in repeat_technologies){  
@@ -91,6 +95,7 @@ multimodel_intensity_mean_df <- subset(multimodel_intensity_mean_df, technology 
 
 multi_model_intensity_mean <- multimodel_intensity_mean_df %>%
   mutate_at(vars(value, min, max), ~ . / 1000)
+
 
 ```
 
@@ -204,7 +209,172 @@ print(unique(materials_demand$technology))
 
 print(unique(capacities_new$technology))
 
+
+
+
 ```
+
+
+```{r}
+# List of models to iterate over
+model_list <- c("EPS", "E4ST", "GCAM", "Haiku", "IPM-E", "IPM-N", "MARKAL", "NEMS-RHG", "ReEDS", "REGEN", "RIO")
+
+# Placeholder for combined results
+all_models_combined <- data.frame()
+
+for (current_model in model_list) {
+  capacities_new <- subset(all_multi_model_capacities, technology %in% multi_model_technologies & model %in% current_model)
+  capacities_new <- subset(capacities_new, year %in% c(2021, 2025, 2030, 2035)) 
+  capacities_new <- capacities_new %>% select(-model)
+  
+  i <- 1
+  Listofmaterials <- unique(trimws(multi_model_intensity_mean$Material))
+  
+  invisible(
+    for (material in c("Glass", "Terbium", "Tin", "Vanadium", "Yttrium", "Zinc", "Aluminum", "Boron", "Cadmium", "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Gallium", "Germanium")) {
+      df_int <- subset(multi_model_intensity_mean, Material %in% material)
+      df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
+      df_cap[df_cap < 0] <- 0
+
+      df_cap$total_demand_mean <- df_cap$newval * df_cap$value
+      df_cap$total_demand_min <- df_cap$newval * df_cap$min
+      df_cap$total_demand_max <- df_cap$newval * df_cap$max
+      
+      colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
+      colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
+      colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
+      
+      df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
+      
+      if (i == 1) {
+        all_models_materials_demand <- df_cap
+      } else {
+        all_models_materials_demand <- all_models_materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+      }
+      i <- i + 1
+    }
+  )
+  
+  i <- 1
+  invisible(
+    for (material in c("Manganese", "Molybdenum", "Neodymium", "Nickel", "Niobium", "Praseodymium", "Selenium", "Silicon", "Silver", "Steel", "Tellurium", "Indium", "Lead", "Magnesium")) {
+      df_int <- subset(multi_model_intensity_mean, Material %in% material)
+      df_cap <- capacities_new %>% left_join(df_int, by = 'technology') 
+      df_cap[df_cap < 0] <- 0
+      
+      df_cap$total_demand_mean <- df_cap$newval * df_cap$value
+      df_cap$total_demand_min <- df_cap$newval * df_cap$min
+      df_cap$total_demand_max <- df_cap$newval * df_cap$max
+      
+      colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
+      colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
+      colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
+      
+      df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
+      
+      if (i == 1) {
+        all_models_materials_demand1 <- df_cap
+      } else {
+        all_models_materials_demand1 <- all_models_materials_demand1 %>% left_join(df_cap, by = c("scenario", "year", "technology"))
+      }
+      i <- i + 1
+    }
+  )
+  
+  all_models_merged_material_demand <- merge(all_models_materials_demand, all_models_materials_demand1, by = c("year", "scenario", "technology"))
+
+  ccs_df <- all_models_merged_material_demand %>% filter(technology %in% c("Gas CCS", "Coal CCS", "Solar Distributed", "NGGT", "Bio CCS"))
+
+  for (i in seq_len(nrow(ccs_df))) {
+    row <- ccs_df[i, ]
+    year <- row$year
+    scenario <- row$scenario
+    technology <- row$technology
+
+    target_technology <- ifelse(technology == "Gas CCS" | technology == "NGGT", "NGCC",
+                         ifelse(technology == "Coal CCS", "Coal",
+                         ifelse(technology == "Bio CCS", "Biomass",
+                         ifelse(technology == "Solar Distributed", "utility-scale solar pv", NA))))
+
+    target_row_idx <- which(all_models_merged_material_demand$year == year & 
+                            all_models_merged_material_demand$scenario == scenario & 
+                            all_models_merged_material_demand$technology == target_technology)
+
+    if (length(target_row_idx) == 1) {
+      all_models_merged_material_demand[target_row_idx, 4:93] <- all_models_merged_material_demand[target_row_idx, 4:93] + row[4:93]
+    }
+  }
+
+  all_models_merged_material_demand <- all_models_merged_material_demand %>% filter(!technology %in% c("Bio CCS", "Gas CCS", "Coal CCS", "Solar Distributed", "NGGT"))
+  all_models_merged_material_demand$technology <- gsub("NGCC", "Gas", all_models_merged_material_demand$technology)
+  all_models_merged_material_demand$model <- current_model
+
+  # Append to the combined dataframe
+  if (nrow(all_models_combined) == 0) {
+    all_models_combined <- all_models_merged_material_demand
+  } else {
+    all_models_combined <- bind_rows(all_models_combined, all_models_merged_material_demand)
+  }
+}
+
+# all_models_combined now contains the results for all models
+print(unique(all_models_combined$model))
+
+
+
+```
+
+```{r}
+
+filter_test_df <- all_models_combined %>% filter(year == 2035) %>% select(Aluminum_max, Aluminum_mean, Aluminum_min, model,year,scenario,technology) %>% group_by (year,scenario,model) %>%   summarise(
+    aluminum_max_sum = sum(Aluminum_max, na.rm = TRUE),
+    aluminum_mean_sum = sum(Aluminum_mean, na.rm = TRUE),
+    aluminum_min_sum = sum(Aluminum_min, na.rm = TRUE)
+  )
+
+technologies_to_sum <- c("Biomass", "Coal", "Hydro", "Gas", "Nuclear New", "onshore wind", "utility-scale solar pv")
+columns_to_sum <- c("Aluminum_mean", "Aluminum_min", "Aluminum_max")
+
+# Function to sum over the specified columns
+sum_columns <- function(df, columns) {
+  result <- df %>% 
+    group_by(year, scenario, model) %>% 
+    summarise(across(all_of(columns), sum, na.rm = TRUE))
+  return(result)
+}
+
+# Filter the relevant technologies
+filtered_df <- all_models_combined %>% filter(technology %in% technologies_to_sum)
+
+# Sum the specified columns for each group
+all_models_sum_df <- sum_columns(filtered_df, columns_to_sum)
+
+# Filter for the year 2035
+year_2035_df <- all_models_sum_df %>% filter(year == 2035)
+
+# Find the mean model
+mean_model <- year_2035_df %>% 
+  slice(which.min(abs(Aluminum_mean - mean(Aluminum_mean)))) %>%
+  select(model)
+
+# Extract the model name
+mean_model_name <- mean_model$model
+
+# Find the max and min models
+max_model <- year_2035_df %>% slice(which.max(Aluminum_max))
+min_model <- year_2035_df %>% slice(which.min(Aluminum_min))
+
+# Combine the model names
+models_to_keep <- unique(c(mean_model_name, max_model$model, min_model$model))
+
+# Filter the original summed DataFrame to keep only the selected models
+filtered_models_sum_df <- all_models_sum_df %>% filter(model %in% models_to_keep)
+
+# View the resulting DataFrame
+print(filtered_models_sum_df)
+
+```
+
 
 
 ```{r}
@@ -286,53 +456,18 @@ repeat_materials_demand <- merged_material_demand
 
 **Material demand simulation (using mean material intensity values and Jenkins et al. (2023) capacity):** This code simulates material demand using mean material intensity values and added capacities estimated based on Jenkins et al. (2023).
 
-```{r message=FALSE, warning=FALSE}
-# # Capacity dataframes subsetted for specific technologies and years
-# repeat_capacities_new <- subset(repeat_capacities_new, technology %in% repeat_technologies)
-# repeat_capacities_new <- subset(repeat_capacities_new, year %in% c(2025, 2030, 2035)) # Subset for specific years
-# names(repeat_capacities_new)[names(repeat_capacities_new) == "run.name"] <- "scenario"
-# repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'ira_mid'] <- 'IRA'
-# repeat_capacities_new$scenario[repeat_capacities_new$scenario == 'baseline'] <- 'REF'
-# 
-# # Material demand simulation
-# # Material demand simulation
-# i <- 1
-# invisible(
-#   for (material in materials) {
-#     df_int <- subset(intensity_mean, Material %in% material)
-#     df_cap <- repeat_capacities_new %>% left_join(df_int, by = 'technology') 
-#     
-#     # Prevent negative values
-#     df_cap[df_cap < 0] <- 0
-#     
-#     # Calculate total demand considering min, max, and mean intensity
-#     df_cap$total_demand_mean <- df_cap$newval * df_cap$value
-#     df_cap$total_demand_min <- df_cap$newval * df_cap$min
-#     df_cap$total_demand_max <- df_cap$newval * df_cap$max
-#     
-#     colnames(df_cap)[colnames(df_cap) == "total_demand_mean"] <- paste0(material, "_mean")
-#     colnames(df_cap)[colnames(df_cap) == "total_demand_min"] <- paste0(material, "_min")
-#     colnames(df_cap)[colnames(df_cap) == "total_demand_max"] <- paste0(material, "_max")
-#     
-#     df_cap <- subset(df_cap, select = -c(Material, newval, value, min, max))
-#     
-#     if (i == 1) {
-#       repeat_materials_demand <- df_cap
-#     } else {
-#       repeat_materials_demand <- repeat_materials_demand %>% left_join(df_cap, by = c("scenario", "year", "technology"))
-#     }
-#     i <- i + 1
-#   }
-# )
-
-```
 
 **Material intensity simulation (using material intensity distributions and Bistline et al. (2023) capacity):** This code simulates material demand using fitted material intensity distributions and added capacities estimated based on Bistline et al. (2023).
 
 ```{r}
+materials <- c(unique(intensity$Material))
+print(unique(intensity$technology))
+print("----")
+print(multi_model_technologies)
+print(materials)
 n <- 1 # number of iterations
 df_mc <- data.frame() 
-
+print(materials)
 for (mat in materials) {
   for (tech in multi_model_technologies) {
     loc <- subset(intensity, Material %in% mat & technology %in% tech)
@@ -392,7 +527,7 @@ for (mat in materials) {
     }
   }
 }
-
+print(colnames(df_mc))
 ```
 
 
@@ -400,6 +535,8 @@ for (mat in materials) {
 ```{r}
 
 library(dplyr)
+ capacities_new <- subset(multi_model_capacities, technology %in% multi_model_technologies)
+ capacities_new <- subset(capacities_new, year %in% c(2021,2025, 2030, 2035)) # Subset for specific years
 
 subset_capacities<- capacities_new 
 # Process df_mc data
@@ -412,13 +549,13 @@ melted_df_mc <- df_mc %>%
 melted_df_mc <- melted_df_mc %>%
   rename(technology = Technology)
 melted_df_mc$technology <- gsub("utility scale solar pv", "utility-scale solar pv", melted_df_mc$technology)
-
+print(unique(melted_df_mc$Material_Technology))
 
 melted_df_mc <- melted_df_mc %>%
   filter(technology %in% multi_model_technologies)
 
 subset_capacities <- subset_capacities %>%
-  filter(technology %in% unique(melted_df_mc$technology))
+     filter(technology %in% unique(melted_df_mc$technology))
 
 melted_df_mc <- melted_df_mc %>%
   filter(technology %in% unique(subset_capacities$technology))
@@ -438,7 +575,8 @@ mc_material_demand <- mc_material_demand %>%
 ```
 ```{r}
 #same thing but for repeat
-
+materials <- c(unique(intensity$Material))
+print(materials)
 n <- 1 # number of iterations
 df_mc <- data.frame() 
 
@@ -561,10 +699,12 @@ mc_material_demand_total <- mc_material_demand %>%
 mc_material_demand_total <- mc_material_demand_total %>%
   mutate(
     total_demand = rowSums(select(., 
-                                   c(Biomass, 'Bio CCS', Coal, 'Coal CCS', 'Gas CCS', NGGT,NGCC, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`,'Solar Distributed',)))
+                                   c(Biomass, 'Bio CCS', Coal, 'Coal CCS', 'Gas CCS', NGGT,NGCC, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`,'Solar Distributed')))
   )
 subset_data <- mc_material_demand_total %>%
-  filter(Material == "Steel", scenario == "IRA", year == 2035)
+  filter(Material == "Steel", scenario == "IRA", year == 2035) %>% mutate(total_demand = rowSums(select(., 
+                                   c(Biomass, 'Bio CCS', Coal, 'Coal CCS', 'Gas CCS', NGGT,NGCC, Hydro, `Nuclear New`, `onshore wind`, `utility-scale solar pv`,'Solar Distributed')))
+  )
 
 repeat_mc_material_demand_total <- repeat_mc_material_demand %>%
   select(-capacity_new, -Intensity_Distribution_Value) %>%  # Exclude irrelevant columns
@@ -591,8 +731,6 @@ library(dplyr)
 #repeat_materials_demand <- repeat_materials_demand %>%
   #mutate_at(vars(4:50), ~ ./1000)
 
-#mc_material_demand_total<- mc_material_demand_total %>%
-  #mutate_at(vars(5:11), ~ ./1000)
 #repeat_mc_material_demand_total <-repeat_mc_material_demand_total%>%
  # mutate_at(vars(5:10), ~ ./1000)
 # Now columns 5 to 11 have all their values divided by 1000
@@ -611,6 +749,7 @@ file_path6 <- file.path(folder_path, "repeat_materials_demand.csv")
 file_path7 <- file.path(folder_path, "repeat_mc_material_demand_total.csv")
 file_path8 <- file.path(folder_path, "multi_model_mc_material_demand_total.csv")
 file_path9 <- file.path(folder_path, "intensity_mean.csv")
+file_path10 <- file.path(folder_path, "all_models_material_demand.csv")
 
 unique(mc_material_demand_total$Material)
 
@@ -624,9 +763,15 @@ write.csv(repeat_materials_demand, file = file_path6, row.names = FALSE)
 write.csv(repeat_mc_material_demand_total, file = file_path7, row.names = FALSE)
 write.csv(mc_material_demand_total, file = file_path8, row.names = FALSE)
 write.csv(intensity_mean, file = file_path9, row.names = FALSE)
+write.csv(all_models_combined, file = file_path10, row.names = FALSE)
+test2 <- mc_material_demand %>% subset(Material %in% "Aluminum" & year %in% 2035 & scenario %in% "IRA"& technology %in% "utility-scale solar pv") %>% summarise(mean = mean(material_demand))
+print(test2/1000)
+print(unique(mc_material_demand$technology))
 
-
+y <- mc_material_demand_total %>% subset(Material %in% "Aluminum" & year %in% 2035 & scenario %in% "IRA")%>% select("utility-scale solar pv")
 ```
+```
+```{r}
 ```
 
 

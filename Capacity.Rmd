@@ -275,6 +275,11 @@ print(colnames(interpolated_values))
 capacities_y_all_filtered <- capacities_y_all %>%
   filter(!(year == 2025 | year == 2030) | !(model %in% c("IPM-E", "E4ST")))
 capacities_y_all_models <- rbind(capacities_y_all_filtered,final_interpolated_values_IRA,final_interpolated_values_ref)
+capacities_y_all_models$technology <- gsub("NGCC CCS", "Gas CCS", capacities_y_all_models$technology)
+capacities_y_all_models$technology <- gsub("Coal CCS", "Coal CCS", capacities_y_all_models$technology)
+capacities_y_all_models$technology <- gsub("Bio/Other", "Biomass", capacities_y_all_models$technology)
+capacities_y_all_models$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_y_all_models$technology)
+
 #capacities_y <- capacities_y_all[c(-1,-4)]
 capacities_y <-   capacities_y_all_models %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) %>% filter(technology != "Wind")
 
@@ -411,7 +416,6 @@ new_rows <- data.frame(
   newval = c(0, 0)
 )
 
-print(unique(input_capacities_delta$tech..outputs_group_detailed))
 
 
 ```
@@ -462,6 +466,9 @@ write.csv(initial_year, file = file_path1, row.names = FALSE)
 write.csv(multi_model_capacities, file = file_path2, row.names = FALSE)
 write.csv(repeat_capacities_new, file = file_path3, row.names = FALSE)
 write.csv(capacities_y_all_models, file = file_path4, row.names = FALSE)
+print(unique(multi_model_capacities$technology))
+print("---")
+print(unique(capacities_y_all_models$technology))
 
 ```
 ```{r}

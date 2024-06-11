@@ -89,36 +89,36 @@
 "RIO","2025","Hydro","IRA",1
 "RIO","2030","Hydro","IRA",0.2
 "RIO","2035","Hydro","IRA",0
-"2021","2021","Bio/Other","IRA",0
-"EPS","2025","Bio/Other","IRA",-11.74275
-"EPS","2030","Bio/Other","IRA",-0.0036
-"EPS","2035","Bio/Other","IRA",0
-"E4ST","2035","Bio/Other","IRA",0
-"GCAM","2025","Bio/Other","IRA",-7.30647593016232
-"GCAM","2030","Bio/Other","IRA",-0.00566092906594022
-"GCAM","2035","Bio/Other","IRA",-0.26270108669594
-"Haiku","2025","Bio/Other","IRA",-8.909455
-"Haiku","2030","Bio/Other","IRA",0
-"Haiku","2035","Bio/Other","IRA",0
-"IPM-E","2035","Bio/Other","IRA",0
-"IPM-N","2025","Bio/Other","IRA",-10.260223
-"IPM-N","2030","Bio/Other","IRA",-0.0016
-"IPM-N","2035","Bio/Other","IRA",0.000220000000000198
-"MARKAL","2025","Bio/Other","IRA",-9.4275
-"MARKAL","2030","Bio/Other","IRA",0
-"MARKAL","2035","Bio/Other","IRA",0
-"NEMS-RHG","2025","Bio/Other","IRA",-9.45320025
-"NEMS-RHG","2030","Bio/Other","IRA",0.2843224
-"NEMS-RHG","2035","Bio/Other","IRA",0.2536436
-"ReEDS","2025","Bio/Other","IRA",-10.152825
-"ReEDS","2030","Bio/Other","IRA",-0.10622
-"ReEDS","2035","Bio/Other","IRA",-0.16642
-"REGEN","2025","Bio/Other","IRA",-10.0658603081222
-"REGEN","2030","Bio/Other","IRA",0.0149593455248779
-"REGEN","2035","Bio/Other","IRA",-0.00272991838915182
-"RIO","2025","Bio/Other","IRA",-9.625
-"RIO","2030","Bio/Other","IRA",-0.1
-"RIO","2035","Bio/Other","IRA",-0.4
+"2021","2021","Biomass","IRA",0
+"EPS","2025","Biomass","IRA",-11.74275
+"EPS","2030","Biomass","IRA",-0.0036
+"EPS","2035","Biomass","IRA",0
+"E4ST","2035","Biomass","IRA",0
+"GCAM","2025","Biomass","IRA",-7.30647593016232
+"GCAM","2030","Biomass","IRA",-0.00566092906594022
+"GCAM","2035","Biomass","IRA",-0.26270108669594
+"Haiku","2025","Biomass","IRA",-8.909455
+"Haiku","2030","Biomass","IRA",0
+"Haiku","2035","Biomass","IRA",0
+"IPM-E","2035","Biomass","IRA",0
+"IPM-N","2025","Biomass","IRA",-10.260223
+"IPM-N","2030","Biomass","IRA",-0.0016
+"IPM-N","2035","Biomass","IRA",0.000220000000000198
+"MARKAL","2025","Biomass","IRA",-9.4275
+"MARKAL","2030","Biomass","IRA",0
+"MARKAL","2035","Biomass","IRA",0
+"NEMS-RHG","2025","Biomass","IRA",-9.45320025
+"NEMS-RHG","2030","Biomass","IRA",0.2843224
+"NEMS-RHG","2035","Biomass","IRA",0.2536436
+"ReEDS","2025","Biomass","IRA",-10.152825
+"ReEDS","2030","Biomass","IRA",-0.10622
+"ReEDS","2035","Biomass","IRA",-0.16642
+"REGEN","2025","Biomass","IRA",-10.0658603081222
+"REGEN","2030","Biomass","IRA",0.0149593455248779
+"REGEN","2035","Biomass","IRA",-0.00272991838915182
+"RIO","2025","Biomass","IRA",-9.625
+"RIO","2030","Biomass","IRA",-0.1
+"RIO","2035","Biomass","IRA",-0.4
 "2021","2021","Bio CCS","IRA",0
 "EPS","2025","Bio CCS","IRA",0
 "EPS","2030","Bio CCS","IRA",0
@@ -239,36 +239,36 @@
 "RIO","2025","NGCC","IRA",8.09999999999999
 "RIO","2030","NGCC","IRA",4.5
 "RIO","2035","NGCC","IRA",-3.8
-"2021","2021","NGCC CCS","IRA",0
-"EPS","2025","NGCC CCS","IRA",0
-"EPS","2030","NGCC CCS","IRA",0
-"EPS","2035","NGCC CCS","IRA",0
-"E4ST","2035","NGCC CCS","IRA",6.44182692851864e-05
-"GCAM","2025","NGCC CCS","IRA",8.18306028915367
-"GCAM","2030","NGCC CCS","IRA",6.27117088908818
-"GCAM","2035","NGCC CCS","IRA",0.21243166282074
-"Haiku","2025","NGCC CCS","IRA",0
-"Haiku","2030","NGCC CCS","IRA",0
-"Haiku","2035","NGCC CCS","IRA",0
-"IPM-E","2035","NGCC CCS","IRA",0.742611759
-"IPM-N","2025","NGCC CCS","IRA",0
-"IPM-N","2030","NGCC CCS","IRA",0
-"IPM-N","2035","NGCC CCS","IRA",0
-"MARKAL","2025","NGCC CCS","IRA",0
-"MARKAL","2030","NGCC CCS","IRA",1.986
-"MARKAL","2035","NGCC CCS","IRA",0
-"NEMS-RHG","2025","NGCC CCS","IRA",0
-"NEMS-RHG","2030","NGCC CCS","IRA",0
-"NEMS-RHG","2035","NGCC CCS","IRA",0
-"ReEDS","2025","NGCC CCS","IRA",0
-"ReEDS","2030","NGCC CCS","IRA",0
-"ReEDS","2035","NGCC CCS","IRA",0
-"REGEN","2025","NGCC CCS","IRA",0.0221444551049644
-"REGEN","2030","NGCC CCS","IRA",5.32476780876201e-07
-"REGEN","2035","NGCC CCS","IRA",7.60560362439433e-08
-"RIO","2025","NGCC CCS","IRA",0.125
-"RIO","2030","NGCC CCS","IRA",0.1
-"RIO","2035","NGCC CCS","IRA",0
+"2021","2021","Gas CCS","IRA",0
+"EPS","2025","Gas CCS","IRA",0
+"EPS","2030","Gas CCS","IRA",0
+"EPS","2035","Gas CCS","IRA",0
+"E4ST","2035","Gas CCS","IRA",6.44182692851864e-05
+"GCAM","2025","Gas CCS","IRA",8.18306028915367
+"GCAM","2030","Gas CCS","IRA",6.27117088908818
+"GCAM","2035","Gas CCS","IRA",0.21243166282074
+"Haiku","2025","Gas CCS","IRA",0
+"Haiku","2030","Gas CCS","IRA",0
+"Haiku","2035","Gas CCS","IRA",0
+"IPM-E","2035","Gas CCS","IRA",0.742611759
+"IPM-N","2025","Gas CCS","IRA",0
+"IPM-N","2030","Gas CCS","IRA",0
+"IPM-N","2035","Gas CCS","IRA",0
+"MARKAL","2025","Gas CCS","IRA",0
+"MARKAL","2030","Gas CCS","IRA",1.986
+"MARKAL","2035","Gas CCS","IRA",0
+"NEMS-RHG","2025","Gas CCS","IRA",0
+"NEMS-RHG","2030","Gas CCS","IRA",0
+"NEMS-RHG","2035","Gas CCS","IRA",0
+"ReEDS","2025","Gas CCS","IRA",0
+"ReEDS","2030","Gas CCS","IRA",0
+"ReEDS","2035","Gas CCS","IRA",0
+"REGEN","2025","Gas CCS","IRA",0.0221444551049644
+"REGEN","2030","Gas CCS","IRA",5.32476780876201e-07
+"REGEN","2035","Gas CCS","IRA",7.60560362439433e-08
+"RIO","2025","Gas CCS","IRA",0.125
+"RIO","2030","Gas CCS","IRA",0.1
+"RIO","2035","Gas CCS","IRA",0
 "2021","2021","NGGT","IRA",0
 "EPS","2025","NGGT","IRA",-7.67525
 "EPS","2030","NGGT","IRA",7.68
@@ -359,36 +359,36 @@
 "RIO","2025","onshore wind","IRA",11.125
 "RIO","2030","onshore wind","IRA",47.1
 "RIO","2035","onshore wind","IRA",37.4
-"2021","2021","Solar Utility","IRA",0
-"EPS","2025","Solar Utility","IRA",27.06725
-"EPS","2030","Solar Utility","IRA",50.0064
-"EPS","2035","Solar Utility","IRA",49.1664
-"E4ST","2035","Solar Utility","IRA",16.0823916293537
-"GCAM","2025","Solar Utility","IRA",45.1647003140743
-"GCAM","2030","Solar Utility","IRA",47.6982856860964
-"GCAM","2035","Solar Utility","IRA",29.6563739081907
-"Haiku","2025","Solar Utility","IRA",47.476152129817
-"Haiku","2030","Solar Utility","IRA",34.4876662322179
-"Haiku","2035","Solar Utility","IRA",14.1536570965278
-"IPM-E","2035","Solar Utility","IRA",20.3869727112
-"IPM-N","2025","Solar Utility","IRA",16.4727391156475
-"IPM-N","2030","Solar Utility","IRA",7.0039242932
-"IPM-N","2035","Solar Utility","IRA",25.7999999996
-"MARKAL","2025","Solar Utility","IRA",26.2425
-"MARKAL","2030","Solar Utility","IRA",2.486
-"MARKAL","2035","Solar Utility","IRA",2.49
-"NEMS-RHG","2025","Solar Utility","IRA",24.52150175
-"NEMS-RHG","2030","Solar Utility","IRA",45.7812898
-"NEMS-RHG","2035","Solar Utility","IRA",65.6080638
-"ReEDS","2025","Solar Utility","IRA",20.9611949197793
-"ReEDS","2030","Solar Utility","IRA",45.1046195207974
-"ReEDS","2035","Solar Utility","IRA",20.567501354372
-"REGEN","2025","Solar Utility","IRA",18.7313801018639
-"REGEN","2030","Solar Utility","IRA",1.51507910364622
-"REGEN","2035","Solar Utility","IRA",22.9102586084222
-"RIO","2025","Solar Utility","IRA",16.25
-"RIO","2030","Solar Utility","IRA",40.6
-"RIO","2035","Solar Utility","IRA",95.6
+"2021","2021","utility-scale solar pv","IRA",0
+"EPS","2025","utility-scale solar pv","IRA",27.06725
+"EPS","2030","utility-scale solar pv","IRA",50.0064
+"EPS","2035","utility-scale solar pv","IRA",49.1664
+"E4ST","2035","utility-scale solar pv","IRA",16.0823916293537
+"GCAM","2025","utility-scale solar pv","IRA",45.1647003140743
+"GCAM","2030","utility-scale solar pv","IRA",47.6982856860964
+"GCAM","2035","utility-scale solar pv","IRA",29.6563739081907
+"Haiku","2025","utility-scale solar pv","IRA",47.476152129817
+"Haiku","2030","utility-scale solar pv","IRA",34.4876662322179
+"Haiku","2035","utility-scale solar pv","IRA",14.1536570965278
+"IPM-E","2035","utility-scale solar pv","IRA",20.3869727112
+"IPM-N","2025","utility-scale solar pv","IRA",16.4727391156475
+"IPM-N","2030","utility-scale solar pv","IRA",7.0039242932
+"IPM-N","2035","utility-scale solar pv","IRA",25.7999999996
+"MARKAL","2025","utility-scale solar pv","IRA",26.2425
+"MARKAL","2030","utility-scale solar pv","IRA",2.486
+"MARKAL","2035","utility-scale solar pv","IRA",2.49
+"NEMS-RHG","2025","utility-scale solar pv","IRA",24.52150175
+"NEMS-RHG","2030","utility-scale solar pv","IRA",45.7812898
+"NEMS-RHG","2035","utility-scale solar pv","IRA",65.6080638
+"ReEDS","2025","utility-scale solar pv","IRA",20.9611949197793
+"ReEDS","2030","utility-scale solar pv","IRA",45.1046195207974
+"ReEDS","2035","utility-scale solar pv","IRA",20.567501354372
+"REGEN","2025","utility-scale solar pv","IRA",18.7313801018639
+"REGEN","2030","utility-scale solar pv","IRA",1.51507910364622
+"REGEN","2035","utility-scale solar pv","IRA",22.9102586084222
+"RIO","2025","utility-scale solar pv","IRA",16.25
+"RIO","2030","utility-scale solar pv","IRA",40.6
+"RIO","2035","utility-scale solar pv","IRA",95.6
 "2021","2021","Solar Distributed","IRA",0
 "EPS","2025","Solar Distributed","IRA",8.410825
 "EPS","2030","Solar Distributed","IRA",6.29156
@@ -569,36 +569,36 @@
 "RIO","2025","Hydro","Ref",1
 "RIO","2030","Hydro","Ref",0.2
 "RIO","2035","Hydro","Ref",0
-"2021","2021","Bio/Other","Ref",0
-"EPS","2025","Bio/Other","Ref",-10.49625
-"EPS","2030","Bio/Other","Ref",0.0180000000000001
-"EPS","2035","Bio/Other","Ref",0
-"E4ST","2035","Bio/Other","Ref",0
-"GCAM","2025","Bio/Other","Ref",-7.03236041398628
-"GCAM","2030","Bio/Other","Ref",0.09038269889856
-"GCAM","2035","Bio/Other","Ref",-0.16378841585252
-"Haiku","2025","Bio/Other","Ref",-8.909455
-"Haiku","2030","Bio/Other","Ref",0
-"Haiku","2035","Bio/Other","Ref",0
-"IPM-E","2035","Bio/Other","Ref",0.0178985605999999
-"IPM-N","2025","Bio/Other","Ref",-10.240723
-"IPM-N","2030","Bio/Other","Ref",0.0185000000000001
-"IPM-N","2035","Bio/Other","Ref",0.0172999999999998
-"MARKAL","2025","Bio/Other","Ref",-9.425
-"MARKAL","2030","Bio/Other","Ref",0
-"MARKAL","2035","Bio/Other","Ref",0
-"NEMS-RHG","2025","Bio/Other","Ref",-9.463086
-"NEMS-RHG","2030","Bio/Other","Ref",0.1990084
-"NEMS-RHG","2035","Bio/Other","Ref",0.208511
-"ReEDS","2025","Bio/Other","Ref",-10.152825
-"ReEDS","2030","Bio/Other","Ref",-0.10622
-"ReEDS","2035","Bio/Other","Ref",-0.16642
-"REGEN","2025","Bio/Other","Ref",-10.0624558025361
-"REGEN","2030","Bio/Other","Ref",0.0177350081531962
-"REGEN","2035","Bio/Other","Ref",0.0168051419914946
-"RIO","2025","Bio/Other","Ref",-9.625
-"RIO","2030","Bio/Other","Ref",-0.1
-"RIO","2035","Bio/Other","Ref",0
+"2021","2021","Biomass","Ref",0
+"EPS","2025","Biomass","Ref",-10.49625
+"EPS","2030","Biomass","Ref",0.0180000000000001
+"EPS","2035","Biomass","Ref",0
+"E4ST","2035","Biomass","Ref",0
+"GCAM","2025","Biomass","Ref",-7.03236041398628
+"GCAM","2030","Biomass","Ref",0.09038269889856
+"GCAM","2035","Biomass","Ref",-0.16378841585252
+"Haiku","2025","Biomass","Ref",-8.909455
+"Haiku","2030","Biomass","Ref",0
+"Haiku","2035","Biomass","Ref",0
+"IPM-E","2035","Biomass","Ref",0.0178985605999999
+"IPM-N","2025","Biomass","Ref",-10.240723
+"IPM-N","2030","Biomass","Ref",0.0185000000000001
+"IPM-N","2035","Biomass","Ref",0.0172999999999998
+"MARKAL","2025","Biomass","Ref",-9.425
+"MARKAL","2030","Biomass","Ref",0
+"MARKAL","2035","Biomass","Ref",0
+"NEMS-RHG","2025","Biomass","Ref",-9.463086
+"NEMS-RHG","2030","Biomass","Ref",0.1990084
+"NEMS-RHG","2035","Biomass","Ref",0.208511
+"ReEDS","2025","Biomass","Ref",-10.152825
+"ReEDS","2030","Biomass","Ref",-0.10622
+"ReEDS","2035","Biomass","Ref",-0.16642
+"REGEN","2025","Biomass","Ref",-10.0624558025361
+"REGEN","2030","Biomass","Ref",0.0177350081531962
+"REGEN","2035","Biomass","Ref",0.0168051419914946
+"RIO","2025","Biomass","Ref",-9.625
+"RIO","2030","Biomass","Ref",-0.1
+"RIO","2035","Biomass","Ref",0
 "2021","2021","Bio CCS","Ref",0
 "EPS","2025","Bio CCS","Ref",0
 "EPS","2030","Bio CCS","Ref",0
@@ -719,36 +719,36 @@
 "RIO","2025","NGCC","Ref",8.22499999999999
 "RIO","2030","NGCC","Ref",9.2
 "RIO","2035","NGCC","Ref",1.4
-"2021","2021","NGCC CCS","Ref",0
-"EPS","2025","NGCC CCS","Ref",0
-"EPS","2030","NGCC CCS","Ref",0
-"EPS","2035","NGCC CCS","Ref",0
-"E4ST","2035","NGCC CCS","Ref",1.26130371968268
-"GCAM","2025","NGCC CCS","Ref",0.042897876206954
-"GCAM","2030","NGCC CCS","Ref",0.0162206826801116
-"GCAM","2035","NGCC CCS","Ref",-0.0505389836456748
-"Haiku","2025","NGCC CCS","Ref",0
-"Haiku","2030","NGCC CCS","Ref",0
-"Haiku","2035","NGCC CCS","Ref",0
-"IPM-E","2035","NGCC CCS","Ref",0
-"IPM-N","2025","NGCC CCS","Ref",0
-"IPM-N","2030","NGCC CCS","Ref",0
-"IPM-N","2035","NGCC CCS","Ref",0
-"MARKAL","2025","NGCC CCS","Ref",0
-"MARKAL","2030","NGCC CCS","Ref",0
-"MARKAL","2035","NGCC CCS","Ref",0
-"NEMS-RHG","2025","NGCC CCS","Ref",0
-"NEMS-RHG","2030","NGCC CCS","Ref",0.0412742
-"NEMS-RHG","2035","NGCC CCS","Ref",0
-"ReEDS","2025","NGCC CCS","Ref",0
-"ReEDS","2030","NGCC CCS","Ref",0
-"ReEDS","2035","NGCC CCS","Ref",0
-"REGEN","2025","NGCC CCS","Ref",1.44247254779172e-07
-"REGEN","2030","NGCC CCS","Ref",2.82715344184529e-07
-"REGEN","2035","NGCC CCS","Ref",2.17277219033965e-07
-"RIO","2025","NGCC CCS","Ref",0.125
-"RIO","2030","NGCC CCS","Ref",0.1
-"RIO","2035","NGCC CCS","Ref",0
+"2021","2021","Gas CCS","Ref",0
+"EPS","2025","Gas CCS","Ref",0
+"EPS","2030","Gas CCS","Ref",0
+"EPS","2035","Gas CCS","Ref",0
+"E4ST","2035","Gas CCS","Ref",1.26130371968268
+"GCAM","2025","Gas CCS","Ref",0.042897876206954
+"GCAM","2030","Gas CCS","Ref",0.0162206826801116
+"GCAM","2035","Gas CCS","Ref",-0.0505389836456748
+"Haiku","2025","Gas CCS","Ref",0
+"Haiku","2030","Gas CCS","Ref",0
+"Haiku","2035","Gas CCS","Ref",0
+"IPM-E","2035","Gas CCS","Ref",0
+"IPM-N","2025","Gas CCS","Ref",0
+"IPM-N","2030","Gas CCS","Ref",0
+"IPM-N","2035","Gas CCS","Ref",0
+"MARKAL","2025","Gas CCS","Ref",0
+"MARKAL","2030","Gas CCS","Ref",0
+"MARKAL","2035","Gas CCS","Ref",0
+"NEMS-RHG","2025","Gas CCS","Ref",0
+"NEMS-RHG","2030","Gas CCS","Ref",0.0412742
+"NEMS-RHG","2035","Gas CCS","Ref",0
+"ReEDS","2025","Gas CCS","Ref",0
+"ReEDS","2030","Gas CCS","Ref",0
+"ReEDS","2035","Gas CCS","Ref",0
+"REGEN","2025","Gas CCS","Ref",1.44247254779172e-07
+"REGEN","2030","Gas CCS","Ref",2.82715344184529e-07
+"REGEN","2035","Gas CCS","Ref",2.17277219033965e-07
+"RIO","2025","Gas CCS","Ref",0.125
+"RIO","2030","Gas CCS","Ref",0.1
+"RIO","2035","Gas CCS","Ref",0
 "2021","2021","NGGT","Ref",0
 "EPS","2025","NGGT","Ref",-19.61275
 "EPS","2030","NGGT","Ref",9.12
@@ -839,36 +839,36 @@
 "RIO","2025","onshore wind","Ref",11.125
 "RIO","2030","onshore wind","Ref",16.7
 "RIO","2035","onshore wind","Ref",16.2
-"2021","2021","Solar Utility","Ref",0
-"EPS","2025","Solar Utility","Ref",14.26775
-"EPS","2030","Solar Utility","Ref",15.7212
-"EPS","2035","Solar Utility","Ref",15.2328
-"E4ST","2035","Solar Utility","Ref",21.8862385029126
-"GCAM","2025","Solar Utility","Ref",31.642461079607
-"GCAM","2030","Solar Utility","Ref",22.1044889202003
-"GCAM","2035","Solar Utility","Ref",11.601507365494
-"Haiku","2025","Solar Utility","Ref",27.3307675945974
-"Haiku","2030","Solar Utility","Ref",15.1548459612293
-"Haiku","2035","Solar Utility","Ref",19.2513673283822
-"IPM-E","2035","Solar Utility","Ref",13.6413310252
-"IPM-N","2025","Solar Utility","Ref",18.3808439216475
-"IPM-N","2030","Solar Utility","Ref",2.37152455080001
-"IPM-N","2035","Solar Utility","Ref",19.5918269292
-"MARKAL","2025","Solar Utility","Ref",34.45
-"MARKAL","2030","Solar Utility","Ref",2.48
-"MARKAL","2035","Solar Utility","Ref",2.5
-"NEMS-RHG","2025","Solar Utility","Ref",38.162928
-"NEMS-RHG","2030","Solar Utility","Ref",6.8777452
-"NEMS-RHG","2035","Solar Utility","Ref",24.3861384
-"ReEDS","2025","Solar Utility","Ref",13.7408610731055
-"ReEDS","2030","Solar Utility","Ref",12.5101738923886
-"ReEDS","2035","Solar Utility","Ref",3.7677310883894
-"REGEN","2025","Solar Utility","Ref",20.1071349295326
-"REGEN","2030","Solar Utility","Ref",1.01655161240481
-"REGEN","2035","Solar Utility","Ref",0.260556798045144
-"RIO","2025","Solar Utility","Ref",14.25
-"RIO","2030","Solar Utility","Ref",28.2
-"RIO","2035","Solar Utility","Ref",39.6
+"2021","2021","utility-scale solar pv","Ref",0
+"EPS","2025","utility-scale solar pv","Ref",14.26775
+"EPS","2030","utility-scale solar pv","Ref",15.7212
+"EPS","2035","utility-scale solar pv","Ref",15.2328
+"E4ST","2035","utility-scale solar pv","Ref",21.8862385029126
+"GCAM","2025","utility-scale solar pv","Ref",31.642461079607
+"GCAM","2030","utility-scale solar pv","Ref",22.1044889202003
+"GCAM","2035","utility-scale solar pv","Ref",11.601507365494
+"Haiku","2025","utility-scale solar pv","Ref",27.3307675945974
+"Haiku","2030","utility-scale solar pv","Ref",15.1548459612293
+"Haiku","2035","utility-scale solar pv","Ref",19.2513673283822
+"IPM-E","2035","utility-scale solar pv","Ref",13.6413310252
+"IPM-N","2025","utility-scale solar pv","Ref",18.3808439216475
+"IPM-N","2030","utility-scale solar pv","Ref",2.37152455080001
+"IPM-N","2035","utility-scale solar pv","Ref",19.5918269292
+"MARKAL","2025","utility-scale solar pv","Ref",34.45
+"MARKAL","2030","utility-scale solar pv","Ref",2.48
+"MARKAL","2035","utility-scale solar pv","Ref",2.5
+"NEMS-RHG","2025","utility-scale solar pv","Ref",38.162928
+"NEMS-RHG","2030","utility-scale solar pv","Ref",6.8777452
+"NEMS-RHG","2035","utility-scale solar pv","Ref",24.3861384
+"ReEDS","2025","utility-scale solar pv","Ref",13.7408610731055
+"ReEDS","2030","utility-scale solar pv","Ref",12.5101738923886
+"ReEDS","2035","utility-scale solar pv","Ref",3.7677310883894
+"REGEN","2025","utility-scale solar pv","Ref",20.1071349295326
+"REGEN","2030","utility-scale solar pv","Ref",1.01655161240481
+"REGEN","2035","utility-scale solar pv","Ref",0.260556798045144
+"RIO","2025","utility-scale solar pv","Ref",14.25
+"RIO","2030","utility-scale solar pv","Ref",28.2
+"RIO","2035","utility-scale solar pv","Ref",39.6
 "2021","2021","Solar Distributed","Ref",0
 "EPS","2025","Solar Distributed","Ref",5.8745
 "EPS","2030","Solar Distributed","Ref",2.9098
@@ -960,130 +960,130 @@
 "RIO","2030","Storage","Ref",4
 "RIO","2035","Storage","Ref",17.4
 "E4ST","2030","Bio CCS","IRA",0
-"E4ST","2030","Bio/Other","IRA",-3.87387777777778
+"E4ST","2030","Biomass","IRA",-3.87387777777778
 "E4ST","2030","Coal","IRA",-23.0803462528991
 "E4ST","2030","Coal CCS","IRA",7.70339342592483
 "E4ST","2030","Hydro","IRA",-0.142343353474178
 "E4ST","2030","Hydrogen Blue","IRA",0
 "E4ST","2030","Hydrogen Green","IRA",0.320861718532943
 "E4ST","2030","NGCC","IRA",3.96481184828033
-"E4ST","2030","NGCC CCS","IRA",3.69737782870863e-05
+"E4ST","2030","Gas CCS","IRA",3.69737782870863e-05
 "E4ST","2030","NGGT","IRA",-11.579049027912
 "E4ST","2030","Nuclear Existing","IRA",-1.72506532736323
 "E4ST","2030","Nuclear New","IRA",5.92698232332802e-07
 "E4ST","2030","Solar Distributed","IRA",-3.66666666666667
-"E4ST","2030","Solar Utility","IRA",41.9192950992161
+"E4ST","2030","utility-scale solar pv","IRA",41.9192950992161
 "E4ST","2030","Storage","IRA",9.01005014047678
 "E4ST","2030","onshore wind","IRA",17.1256131171104
 "IPM-E","2030","Bio CCS","IRA",0
-"IPM-E","2030","Bio/Other","IRA",-4.56973555577778
+"IPM-E","2030","Biomass","IRA",-4.56973555577778
 "IPM-E","2030","Coal","IRA",-16.6655267562672
 "IPM-E","2030","Coal CCS","IRA",1.03754238177778
 "IPM-E","2030","Hydro","IRA",0.068188889000001
 "IPM-E","2030","Hydrogen Blue","IRA",0
 "IPM-E","2030","Hydrogen Green","IRA",0
 "IPM-E","2030","NGCC","IRA",2.08658026730267
-"IPM-E","2030","NGCC CCS","IRA",0.740194848555556
+"IPM-E","2030","Gas CCS","IRA",0.740194848555556
 "IPM-E","2030","NGGT","IRA",0.435240925762554
 "IPM-E","2030","Nuclear Existing","IRA",-0.404288888888888
 "IPM-E","2030","Nuclear New","IRA",0
 "IPM-E","2030","Solar Distributed","IRA",4.5769458352115
-"IPM-E","2030","Solar Utility","IRA",11.0085076717778
+"IPM-E","2030","utility-scale solar pv","IRA",11.0085076717778
 "IPM-E","2030","Storage","IRA",7.02789037555555
 "IPM-E","2030","onshore wind","IRA",7.94113697544445
 "E4ST","2025","Bio CCS","IRA",0
-"E4ST","2025","Bio/Other","IRA",-3.87387777777778
+"E4ST","2025","Biomass","IRA",-3.87387777777778
 "E4ST","2025","Coal","IRA",-23.0803462528991
 "E4ST","2025","Coal CCS","IRA",7.70339342592483
 "E4ST","2025","Hydro","IRA",-0.142343353474178
 "E4ST","2025","Hydrogen Blue","IRA",0
 "E4ST","2025","Hydrogen Green","IRA",0.320861718532943
 "E4ST","2025","NGCC","IRA",3.96481184828033
-"E4ST","2025","NGCC CCS","IRA",3.69737782870863e-05
+"E4ST","2025","Gas CCS","IRA",3.69737782870863e-05
 "E4ST","2025","NGGT","IRA",-11.579049027912
 "E4ST","2025","Nuclear Existing","IRA",-1.72506532736323
 "E4ST","2025","Nuclear New","IRA",5.92698232332802e-07
 "E4ST","2025","Solar Distributed","IRA",-3.66666666666667
-"E4ST","2025","Solar Utility","IRA",41.9192950992161
+"E4ST","2025","utility-scale solar pv","IRA",41.9192950992161
 "E4ST","2025","Storage","IRA",9.01005014047678
 "E4ST","2025","onshore wind","IRA",17.1256131171104
 "IPM-E","2025","Bio CCS","IRA",0
-"IPM-E","2025","Bio/Other","IRA",-4.56973555577778
+"IPM-E","2025","Biomass","IRA",-4.56973555577778
 "IPM-E","2025","Coal","IRA",-16.6655267562672
 "IPM-E","2025","Coal CCS","IRA",1.03754238177778
 "IPM-E","2025","Hydro","IRA",0.0681888889999982
 "IPM-E","2025","Hydrogen Blue","IRA",0
 "IPM-E","2025","Hydrogen Green","IRA",0
 "IPM-E","2025","NGCC","IRA",2.08658026730266
-"IPM-E","2025","NGCC CCS","IRA",0.740194848555556
+"IPM-E","2025","Gas CCS","IRA",0.740194848555556
 "IPM-E","2025","NGGT","IRA",0.435240925762557
 "IPM-E","2025","Nuclear Existing","IRA",-0.404288888888889
 "IPM-E","2025","Nuclear New","IRA",0
 "IPM-E","2025","Solar Distributed","IRA",4.5769458352115
-"IPM-E","2025","Solar Utility","IRA",11.0085076717778
+"IPM-E","2025","utility-scale solar pv","IRA",11.0085076717778
 "IPM-E","2025","Storage","IRA",7.02789037555556
 "IPM-E","2025","onshore wind","IRA",7.94113697544444
 "E4ST","2030","Bio CCS","Ref",0
-"E4ST","2030","Bio/Other","Ref",-3.87387777777778
+"E4ST","2030","Biomass","Ref",-3.87387777777778
 "E4ST","2030","Coal","Ref",-11.301856296153
 "E4ST","2030","Coal CCS","Ref",3.25493753905473e-07
 "E4ST","2030","Hydro","Ref",-0.14283528290361
 "E4ST","2030","Hydrogen Blue","Ref",0
 "E4ST","2030","Hydrogen Green","Ref",7.41958201292686e-07
 "E4ST","2030","NGCC","Ref",9.33489116462922
-"E4ST","2030","NGCC CCS","Ref",1.57630371885977e-06
+"E4ST","2030","Gas CCS","Ref",1.57630371885977e-06
 "E4ST","2030","NGGT","Ref",-12.0411155926232
 "E4ST","2030","Nuclear Existing","Ref",-4.65562834219477
 "E4ST","2030","Nuclear New","Ref",0.190067515392283
 "E4ST","2030","Solar Distributed","Ref",-3.66666666666667
-"E4ST","2030","Solar Utility","Ref",13.5207763524359
+"E4ST","2030","utility-scale solar pv","Ref",13.5207763524359
 "E4ST","2030","Storage","Ref",-0.140379095852544
 "E4ST","2030","onshore wind","Ref",5.68914515467478
 "IPM-E","2030","Bio CCS","Ref",0
-"IPM-E","2030","Bio/Other","Ref",-4.567254606
+"IPM-E","2030","Biomass","Ref",-4.567254606
 "IPM-E","2030","Coal","Ref",-10.9229817512972
 "IPM-E","2030","Coal CCS","Ref",0.0595126198888889
 "IPM-E","2030","Hydro","Ref",0.0311333334444441
 "IPM-E","2030","Hydrogen Blue","Ref",0
 "IPM-E","2030","Hydrogen Green","Ref",0
 "IPM-E","2030","NGCC","Ref",1.08660578230978
-"IPM-E","2030","NGCC CCS","Ref",0.364573748222222
+"IPM-E","2030","Gas CCS","Ref",0.364573748222222
 "IPM-E","2030","NGGT","Ref",4.17210721122222
 "IPM-E","2030","Nuclear Existing","Ref",-1.93504478833333
 "IPM-E","2030","Nuclear New","Ref",0
 "IPM-E","2030","Solar Distributed","Ref",4.5769458352115
-"IPM-E","2030","Solar Utility","Ref",9.57699648633333
+"IPM-E","2030","utility-scale solar pv","Ref",9.57699648633333
 "IPM-E","2030","Storage","Ref",3.08286278466667
 "IPM-E","2030","onshore wind","Ref",4.73580104188889
 "E4ST","2025","Bio CCS","Ref",0
-"E4ST","2025","Bio/Other","Ref",-3.87387777777778
+"E4ST","2025","Biomass","Ref",-3.87387777777778
 "E4ST","2025","Coal","Ref",-11.301856296153
 "E4ST","2025","Coal CCS","Ref",3.25493753905473e-07
 "E4ST","2025","Hydro","Ref",-0.142835282903611
 "E4ST","2025","Hydrogen Blue","Ref",0
 "E4ST","2025","Hydrogen Green","Ref",7.41958201292686e-07
 "E4ST","2025","NGCC","Ref",9.33489116462921
-"E4ST","2025","NGCC CCS","Ref",1.57630371885977e-06
+"E4ST","2025","Gas CCS","Ref",1.57630371885977e-06
 "E4ST","2025","NGGT","Ref",-12.0411155926232
 "E4ST","2025","Nuclear Existing","Ref",-4.65562834219477
 "E4ST","2025","Nuclear New","Ref",0.190067515392283
 "E4ST","2025","Solar Distributed","Ref",-3.66666666666667
-"E4ST","2025","Solar Utility","Ref",13.5207763524359
+"E4ST","2025","utility-scale solar pv","Ref",13.5207763524359
 "E4ST","2025","Storage","Ref",-0.140379095852545
 "E4ST","2025","onshore wind","Ref",5.68914515467478
 "IPM-E","2025","Bio CCS","Ref",0
-"IPM-E","2025","Bio/Other","Ref",-4.567254606
+"IPM-E","2025","Biomass","Ref",-4.567254606
 "IPM-E","2025","Coal","Ref",-10.9229817512972
 "IPM-E","2025","Coal CCS","Ref",0.0595126198888889
 "IPM-E","2025","Hydro","Ref",0.0311333334444441
 "IPM-E","2025","Hydrogen Blue","Ref",0
 "IPM-E","2025","Hydrogen Green","Ref",0
 "IPM-E","2025","NGCC","Ref",1.08660578230977
-"IPM-E","2025","NGCC CCS","Ref",0.364573748222222
+"IPM-E","2025","Gas CCS","Ref",0.364573748222222
 "IPM-E","2025","NGGT","Ref",4.17210721122223
 "IPM-E","2025","Nuclear Existing","Ref",-1.93504478833333
 "IPM-E","2025","Nuclear New","Ref",0
 "IPM-E","2025","Solar Distributed","Ref",4.5769458352115
-"IPM-E","2025","Solar Utility","Ref",9.57699648633333
+"IPM-E","2025","utility-scale solar pv","Ref",9.57699648633333
 "IPM-E","2025","Storage","Ref",3.08286278466667
 "IPM-E","2025","onshore wind","Ref",4.73580104188889

@@ -32,11 +32,29 @@ materials_demand<-read.csv("materials_demand.csv")
 multi_model_mc_material_demand_total<-read.csv("multi_model_mc_material_demand_total.csv")
 transmission_material_sum<-read.csv("transmission_material_sum.csv")
 
+all_models<-read.csv("all_models_material_demand.csv")
 
 repeat_mc_material_demand_total<-read.csv("repeat_mc_material_demand_total.csv")
 
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
+#multi_model_mc_material_demand_total <- multi_model_mc_material_demand_total %>%
+  #mutate(total_demand = total_demand / 1000)
 
+
+
+```
+```{r}
+# test <- all_models %>% select(year, scenario,technology,model, Steel_mean,Steel_max,Steel_min) %>% group_by(year,scenario,model) %>%  summarise(            Steel_min = sum(Steel_min),
+#             Steel_max = sum(Steel_max))
+# 
+# testsum <- test %>% group_by(year,scenario) %>% summarise(
+#             Steel_min = min(Steel_min),
+#             Steel_max = max(Steel_max))
+
+meanmaxlines <- all_models %>% select(year, scenario,technology,model, Steel_mean,Steel_max,Steel_min) %>% group_by(year,scenario,model) %>%  summarise(            Steel_min = sum(Steel_min),
+            Steel_max = sum(Steel_max)) %>% group_by(year,scenario) %>% summarise(
+            Steel_min = min(Steel_min),
+            Steel_max = max(Steel_max))
 ```
 
 ## Including Plots
@@ -859,11 +877,11 @@ library(dplyr)
 # Initialize an empty list to store plots
 plot_list <- list()
 
-materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
-#materials <- "Steel"
+materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead", "Magnesium", "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium","Tin", "Vanadium", "Yttrium", "Zinc")
+#materials <- "Aluminum"
 
 for (material in materials) {
-  material_demand_sum <- materials_demand %>%
+  material_demand_sum_mean <- materials_demand %>%
     group_by(year, scenario) %>%
     summarise(
       !!paste0(material, "_mean") := sum(!!sym(paste0(material, "_mean"))),
@@ -871,15 +889,55 @@ for (material in materials) {
       !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")))
     )
   
+  # meanmaxlines <- all_models %>% select(year, scenario,technology,model, Steel_mean,Steel_max,Steel_min) %>% group_by(year,scenario,model) %>%  summarise(            Steel_min = sum(Steel_min),
+  #           Steel_max = sum(Steel_max)) %>% group_by(year,scenario) %>% summarise(
+  #           Steel_min = min(Steel_min),
+  #           Steel_max = max(Steel_max))
+ library(dplyr)
+
+# Function to sum material columns
+sum_material_columns <- function(data, material) {
+  material_demand_sum_df <- data %>%
+    select(year, scenario, technology, model, 
+           matches(paste0(material, "_mean")), 
+           matches(paste0(material, "_max")), 
+           matches(paste0(material, "_min"))) %>%
+    group_by(year, scenario, model) %>%
+    summarise(
+      !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min")), na.rm = TRUE),
+      !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")), na.rm = TRUE)
+    ) %>%
+    group_by(year, scenario) %>%
+    summarise(
+      !!paste0(material, "_min") := min(!!sym(paste0(material, "_min")), na.rm = TRUE),
+      !!paste0(material, "_max") := max(!!sym(paste0(material, "_max")), na.rm = TRUE)
+    )
+  
+  return(material_demand_sum_df)
+}
+
+# Example usage for Steel material
+material_demand_sum <- sum_material_columns(all_models, material)
+
+
+
+
   material_demand_sum_ira <- material_demand_sum %>%
     filter(scenario == "IRA")
   
   material_demand_sum_ref <- material_demand_sum %>%
     filter(scenario == "Ref")
   
+  material_demand_sum_ira_mean <-  material_demand_sum_mean %>%
+    filter(scenario == "IRA")
+  
+    material_demand_sum_ref_mean <-  material_demand_sum_mean %>%
+    filter(scenario == "Ref")
+
+  
   # Plot the data for IRA scenario
   p <- ggplot() +
-    geom_line(data = material_demand_sum_ira, aes(x = year, 
+    geom_line(data = material_demand_sum_ira_mean, aes(x = year, 
                                                   y = !!sym(paste0(material, "_mean")), 
                                                   color = "mean IRA"), 
               linetype = "solid") +
@@ -892,7 +950,7 @@ for (material in materials) {
                                                   color = "max IRA"), 
               linetype = "dotted") +
     # Plot the data for Ref scenario
-    geom_line(data = material_demand_sum_ref, aes(x = year, 
+    geom_line(data = material_demand_sum_ref_mean, aes(x = year, 
                                                   y = !!sym(paste0(material, "_mean")), 
                                                   color = "mean Ref"), 
               linetype = "solid") +
@@ -924,25 +982,28 @@ for (material in materials) {
   # Filter data for the specified conditions for IRA scenario
   material_subset_ira <- multi_model_mc_material_demand_total %>%
     filter(Material == material, year == 2035, scenario == "IRA") %>%
-    select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-    mutate(
-      across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT, NGCC, Biomass, Bio.CCS, Solar.Distributed ,Coal, Hydro,Gas.CCS, Coal.CCS), ~sort(.)),
-      total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + Solar.Distributed + NGGT+ NGCC+ Biomass+ Bio.CCS +Solar.Distributed +Gas.CCS+ Coal.CCS ) / 1000,
-      year = 2035
-    )
+    select(total_demand, year, -scenario, -Material, -row_id) #%>%
+    # mutate(
+    #   across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT, NGCC, Biomass, Bio.CCS, Solar.Distributed ,Coal, Hydro,Gas.CCS, Coal.CCS), ~sort(.)),
+    #   total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + Solar.Distributed + NGGT+ NGCC+ Biomass+ Bio.CCS +Solar.Distributed +Gas.CCS+ Coal.CCS ) / 1000,
+    #   year = 2035
+    # )
   
   # Filter data for the specified conditions for Ref scenario
-  material_subset_ref <- multi_model_mc_material_demand_total %>%
+  # material_subset_ref <- multi_model_mc_material_demand_total %>%
+  #   filter(Material == material, year == 2035, scenario == "Ref") %>%
+  #   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
+  #   mutate(
+  #     across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT,NGCC, Biomass, Bio.CCS, Coal,Hydro,Gas.CCS,Coal.CCS), ~sort(.)),
+  #     total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + NGGT+ NGCC+Biomass+ Bio.CCS+  Gas.CCS +Coal.CCS ) / 1000, year = 2035
+  #   )
+    material_subset_ref <- multi_model_mc_material_demand_total %>%
     filter(Material == material, year == 2035, scenario == "Ref") %>%
-    select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-    mutate(
-      across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT,NGCC, Biomass, Bio.CCS,Solar.Distributed, Coal,Hydro,Gas.CCS,Coal.CCS), ~sort(.)),
-      total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + NGGT+ NGCC+Biomass+ Bio.CCS+ Solar.Distributed + Gas.CCS +Coal.CCS ) / 1000, year = 2035
-    )
-  
+    select(total_demand, year, -scenario, -Material, -row_id) #%>%
+
   # Create box plots for IRA and Ref scenarios
-  boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand), fill = "red", alpha = 0.5, width = 0.5)
-  boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5)
+  boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand/1000), fill = "red", alpha = 0.5, width = 0.5)
+  boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand/1000), fill = "blue", alpha = 0.5, width = 0.5)
   
   # Combine all layers into one plot
   p <- p + boxplot_ira + boxplot_ref
@@ -952,12 +1013,12 @@ for (material in materials) {
 }
 print(p)
 # Combine all plots in the plot list into one greater plot with subplots
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 4)
 
 # Print the combined plot
 print(combined_plot)
 
-ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 11, height = 14, units = "in", dpi = 300)
+ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 13, height = 17, units = "in", dpi = 300)
 
 
 ```
