@@ -12,17 +12,12 @@ knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/
 
 library(readxl)
 library(dplyr)
+library(ggplot2)
 
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-print(getwd())
+```{r}
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
 repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
 multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
@@ -31,751 +26,19 @@ print(unique(repeat_materials_demand$technology))
 materials_demand<-read.csv("materials_demand.csv")
 multi_model_mc_material_demand_total<-read.csv("multi_model_mc_material_demand_total.csv")
 transmission_material_sum<-read.csv("transmission_material_sum.csv")
-
 all_models<-read.csv("all_models_material_demand.csv")
-
 repeat_mc_material_demand_total<-read.csv("repeat_mc_material_demand_total.csv")
-
-setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
-#multi_model_mc_material_demand_total <- multi_model_mc_material_demand_total %>%
-  #mutate(total_demand = total_demand / 1000)
-
-
-
-```
-```{r}
-# test <- all_models %>% select(year, scenario,technology,model, Steel_mean,Steel_max,Steel_min) %>% group_by(year,scenario,model) %>%  summarise(            Steel_min = sum(Steel_min),
-#             Steel_max = sum(Steel_max))
-# 
-# testsum <- test %>% group_by(year,scenario) %>% summarise(
-#             Steel_min = min(Steel_min),
-#             Steel_max = max(Steel_max))
-
-meanmaxlines <- all_models %>% select(year, scenario,technology,model, Steel_mean,Steel_max,Steel_min) %>% group_by(year,scenario,model) %>%  summarise(            Steel_min = sum(Steel_min),
-            Steel_max = sum(Steel_max)) %>% group_by(year,scenario) %>% summarise(
-            Steel_min = min(Steel_min),
-            Steel_max = max(Steel_max))
-```
-
-## Including Plots
-
-```{r}
-library(ggplot2)
-material_demand_sum <- materials_demand %>%
-  group_by(year,scenario) %>%
-  summarise(Steel_mean = sum(Steel_mean),
-            Steel_min = sum(Steel_min),
-            Steel_max = sum(Steel_max))
-material_demand_sum_ira <- material_demand_sum %>%
-  filter(scenario == "IRA")
-# Plot the data
-material_demand_sum_ref <- material_demand_sum %>%
-  filter(scenario == "Ref")
-# Plot the data
-#same thing but for repeat
-repeat_material_demand_sum <- repeat_materials_demand %>%
-  group_by(year,scenario) %>%
-  summarise(Aluminum_mean = sum(Aluminum_mean),
-            Aluminum_min = sum(Aluminum_min),
-            Aluminum_max = sum(Aluminum_max))
-repeat_material_demand_sum_ira <- repeat_material_demand_sum %>%
-  filter(scenario == "IRA")
-# Plot the data
-repeat_material_demand_sum_ref <- repeat_material_demand_sum %>%
-  filter(scenario == "REF")
-# Plot the data
 ```
 
 
 ```{r}
-# Plot the data for IRA scenario
-p <- ggplot() +
-  geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                y = Steel_mean, 
-                                                color = "Aluminum_mean (IRA)"), 
-            linetype = "solid") +
-  geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                y = Steel_min, 
-                                                color = "Aluminum_min (IRA)"), 
-            linetype = "dashed") +
-  geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                y = Steel_max, 
-                                                color = "Aluminum_max (IRA)"), 
-            linetype = "dotted") +
-  labs(title = "Annual Aluminum Demand",
-       x = "Year",
-       y = "Material Demand (Mton/year)",
-       color = "Scenario") +
-  scale_color_manual(values = c( 
-                                "Aluminum_mean (IRA)" = "red", 
-                                "Aluminum_min (IRA)" = "red",
-                                "Aluminum_max (IRA)" = "red", 
-                                "Aluminum_mean (Ref)" = "blue", 
-                                "Aluminum_min (Ref)" = "blue", 
-                                "Aluminum_max (Ref)" = "blue"),  # Color for each line
-                     name = "Scenario",
-                     labels = c("Max (IRA)", "Min (IRA)", "Mean (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
-  theme_minimal()
-
-# Plot the data for Ref scenario and combine with the previous plot
-p1<-p +
-  geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                y = Steel_mean, 
-                                                color = "Aluminum_mean (Ref)"), 
-            linetype = "solid") +
-  geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                y = Steel_min, 
-                                                color = "Aluminum_min (Ref)"), 
-            linetype = "dashed") +
-  geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                y = Steel_max, 
-                                                color = "Aluminum_max (Ref)"), 
-            linetype = "dotted")
-
-print(p1)
-# Assuming p is your ggplot object representing your existing plot
-#aluminum_subset <- multi_model_mc_material_demand_total %>%
- # filter(Material == "Steel") %>% filter(year == "2035")%>% filter(scenario =="IRA")%>%
- # select(-Coal, -NGGT,-NGCC,-Biomass,-Bio.CCS -Hydro, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv, -Coal.CCS,-Gas.CCS)
-
-# Filter aluminum data for the specified conditions
-aluminum_subset_ira <- multi_model_mc_material_demand_total %>%
-  filter(Material == "Steel", year == "2035", scenario == "IRA") %>%
-  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-    mutate(
-    onshore.wind = sort(onshore.wind),
-    Hydro = sort(Hydro),
-    Nuclear.New = sort(Nuclear.New),
-    utility.scale.solar.pv = sort(utility.scale.solar.pv),
-    Coal = sort(Coal),
-    NGGT = sort(NGGT),
-    NGCC = sort(NGCC),
-    Gas.CCS = sort(Gas.CCS),
-    Coal.CCS = sort(Coal.CCS),
-    Bio.CCS = sort(Bio.CCS),
-    Biomass = sort(Biomass),
-    Solar.Distributed = sort(Solar.Distributed),
-    
-    total_demand = (Gas.CCS+ Coal.CCS + NGGT + NGCC +Biomass +Bio.CCS +Solar.Distributed +onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal )/1000,
-    year= 2035
-  )
-
-# Filter aluminum data for the specified conditions for scenario "Ref"
-aluminum_subset_ref <- multi_model_mc_material_demand_total %>%
-  filter(Material == "Steel", year == "2035", scenario == "Ref") %>%
-  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-  mutate(
-    onshore.wind = sort(onshore.wind),
-    Hydro = sort(Hydro),
-    Nuclear.New = sort(Nuclear.New),
-    utility.scale.solar.pv = sort(utility.scale.solar.pv),
-    Coal = sort(Coal),
-    NGGT = sort(NGGT),
-    NGCC = sort(NGCC),
-    Gas.CCS = sort(Gas.CCS),
-    Coal.CCS = sort(Coal.CCS),
-    Bio.CCS = sort(Bio.CCS),
-    Biomass = sort(Biomass),
-    Solar.Distributed = sort(Solar.Distributed),
-    
-    total_demand = (Gas.CCS+ Coal.CCS + NGGT + NGCC +Biomass +Bio.CCS +Solar.Distributed +onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal )/1000,
-    year= 2035
-  )
-
-
-# Create a box plot for aluminum demand for scenario "Ref"
-boxplot_ref <- ggplot(aluminum_subset_ref, aes(x = year, y = total_demand)) +
-  geom_boxplot(fill = "blue", alpha = 0.5, width = 0.5) +
-  labs(x = "Year", y = "Total Demand for Aluminum (Ref)", title = "Box Plot of Total Demand for Aluminum (Ref)")
-
-# Combine the box plots with your existing plot p
-combined_plot <- p1 +
-  geom_boxplot(data = aluminum_subset_ira, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
-  geom_boxplot(data = aluminum_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5) +
-  labs(title = "Combined Plot with Box Plots of Aluminum Demand",
-       x = "",
-       y = "(Thousands Mton/year)",
-       color = "Scenario") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
-
-# Print the combined plot
-print(combined_plot)
-# Define the width for staggering the box plots
-stagger_width <- 0.1  # Adjust as needed
-
-# Combine the box plots with your existing plot p, staggering them slightly
-# Define the width for staggering the box plots
-stagger_width <- 0.1  # Adjust as needed
-
-# Define the desired years to be displayed on the x-axis
-desired_years <- c(2025, 2030, 2035)
-
-# Combine the box plots with staggering
-combined_plot <- p1 +
-  geom_boxplot(data = aluminum_subset_ira, aes(x = year - stagger_width, y = total_demand), fill = "red", alpha = 0.5, width = 0.4) +
-  geom_boxplot(data = aluminum_subset_ref, aes(x = year + stagger_width, y = total_demand), fill = "blue", alpha = 0.5, width = 0.4) +
-  labs(title = "Aluminum",
-       x = "",
-       y = "Thousands Mton/year",
-       color = "") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  
-  scale_x_continuous(breaks = desired_years, labels = as.character(desired_years)) + 
-  ggtitle("Comparison of Aluminum Demand")  # Adding a title
-
-# Print the combined plot
-print(combined_plot)
-
-
-```
-```{r}
-p <- ggplot() +
-  geom_line(data = repeat_material_demand_sum_ira, aes(x = year, 
-                                                y = Aluminum_mean, 
-                                                color = "Aluminum_mean (IRA)"), 
-            linetype = "solid") +
-  geom_line(data = repeat_material_demand_sum_ira, aes(x = year, 
-                                                y = Aluminum_min, 
-                                                color = "Aluminum_min (IRA)"), 
-            linetype = "dashed") +
-  geom_line(data = repeat_material_demand_sum_ira, aes(x = year, 
-                                                y = Aluminum_max, 
-                                                color = "Aluminum_max (IRA)"), 
-            linetype = "dotted") +
-  labs(title = "Annual Aluminum Demand",
-       x = "Year",
-       y = "Material Demand (Mton/year)",
-       color = "Scenario") +
-  scale_color_manual(values = c( 
-                                "Aluminum_mean (IRA)" = "red", 
-                                "Aluminum_min (IRA)" = "red",
-                                "Aluminum_max (IRA)" = "red", 
-                                "Aluminum_mean (Ref)" = "blue", 
-                                "Aluminum_min (Ref)" = "blue", 
-                                "Aluminum_max (Ref)" = "blue"),  # Color for each line
-                     name = "Scenario",
-                     labels = c("Max (IRA)", "Min (IRA)", "Mean (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
-  theme_minimal()
-
-# Plot the data for Ref scenario and combine with the previous plot
-p1<-p +
-  geom_line(data = repeat_material_demand_sum_ref, aes(x = year, 
-                                                y = Aluminum_mean, 
-                                                color = "Aluminum_mean (Ref)"), 
-            linetype = "solid") +
-  geom_line(data = repeat_material_demand_sum_ref, aes(x = year, 
-                                                y = Aluminum_min, 
-                                                color = "Aluminum_min (Ref)"), 
-            linetype = "dashed") +
-  geom_line(data = repeat_material_demand_sum_ref, aes(x = year, 
-                                                y = Aluminum_max, 
-                                                color = "Aluminum_max (Ref)"), 
-            linetype = "dotted")
-
-print(p1)
-# Assuming p is your ggplot object representing your existing plot
-aluminum_subset <- repeat_mc_material_demand_total %>%
-  filter(Material == "Aluminum") %>% filter(year == "2025")%>% filter(scenario =="IRA")%>%
-  select(-Gas, -offshore.wind, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv)
-
-# Filter aluminum data for the specified conditions
-aluminum_subset_ira <- repeat_mc_material_demand_total %>%
-  filter(Material == "Aluminum", year == "2035", scenario == "IRA") %>%
-  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-  mutate(
-    onshore.wind = sort(onshore.wind),
-    Nuclear.New = sort(Nuclear.New),
-    utility.scale.solar.pv = sort(utility.scale.solar.pv),
-    Gas = sort(Gas),
-    offshore.wind = sort(offshore.wind),
- 
-    total_demand = (onshore.wind + offshore.wind + Gas  + Nuclear.New + utility.scale.solar.pv )/1000,
-    year = 2035
-  )
-# Filter aluminum data for the specified conditions for scenario "Ref"
-aluminum_subset_ref <- repeat_mc_material_demand_total %>%
-  filter(Material == "Aluminum", year == "2035", scenario == "REF") %>%
-  select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-  mutate(
-    onshore.wind = sort(onshore.wind),
-    offshore.wind = sort(offshore.wind),
-    Nuclear.New = sort(Nuclear.New),
-    utility.scale.solar.pv = sort(utility.scale.solar.pv),
-    Gas = sort(Gas),
-    total_demand = (onshore.wind + offshore.wind + Nuclear.New + utility.scale.solar.pv +  + Gas)/1000,
-    year= 2035
-  )
-
-
-# Create a box plot for aluminum demand for scenario "Ref"
-boxplot_ref <- ggplot(aluminum_subset_ref, aes(x = year, y = total_demand)) +
-  geom_boxplot(fill = "blue", alpha = 0.5, width = 0.5) +
-  labs(x = "Year", y = "Total Demand for Aluminum (Ref)", title = "Box Plot of Total Demand for Aluminum (Ref)")
-
-# Combine the box plots with your existing plot p
-combined_plot <- p1 +
-  geom_boxplot(data = aluminum_subset_ira, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
-  geom_boxplot(data = aluminum_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5) +
-  labs(title = "Combined Plot with Box Plots of Aluminum Demand",
-       x = "",
-       y = "(Thousands Mton/year)",
-       color = "Scenario") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
-
-# Print the combined plot
-print(combined_plot)
-# Define the width for staggering the box plots
-stagger_width <- 0.1  # Adjust as needed
-
-# Combine the box plots with your existing plot p, staggering them slightly
-# Define the width for staggering the box plots
-stagger_width <- 0.1  # Adjust as needed
-
-# Define the desired years to be displayed on the x-axis
-desired_years <- c(2025, 2030, 2035)
-
-# Combine the box plots with staggering
-combined_plot <- p1 +
-  geom_boxplot(data = aluminum_subset_ira, aes(x = year - stagger_width, y = total_demand), fill = "red", alpha = 0.5, width = 0.4) +
-  geom_boxplot(data = aluminum_subset_ref, aes(x = year + stagger_width, y = total_demand), fill = "blue", alpha = 0.5, width = 0.4) +
-  labs(title = "Aluminum",
-       x = "",
-       y = "Thousands Mton/year",
-       color = "") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  
-  scale_x_continuous(breaks = desired_years, labels = as.character(desired_years)) + 
-  ggtitle("Comparison of Aluminum Demand")  # Adding a title
-
-# Print the combined plot
-print(combined_plot)
-```
-
-```{r}
-# # Plot the data for IRA scenario
-# p <- ggplot() +
-#   geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                 y = Aluminum_mean, 
-#                                                 color = "Aluminum_mean (IRA)"), 
-#             linetype = "solid") +
-#   geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                 y = Aluminum_min, 
-#                                                 color = "Aluminum_min (IRA)"), 
-#             linetype = "dashed") +
-#   geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                 y = Aluminum_max, 
-#                                                 color = "Aluminum_max (IRA)"), 
-#             linetype = "dotted") +
-#   labs(title = "Annual Aluminum Demand",
-#        x = "Year",
-#        y = "Material Demand (Mton/year)",
-#        color = "Scenario") +
-#   scale_color_manual(values = c( 
-#                                 "Aluminum_mean (IRA)" = "red", 
-#                                 "Aluminum_min (IRA)" = "red",
-#                                 "Aluminum_max (IRA)" = "red", 
-#                                 "Aluminum_mean (Ref)" = "blue", 
-#                                 "Aluminum_min (Ref)" = "blue", 
-#                                 "Aluminum_max (Ref)" = "blue"),  # Color for each line
-#                      name = "Scenario",
-#                      labels = c("Max (IRA)", "Min (IRA)", "Mean (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
-#   theme_minimal()
-# 
-# # Plot the data for Ref scenario and combine with the previous plot
-# p1<-p +
-#   geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                 y = Aluminum_mean, 
-#                                                 color = "Aluminum_mean (Ref)"), 
-#             linetype = "solid") +
-#   geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                 y = Aluminum_min, 
-#                                                 color = "Aluminum_min (Ref)"), 
-#             linetype = "dashed") +
-#   geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                 y = Aluminum_max, 
-#                                                 color = "Aluminum_max (Ref)"), 
-#             linetype = "dotted")
-# 
-# #print(p1)
-# # Assuming p is your ggplot object representing your existing plot
-# #aluminum_subset <- multi_model_mc_material_demand_total %>%
-# #  filter(Material == "Steel") %>% filter(year == "2025")%>% filter(scenario =="IRA")%>%
-# #  select(-Coal, -Gas, -Hydro, -Nuclear.New, -onshore.wind, -utility.scale.solar.pv)
-# 
-# # Filter aluminum data for the specified conditions
-# aluminum_subset_ira <- multi_model_mc_material_demand_total %>%
-#   filter(Material == "Steel", year == "2035", scenario == "IRA") %>%
-#   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-#   mutate(
-#     onshore.wind = sort(onshore.wind),
-#     Hydro = sort(Hydro),
-#     Nuclear.New = sort(Nuclear.New),
-#     utility.scale.solar.pv = sort(utility.scale.solar.pv),
-#     Coal = sort(Coal),
-#     Gas = sort(Gas),
-#     total_demand = (onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas)/1000,
-#     year = 2035
-#   )
-# # Filter aluminum data for the specified conditions for scenario "Ref"
-# aluminum_subset_ref <- multi_model_mc_material_demand_total %>%
-#   filter(Material == "Aluminum", year == "2035", scenario == "Ref") %>%
-#   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-#   mutate(
-#     onshore.wind = sort(onshore.wind),
-#     Hydro = sort(Hydro),
-#     Nuclear.New = sort(Nuclear.New),
-#     utility.scale.solar.pv = sort(utility.scale.solar.pv),
-#     Coal = sort(Coal),
-#     Gas = sort(Gas),
-#     total_demand = (onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas)/1000,
-#     year= 2035
-#   )
-# 
-# 
-# # Create a box plot for aluminum demand for scenario "Ref"
-# boxplot_ref <- ggplot(aluminum_subset_ref, aes(x = year, y = total_demand)) +
-#   geom_boxplot(fill = "blue", alpha = 0.5, width = 0.5) +
-#   labs(x = "Year", y = "Total Demand for Aluminum (Ref)", title = "Box Plot of Total Demand for Aluminum (Ref)")
-# 
-# # Combine the box plots with your existing plot p
-# combined_plot <- p1 +
-#   geom_boxplot(data = aluminum_subset_ira, aes(x = year, y = total_demand), fill = "gray", alpha = 0.5, width = 0.5) +
-#   geom_boxplot(data = aluminum_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5) +
-#   labs(title = "Combined Plot with Box Plots of Aluminum Demand",
-#        x = "",
-#        y = "(Thousands Mton/year)",
-#        color = "Scenario") +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
-# 
-# # Print the combined plot
-# print(combined_plot)
-# # Define the width for staggering the box plots
-# stagger_width <- 0.1  # Adjust as needed
-# 
-# # Combine the box plots with your existing plot p, staggering them slightly
-# # Define the width for staggering the box plots
-# stagger_width <- 0.1  # Adjust as needed
-# 
-# # Define the desired years to be displayed on the x-axis
-# desired_years <- c(2025, 2030, 2035)
-# 
-# # Combine the box plots with staggering
-# combined_plot <- p1 +
-#   geom_boxplot(data = aluminum_subset_ira, aes(x = year - stagger_width, y = total_demand), fill = "red", alpha = 0.5, width = 0.4) +
-#   geom_boxplot(data = aluminum_subset_ref, aes(x = year + stagger_width, y = total_demand), fill = "blue", alpha = 0.5, width = 0.4) +
-#   labs(title = "Aluminum",
-#        x = "",
-#        y = "Thousands Mton/year",
-#        color = "") +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  
-#   scale_x_continuous(breaks = desired_years, labels = as.character(desired_years)) + 
-#   ggtitle("Comparison of Aluminum Demand")  # Adding a title
-# 
-# # Print the combined plot
-# print(combined_plot)
-
-```
-
-
-
-```{r}
-
-# materials <- c( "Manganese","Aluminum","Steel")  # Add other materials as needed
-# 
-# for (material in materials) {
-#   
-#   material_demand_sum <- materials_demand %>%
-#   group_by(year,scenario) %>%
-#   summarise(Aluminum_mean = sum(Aluminum_mean),
-#             Aluminum_min = sum(Aluminum_min),
-#             Aluminum_max = sum(Aluminum_max))
-# material_demand_sum_ira <- material_demand_sum %>%
-#   filter(scenario == "IRA")
-# # Plot the data
-# material_demand_sum_ref <- material_demand_sum %>%
-#   filter(scenario == "Ref")
-# 
-# # Plot the data for IRA scenario
-# p <- ggplot() +
-#   geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                 y = Aluminum_mean, 
-#                                                 color = "Aluminum_mean (IRA)"), 
-#             linetype = "solid") +
-#   geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                 y = Aluminum_min, 
-#                                                 color = "Aluminum_min (IRA)"), 
-#             linetype = "dashed") +
-#   geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                 y = Aluminum_max, 
-#                                                 color = "Aluminum_max (IRA)"), 
-#             linetype = "dotted") +
-#   labs(title = "Annual Aluminum Demand",
-#        x = "Year",
-#        y = "Material Demand (Mton/year)",
-#        color = "Scenario") +
-#   scale_color_manual(values = c( 
-#                                 "Aluminum_mean (IRA)" = "red", 
-#                                 "Aluminum_min (IRA)" = "red",
-#                                 "Aluminum_max (IRA)" = "red", 
-#                                 "Aluminum_mean (Ref)" = "blue", 
-#                                 "Aluminum_min (Ref)" = "blue", 
-#                                 "Aluminum_max (Ref)" = "blue"),  # Color for each line
-#                      name = "Scenario",
-#                      labels = c("Max (IRA)", "Min (IRA)", "Mean (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
-#   theme_minimal()
-# 
-# # Plot the data for Ref scenario and combine with the previous plot
-# p1<-p +
-#   geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                 y = Aluminum_mean, 
-#                                                 color = "Aluminum_mean (Ref)"), 
-#             linetype = "solid") +
-#   geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                 y = Aluminum_min, 
-#                                                 color = "Aluminum_min (Ref)"), 
-#             linetype = "dashed") +
-#   geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                 y = Aluminum_max, 
-#                                                 color = "Aluminum_max (Ref)"), 
-#             linetype = "dotted")
-# 
-# 
-# }
-# print(p1)
-# 
-# ```
-# ```{r}
-# materials <- c("Aluminum","Manganese")  # Add other materials as needed
-# 
-# for (material in materials) {
-#   material_demand_sum <- materials_demand %>%
-#     group_by(year, scenario) %>%
-#     summarise(
-#       !!paste0(material, "_mean") := sum(!!sym(paste0(material, "_mean"))),
-#       !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min"))),
-#       !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")))
-#     )
-#   
-#   material_demand_sum_ira <- material_demand_sum %>%
-#     filter(scenario == "IRA")
-#   
-#   material_demand_sum_ref <- material_demand_sum %>%
-#     filter(scenario == "Ref")
-#   
-#   # Plot the data for IRA scenario
-#   p <- ggplot() +
-#     geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                   y = !!sym(paste0(material, "_mean")), 
-#                                                   color = paste0(material, "_mean (IRA)")), 
-#               linetype = "solid") +
-#     geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                   y = !!sym(paste0(material, "_min")), 
-#                                                   color = paste0(material, "_min (IRA)")), 
-#               linetype = "dashed") +
-#     geom_line(data = material_demand_sum_ira, aes(x = year, 
-#                                                   y = !!sym(paste0(material, "_max")), 
-#                                                   color = paste0(material, "_max (IRA)")), 
-#               linetype = "dotted") +
-#     labs(title = paste("Annual", material, "Demand"),
-#          x = "Year",
-#          y = "Material Demand (Mton/year)"
-#       ,
-#          color = "Scenario") 
-# 
-#     # scale_color_manual(values = c( 
-#     #   paste0(material, "_mean (IRA)") = "red", 
-#     #   paste0(material, "_min (IRA)") = "red",
-#     #   paste0(material, "_max (IRA)") = "red", 
-#     #   paste0(material, "_mean (Ref)") = "blue", 
-#     #   paste0(material, "_min (Ref)") = "blue", 
-#     #   paste0(material, "_max (Ref)") = "blue"),  # Color for each line
-#     #   name = "Scenario",
-#     #   labels = c("Max (IRA)", "Min (IRA)", "Mean (IRA)", "Mean (Ref)", "Min (Ref)", "Max (Ref)")) +
-#     # theme_minimal()
-#     # 
-#   # Plot the data for Ref scenario and combine with the previous plot
-#   p1 <- p +
-#     geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                   y = !!sym(paste0(material, "_mean")), 
-#                                                   color = paste0(material, "_mean (Ref)")), 
-#               linetype = "solid") +
-#     geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                   y = !!sym(paste0(material, "_min")), 
-#                                                   color = paste0(material, "_min (Ref)")), 
-#               linetype = "dashed") +
-#     geom_line(data = material_demand_sum_ref, aes(x = year, 
-#                                                   y = !!sym(paste0(material, "_max")), 
-#                                                   color = paste0(material, "_max (Ref)")), 
-#               linetype = "dotted")
-#   
-#   # Define the material name
-#   
-# # Filter data for the specified conditions for IRA scenario
-# material_subset_ira <- multi_model_mc_material_demand_total %>%
-#   filter(Material == material, year == "2035", scenario == "IRA") %>%
-#   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-#   mutate(
-#     across(c(onshore.wind, Hydro, Nuclear.New, utility.scale.solar.pv, Coal, Gas), ~sort(.)),
-#     total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas,
-#     year = 2035
-#   )
-# 
-# # Filter data for the specified conditions for Ref scenario
-# material_subset_ref <- multi_model_mc_material_demand_total %>%
-#   filter(Material == material, year == "2035", scenario == "Ref") %>%
-#   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-#   mutate(
-#     across(c(onshore.wind, Hydro, Nuclear.New, utility.scale.solar.pv, Coal, Gas), ~sort(.)),
-#     total_demand = onshore.wind + Hydro + Nuclear.New + utility.scale.solar.pv + Coal + Gas,
-#     year= 2035
-#   )
-
-
-# combined_plot <- p1 +
-#   geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand), fill = "red", alpha = 0.5, width = 0.5) +
-#   geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5) +
-#   labs(title = "Combined Plot with Box Plots of Aluminum Demand",
-#        x = "",
-#        y = "(Thousands Mton/year)",
-#        color = "Scenario") +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +theme_minimal() # Rotate x-axis labels for better readability
-# 
-# # Print the combined plot
-# print(combined_plot)
-# 
-# 
-# 
-# }
-# 
-# ```
-# ```{r}
-# 
-
-```
-
-```{r}
-library(ggplot2)
-library(dplyr)
-
-# Initialize an empty list to store plots
-plot_list <- list()
-
-materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
-
-
-for (material in materials) {
-  material_demand_sum <- repeat_materials_demand %>%
-    group_by(year, scenario) %>%
-    summarise(
-      !!paste0(material, "_mean") := sum(!!sym(paste0(material, "_mean"))),
-      !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min"))),
-      !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")))
-    )
-  
-  material_demand_sum_ira <- material_demand_sum %>%
-    filter(scenario == "IRA")
-  
-  material_demand_sum_ref <- material_demand_sum %>%
-    filter(scenario == "REF")
-  
-  # Plot the data for IRA scenario
-  p <- ggplot() +
-    geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_mean")), 
-                                                  color = "mean IRA"), 
-              linetype = "solid") +
-    geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_min")), 
-                                                  color = "min IRA"), 
-              linetype = "dashed") +
-    geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_max")), 
-                                                  color = "max IRA"), 
-              linetype = "dotted") +
-    # Plot the data for Ref scenario
-    geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_mean")), 
-                                                  color = "mean Ref"), 
-              linetype = "solid") +
-    geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_min")), 
-                                                  color = "min Ref"), 
-              linetype = "dashed") +
-    geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_max")), 
-                                                  color = "max Ref"), 
-              linetype = "dotted") +
-    labs(title = paste(material),
-         x = "",
-         y = "",
-         color = "Scenario") +
-    scale_color_manual(values = c("mean IRA" = "red", "min IRA" = "red", "max IRA" = "red",
-                                  "mean Ref" = "blue", "min Ref" = "blue", "max Ref" = "blue"),
-                       labels = c("Mean IRA", "Min IRA", "Max IRA", "Mean Ref", "Min Ref", "Max Ref"),
-                       breaks = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref")) +
-    scale_x_continuous(breaks = c(2025, 2030, 2035)) +
-    theme_minimal() +
-    theme(legend.position = "none",
-           axis.text.x = element_text(size = 14), # Increase size of x-axis text
-      axis.text.y = element_text(size = 14), # Increase size of y-axis text
-      axis.title.x = element_text(size = 16), # Increase size of x-axis title
-      axis.title.y = element_text(size = 16), # Increase size of y-axis title
-      plot.title = element_text(size = 20, hjust = 0.5))
-  
-  # Filter data for the specified conditions for IRA scenario
-  material_subset_ira <- repeat_mc_material_demand_total %>%
-    filter(Material == material, year == 2035, scenario == "IRA") %>%
-    select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-    mutate(
-      across(c(onshore.wind, offshore.wind, Nuclear.New, utility.scale.solar.pv, Gas), ~sort(.)),
-      total_demand = (onshore.wind + offshore.wind + Nuclear.New + utility.scale.solar.pv + Gas) / 1000,
-      year = 2035
-    )
-  
-  # Filter data for the specified conditions for Ref scenario
-  material_subset_ref <- repeat_mc_material_demand_total %>%
-    filter(Material == material, year == 2035, scenario == "REF") %>%
-    select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-    mutate(
-      across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, offshore.wind, Gas), ~sort(.)),
-      total_demand = (onshore.wind + offshore.wind + Nuclear.New + utility.scale.solar.pv + Gas) / 1000,
-      year = 2035
-    )
-  
-  # Create box plots for IRA and Ref scenarios
-  boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand), fill = "red", alpha = 0.5, width = 0.5)
-  boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5)
-  
-  # Combine all layers into one plot
-  p <- p + boxplot_ira + boxplot_ref
-  
-  # Add the plot to the plot list
-  plot_list[[material]] <- p
-}
-
-# Combine all plots in the plot list into one greater plot with subplots
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
-
-# Print the combined plot
-print(combined_plot)
-
-ggsave("repeat_complete_boxplot.jpg", plot = combined_plot, width = 11, height = 14, units = "in", dpi = 300)
-
-
-```
-
-```{r}
-
-# #multimodel
-# library(ggplot2)
-# library(dplyr)
-# 
-# # Initialize an empty list to store plots
 # plot_list <- list()
 # 
 # materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead",  "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Vanadium", "Yttrium", "Zinc")
-# #materials <- "Steel"
+# 
 # 
 # for (material in materials) {
-#   material_demand_sum <- materials_demand %>%
+#   material_demand_sum <- repeat_materials_demand %>%
 #     group_by(year, scenario) %>%
 #     summarise(
 #       !!paste0(material, "_mean") := sum(!!sym(paste0(material, "_mean"))),
@@ -787,7 +50,7 @@ ggsave("repeat_complete_boxplot.jpg", plot = combined_plot, width = 11, height =
 #     filter(scenario == "IRA")
 #   
 #   material_demand_sum_ref <- material_demand_sum %>%
-#     filter(scenario == "Ref")
+#     filter(scenario == "REF")
 #   
 #   # Plot the data for IRA scenario
 #   p <- ggplot() +
@@ -826,59 +89,54 @@ ggsave("repeat_complete_boxplot.jpg", plot = combined_plot, width = 11, height =
 #                        breaks = c("mean IRA", "min IRA", "max IRA", "mean Ref", "min Ref", "max Ref")) +
 #     scale_x_continuous(breaks = c(2025, 2030, 2035)) +
 #     theme_minimal() +
-#     theme(legend.position = "none")
-#   #print(unique(multi_model_mc_material_demand_total$technology))
-#   # Filter data for the specified conditions for IRA scenario
-#   material_subset_ira <- multi_model_mc_material_demand_total %>%
+#     theme(legend.position = "none",
+#            axis.text.x = element_text(size = 14), 
+#       axis.text.y = element_text(size = 14), 
+#       axis.title.x = element_text(size = 16),
+#       axis.title.y = element_text(size = 16), 
+#       plot.title = element_text(size = 20, hjust = 0.5))
+#   
+#   material_subset_ira <- repeat_mc_material_demand_total %>%
 #     filter(Material == material, year == 2035, scenario == "IRA") %>%
 #     select(-total_demand, -year, -scenario, -Material, -row_id) %>%
 #     mutate(
-#       across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT, NGCC, Biomass, Bio.CCS, Solar.Distributed ,Coal, Hydro,Gas.CCS, Coal.CCS), ~sort(.)),
-#       total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + Solar.Distributed + NGGT+ NGCC+ Biomass+ Bio.CCS +Solar.Distributed +Gas.CCS+ Coal.CCS ) / 1000,
+#       across(c(onshore.wind, offshore.wind, Nuclear.New, utility.scale.solar.pv, Gas), ~sort(.)),
+#       total_demand = (onshore.wind + offshore.wind + Nuclear.New + utility.scale.solar.pv + Gas) / 1000,
 #       year = 2035
 #     )
 #   
-#   # Filter data for the specified conditions for Ref scenario
-#   material_subset_ref <- multi_model_mc_material_demand_total %>%
-#     filter(Material == material, year == 2035, scenario == "Ref") %>%
+#   material_subset_ref <- repeat_mc_material_demand_total %>%
+#     filter(Material == material, year == 2035, scenario == "REF") %>%
 #     select(-total_demand, -year, -scenario, -Material, -row_id) %>%
 #     mutate(
-#       across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT,NGCC, Biomass, Bio.CCS,Solar.Distributed, Coal,Hydro,Gas.CCS,Coal.CCS), ~sort(.)),
-#       total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + NGGT+ NGCC+Biomass+ Bio.CCS+ Solar.Distributed + Gas.CCS +Coal.CCS ) / 1000, year = 2035
+#       across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, offshore.wind, Gas), ~sort(.)),
+#       total_demand = (onshore.wind + offshore.wind + Nuclear.New + utility.scale.solar.pv + Gas) / 1000,
+#       year = 2035
 #     )
 #   
-#   # Create box plots for IRA and Ref scenarios
 #   boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand), fill = "red", alpha = 0.5, width = 0.5)
 #   boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand), fill = "blue", alpha = 0.5, width = 0.5)
 #   
-#   # Combine all layers into one plot
 #   p <- p + boxplot_ira + boxplot_ref
 #   
-#   # Add the plot to the plot list
 #   plot_list[[material]] <- p
 # }
-# print(p)
-# # Combine all plots in the plot list into one greater plot with subplots
-# combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5)
 # 
-# # Print the combined plot
+# combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
 # print(combined_plot)
 # 
-# ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 15, height = 10, units = "in", dpi = 300)
+# ggsave("repeat_complete_boxplot.jpg", plot = combined_plot, width = 11, height = 14, units = "in", dpi = 300)
 # 
 
 ```
 
-```{r}
-#multimodel
-library(ggplot2)
-library(dplyr)
 
-# Initialize an empty list to store plots
+**Plot Bistline et al. (202x). The boxplots are the simulated material demand and the lines are the min max and mean individual model values **
+```{r}
+
 plot_list <- list()
 
 materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead", "Magnesium", "Manganese","Molybdenum","Neodymium","Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium","Tin", "Vanadium", "Yttrium", "Zinc")
-#materials <- "Aluminum"
 
 for (material in materials) {
   material_demand_sum_mean <- materials_demand %>%
@@ -889,39 +147,27 @@ for (material in materials) {
       !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")))
     )
   
-  # meanmaxlines <- all_models %>% select(year, scenario,technology,model, Steel_mean,Steel_max,Steel_min) %>% group_by(year,scenario,model) %>%  summarise(            Steel_min = sum(Steel_min),
-  #           Steel_max = sum(Steel_max)) %>% group_by(year,scenario) %>% summarise(
-  #           Steel_min = min(Steel_min),
-  #           Steel_max = max(Steel_max))
- library(dplyr)
-
-# Function to sum material columns
-sum_material_columns <- function(data, material) {
-  material_demand_sum_df <- data %>%
-    select(year, scenario, technology, model, 
-           matches(paste0(material, "_mean")), 
-           matches(paste0(material, "_max")), 
-           matches(paste0(material, "_min"))) %>%
-    group_by(year, scenario, model) %>%
-    summarise(
-      !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min")), na.rm = TRUE),
-      !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")), na.rm = TRUE)
-    ) %>%
-    group_by(year, scenario) %>%
-    summarise(
-      !!paste0(material, "_min") := min(!!sym(paste0(material, "_min")), na.rm = TRUE),
-      !!paste0(material, "_max") := max(!!sym(paste0(material, "_max")), na.rm = TRUE)
-    )
+  sum_material_columns <- function(data, material) {
+    material_demand_sum_df <- data %>%
+      select(year, scenario, technology, model, 
+             matches(paste0(material, "_mean")), 
+             matches(paste0(material, "_max")), 
+             matches(paste0(material, "_min"))) %>%
+      group_by(year, scenario, model) %>%
+      summarise(
+        !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min")), na.rm = TRUE),
+        !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")), na.rm = TRUE)
+      ) %>%
+      group_by(year, scenario) %>%
+      summarise(
+        !!paste0(material, "_min") := min(!!sym(paste0(material, "_min")), na.rm = TRUE),
+        !!paste0(material, "_max") := max(!!sym(paste0(material, "_max")), na.rm = TRUE)
+      )
+    
+    return(material_demand_sum_df)
+  }
   
-  return(material_demand_sum_df)
-}
-
-# Example usage for Steel material
-material_demand_sum <- sum_material_columns(all_models, material)
-
-
-
-
+  material_demand_sum <- sum_material_columns(all_models, material)
   material_demand_sum_ira <- material_demand_sum %>%
     filter(scenario == "IRA")
   
@@ -931,15 +177,15 @@ material_demand_sum <- sum_material_columns(all_models, material)
   material_demand_sum_ira_mean <-  material_demand_sum_mean %>%
     filter(scenario == "IRA")
   
-    material_demand_sum_ref_mean <-  material_demand_sum_mean %>%
+  material_demand_sum_ref_mean <-  material_demand_sum_mean %>%
     filter(scenario == "Ref")
-
+  
   
   # Plot the data for IRA scenario
   p <- ggplot() +
     geom_line(data = material_demand_sum_ira_mean, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_mean")), 
-                                                  color = "mean IRA"), 
+                                                       y = !!sym(paste0(material, "_mean")), 
+                                                       color = "mean IRA"), 
               linetype = "solid") +
     geom_line(data = material_demand_sum_ira, aes(x = year, 
                                                   y = !!sym(paste0(material, "_min")), 
@@ -951,8 +197,8 @@ material_demand_sum <- sum_material_columns(all_models, material)
               linetype = "dotted") +
     # Plot the data for Ref scenario
     geom_line(data = material_demand_sum_ref_mean, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_mean")), 
-                                                  color = "mean Ref"), 
+                                                       y = !!sym(paste0(material, "_mean")), 
+                                                       color = "mean Ref"), 
               linetype = "solid") +
     geom_line(data = material_demand_sum_ref, aes(x = year, 
                                                   y = !!sym(paste0(material, "_min")), 
@@ -973,53 +219,36 @@ material_demand_sum <- sum_material_columns(all_models, material)
     scale_x_continuous(breaks = c(2025, 2030, 2035)) +
     theme_minimal() +
     theme(legend.position = "none",
-          axis.text.x = element_text(size = 14), # Increase size of x-axis text
-      axis.text.y = element_text(size = 14), # Increase size of y-axis text
-      axis.title.x = element_text(size = 16), # Increase size of x-axis title
-      axis.title.y = element_text(size = 16), # Increase size of y-axis title
-      plot.title = element_text(size = 20, hjust = 0.5) )
-  #print(unique(multi_model_mc_material_demand_total$technology))
-  # Filter data for the specified conditions for IRA scenario
+          axis.text.x = element_text(size = 14),
+          axis.text.y = element_text(size = 14), 
+          axis.title.x = element_text(size = 16), 
+          axis.title.y = element_text(size = 16),
+          plot.title = element_text(size = 20, hjust = 0.5))
+  
   material_subset_ira <- multi_model_mc_material_demand_total %>%
+    
     filter(Material == material, year == 2035, scenario == "IRA") %>%
     select(total_demand, year, -scenario, -Material, -row_id) #%>%
-    # mutate(
-    #   across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT, NGCC, Biomass, Bio.CCS, Solar.Distributed ,Coal, Hydro,Gas.CCS, Coal.CCS), ~sort(.)),
-    #   total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + Solar.Distributed + NGGT+ NGCC+ Biomass+ Bio.CCS +Solar.Distributed +Gas.CCS+ Coal.CCS ) / 1000,
-    #   year = 2035
-    # )
   
-  # Filter data for the specified conditions for Ref scenario
-  # material_subset_ref <- multi_model_mc_material_demand_total %>%
-  #   filter(Material == material, year == 2035, scenario == "Ref") %>%
-  #   select(-total_demand, -year, -scenario, -Material, -row_id) %>%
-  #   mutate(
-  #     across(c(onshore.wind, Nuclear.New, utility.scale.solar.pv, NGGT,NGCC, Biomass, Bio.CCS, Coal,Hydro,Gas.CCS,Coal.CCS), ~sort(.)),
-  #     total_demand = (onshore.wind + Hydro + Coal + Nuclear.New + utility.scale.solar.pv + NGGT+ NGCC+Biomass+ Bio.CCS+  Gas.CCS +Coal.CCS ) / 1000, year = 2035
-  #   )
-    material_subset_ref <- multi_model_mc_material_demand_total %>%
+  material_subset_ref <- multi_model_mc_material_demand_total %>%
     filter(Material == material, year == 2035, scenario == "Ref") %>%
     select(total_demand, year, -scenario, -Material, -row_id) #%>%
-
+  
   # Create box plots for IRA and Ref scenarios
   boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand/1000), fill = "red", alpha = 0.5, width = 0.5)
   boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand/1000), fill = "blue", alpha = 0.5, width = 0.5)
   
-  # Combine all layers into one plot
+  # Combine boxplots with the lines
   p <- p + boxplot_ira + boxplot_ref
-  
-  # Add the plot to the plot list
   plot_list[[material]] <- p
 }
 print(p)
-# Combine all plots in the plot list into one greater plot with subplots
+# Combine all material subplots together
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 4)
-
-# Print the combined plot
 print(combined_plot)
 
 ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 13, height = 17, units = "in", dpi = 300)
-
+```
 
 ```
 

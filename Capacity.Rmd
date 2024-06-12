@@ -1,15 +1,14 @@
 ---
 title: "Capacity"
 output:
-  html_document:
-    df_print: paged
+html_document:
+df_print: paged
 date created: 12/22/23
 created by: Avery Moorhead
 last revised by: Erin Mayfield
 ---
 
 ```{r setup, include=FALSE}
-###NTS: Currently only running this script on aluminum cement and steel. you can change this by changing rows 222,305, and 341
 #Clear objects from workspace
 rm(list = ls())
 
@@ -34,7 +33,7 @@ library(knitr)
 
 #Load data
 Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
-                      sheet = "Cap IRA", na="ND", range =  cell_rows(1:18), col_names= FALSE)
+                     sheet = "Cap IRA", na="ND", range =  cell_rows(1:18), col_names= FALSE)
 
 #Creating dataframe and processing data
 Cap_IRA <- t(Cap_IRA)
@@ -55,19 +54,14 @@ Cap_IRA <- as.data.frame(Cap_IRA)
 initial_year <- subset(Cap_IRA, year %in% "2021")
 initial_year[is.na(initial_year)] <- '0'
 
-
 initial_year_melted <- melt(initial_year, id.vars = c("year"), variable.name = "variable", value.name = "value")
-
 initial_year_melted <- initial_year_melted %>%
   mutate(model = NA,  # Add model column with NA
          scenario = NA,  # Add scenario column with NA
          year = 2021) %>%  # Ensure year column is 2021
   select(model, year, variable, value, scenario)  # Select and order columns
 
-
 initial_year_melted$variable <- gsub("Wind", "onshore wind", initial_year_melted$variable)
-
-
 
 #Additional data processing 
 Cap_IRA = Cap_IRA[-1,]
@@ -82,7 +76,7 @@ Cap_IRA$variable <- gsub("Wind", "onshore wind", Cap_IRA$variable)
 
 #Load data
 Y_Cap_IRA = read_excel("Multi Model Capacity Data.xlsx", 
-                     sheet = "Cap IRA", na="ND", col_names= FALSE, range = cell_rows(28:45))
+                       sheet = "Cap IRA", na="ND", col_names= FALSE, range = cell_rows(28:45))
 
 #Creating dataframe and processing data
 Y_Cap_IRA <- t(Y_Cap_IRA)
@@ -105,13 +99,6 @@ Y_Cap_IRA$scenario <- "IRA"
 Y_Cap_IRA$model[Y_Cap_IRA$model=='0']<-"2021"
 
 ##Cap_Ref: total capacity for each technology, model, and period under reference scenario (units: gigawatts)
-subset_df <- Y_Cap_IRA %>% filter(year == 2025, variable == "Solar Distributed")
-average_value <- Y_Cap_IRA %>%
-  filter(year == 2025, variable == 'Solar Distributed') %>%
-  summarise(across(where(is.numeric), mean, na.rm = TRUE))
-subset_df <- subset_df %>%
-  mutate(average_divided_by_4 = value / 4)
-
 
 #Load data
 Cap_Ref = read_excel("Multi Model Capacity Data.xlsx", 
@@ -139,7 +126,6 @@ Cap_Ref$value <- as.numeric(unlist(Cap_Ref$value))
 Cap_Ref$scenario <- "Ref"
 Cap_Ref$variable <- gsub("Wind", "onshore wind", Cap_Ref$variable)
 
-
 ##Y_Cap_Ref: additional capacity for each technology, model, and period under reference scenario (units: gigawatts)
 
 #Load data
@@ -154,6 +140,7 @@ new_colnames <- unlist(Y_Cap_Ref[1, ])
 colnames(Y_Cap_Ref) <- new_colnames
 Y_Cap_Ref <- Y_Cap_Ref[-1,]
 colnames(Y_Cap_Ref)[1] ="model"
+
 colnames(Y_Cap_Ref)[2] ="year"
 Y_Cap_Ref$year[is.na(Y_Cap_Ref$year)] <- "2021"
 Y_Cap_Ref <-  Y_Cap_Ref[(1:34),]
@@ -174,17 +161,9 @@ colnames(capacities_all)[3] ="technology"
 capacities_all$technology <- gsub("Wind", "onshore wind", capacities_all$technology)
 capacities_all$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_all$technology)
 capacities_all$technology <- gsub("Nuclear Existing", "Nuclear New", capacities_all$technology)
-
-#capacities_all$technology <- gsub("Solar Distributed", "utility-scale solar pv", capacities_all$technology)
-#capacities_all$technology <- gsub("NGGT", "Gas", capacities_all$technology)
-#capacities_all$technology <- gsub("NGCC", "Gas", capacities_all$technology)
 capacities_all$technology <- gsub("NGCC CCS", "Gas CCS", capacities_all$technology)
 capacities_all$technology <- gsub("Coal CCS", "Coal CCS", capacities_all$technology)
 capacities_all$technology <- gsub("Bio/Other", "Biomass", capacities_all$technology)
-
-#capacities_all$technology <- gsub("Gas CCS", "Gas CCS", capacities_all$technology)
-
-print(unique(capacities_all$technology))
 
 ##capacities: mean, minimum, and maximum total capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
 capacities <- capacities_all[-1]
@@ -192,10 +171,10 @@ capacities <-capacities %>% group_by(scenario,year,technology) %>% summarise(new
 
 ##capacities_y_all: annualized additional capacity for each technology, model, and period under reference and IRA scenarios (units: gigawatts)
 
-#Merging Y_Cap_IRA and Y_Cap_Ref dataframes
+##Merging Y_Cap_IRA and Y_Cap_Ref dataframes
 capacities_y_all <- rbind(Y_Cap_IRA,Y_Cap_Ref)
 
-#Annualizing capacity data 
+##Annualizing capacity data 
 capacities_y_all$newval <- capacities_y_all$value
 capacities_y_all$newval[capacities_y_all$year == 2025] <- capacities_y_all$value[capacities_y_all$year == 2025] / 4
 capacities_y_all$newval[capacities_y_all$year == 2030] <- capacities_y_all$value[capacities_y_all$year == 2030] / 5
@@ -204,7 +183,6 @@ capacities_y_all$newval[capacities_y_all$year == 2035] <- capacities_y_all$value
 ##capacities_y: mean annualized additional capacity across models and for each technology and period under reference and IRA scenarios (units: gigawatts)
 colnames(capacities_y_all)[3] ="technology"
 capacities_y_all$technology <- gsub("Wind", "onshore wind", capacities_y_all$technology)
-
 
 ##linear interpolaion for models E4ST and IPM-E
 interpolation_df_IRA <- Cap_IRA %>%
@@ -215,11 +193,8 @@ interpolation_df_Ref <- Cap_Ref %>%
   filter(model %in% c("E4ST", "IPM-E"))
 interpolation_df_Ref <- rbind(interpolation_df_Ref, initial_year_melted)
 
-
-
 df_2021 <- interpolation_df_IRA %>% filter(year == 2021)
 df_2030 <- interpolation_df_IRA %>% filter(year == 2030)
-
 df_2030_Ref <- interpolation_df_Ref %>% filter(year == 2030)
 
 df_2021$value <- as.numeric(as.character(df_2021$value))
@@ -229,11 +204,6 @@ df_2030_Ref$value <- as.numeric(as.character(df_2030_Ref$value))
 df_2021 <- df_2021 %>% arrange(variable)
 df_2030 <- df_2030 %>% arrange(model, variable, scenario)
 df_2030_Ref <- df_2030_Ref %>% arrange(model, variable, scenario)
-
-
-if (any(duplicated(df_2021$variable))) {
-  stop("df_2021 contains duplicate technologies.")
-}
 
 interpolated_values <- df_2030 %>%
   left_join(df_2021 %>% select(variable, value_2021 = value), by = "variable") %>%
@@ -262,16 +232,14 @@ interpolated_values_ref <- interpolated_values_ref %>%
   rename(newval = delta_2025) %>% mutate(year = 2025)
 final_interpolated_values_ref <- interpolated_values_ref
 
-
-
 final_interpolated_values_IRA <- rbind(new_delta_2030,final_interpolated_values_IRA) %>% rename(technology = variable) %>%  
   mutate(newval = ifelse(year == 2025, newval / 4, ifelse(year == 2030, newval / 5, newval)))
 
 final_interpolated_values_ref <- rbind(new_delta_2030_ref,final_interpolated_values_ref) %>% rename(technology = variable) %>%  
   mutate(newval = ifelse(year == 2025, newval / 4, ifelse(year == 2030, newval / 5, newval)))
 
+##adding interpolated values to capacities_y_all
 capacities_y_all <- capacities_y_all %>% select(-value)
-print(colnames(interpolated_values))
 capacities_y_all_filtered <- capacities_y_all %>%
   filter(!(year == 2025 | year == 2030) | !(model %in% c("IPM-E", "E4ST")))
 capacities_y_all_models <- rbind(capacities_y_all_filtered,final_interpolated_values_IRA,final_interpolated_values_ref)
@@ -280,11 +248,7 @@ capacities_y_all_models$technology <- gsub("Coal CCS", "Coal CCS", capacities_y_
 capacities_y_all_models$technology <- gsub("Bio/Other", "Biomass", capacities_y_all_models$technology)
 capacities_y_all_models$technology <- gsub("Solar Utility", "utility-scale solar pv", capacities_y_all_models$technology)
 
-#capacities_y <- capacities_y_all[c(-1,-4)]
 capacities_y <-   capacities_y_all_models %>% group_by(scenario,year,technology) %>% summarise(newval = mean(newval)) %>% filter(technology != "Wind")
-
-
-
 
 ```
 
@@ -322,20 +286,16 @@ temp_df_2035 <- temp_df_2035 %>% group_by(technology,scenario)%>%
 #Combining intermediate dataframes for each period 
 multi_model_capacities <- rbind(temp_df_2030,temp_df_2035,temp_df_2025)
 multi_model_capacities$technology <- ifelse(multi_model_capacities$technology == "wind", "onshore wind", multi_model_capacities$technology)
-multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Utility"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
-#multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Distributed"] <- "utility-scale solar pv"###NTS: check solar distributed vs utility 
+multi_model_capacities["technology"][multi_model_capacities["technology"] == "Solar Utility"] <- "utility-scale solar pv"
 
 multi_model_capacities$technology <- gsub("Coal CCS", "Coal CCS", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("Gas CCS", "Gas CCS", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("NGCC CCS", "Gas CCS", multi_model_capacities$technology)
-#multi_model_capacities$technology <- gsub("NGCC", "Gas", multi_model_capacities$technology)
 multi_model_capacities$technology <- gsub("Bio/Other", "Biomass", multi_model_capacities$technology)
 
 multi_model_capacities <- multi_model_capacities %>%
   group_by(year, scenario, technology) %>%
   summarise(newval = sum(newval))
-
-print(unique(multi_model_capacities$technology))
 ```
 
 **Capacity inputs (Jenkins et al., 2023):** This code uploads and processes electric power capacity input data from Jenkins et al. (2023). The data include total capacity and added capacity by technology, capacity expansion model, and year. All capacity data are in units of gigawatts.
@@ -347,6 +307,7 @@ print(unique(multi_model_capacities$technology))
 input_capacities= read.csv("capacity_y.csv")
 
 #Creating dataframe and processing data
+
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included
 repeat_technologies = c("onshore wind", "utility-scale solar pv", "Nuclear New", "Wind Offshore", "Gas","Coal","offshore wind")#Define the REPEAT technologies to be included
 repeat_scenarios = c("baseline", "ira_mid")
@@ -355,22 +316,14 @@ input_capacities["tech..outputs_group_detailed"][input_capacities["tech..outputs
 input_capacities$tech..outputs_group_detailed <- gsub("existing_gas combustion turbine", "Gas", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("existing_gas combined cycle", "Gas", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("existing_gas steam turbine", "Gas", input_capacities$tech..outputs_group_detailed)
-#input_capacities$tech..outputs_group_detailed <- gsub("gas production", "Gas", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("naturalgas_ccavgcf", "Gas", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("naturalgas_ctavgcf", "Gas", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("offshore wind fixed", "offshore wind", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("offshore wind floating", "offshore wind", input_capacities$tech..outputs_group_detailed)
 input_capacities$tech..outputs_group_detailed <- gsub("rooftop solar", "utility-scale solar pv", input_capacities$tech..outputs_group_detailed)
 
-
-
-
-print(unique(input_capacities$tech..outputs_group_detailed))
-
-
 repeat_capacities = subset(input_capacities, run.name %in% repeat_scenarios & tech..outputs_group_detailed %in% repeat_technologies) %>% group_by(run.name,year,tech..outputs_group_detailed) %>% summarise(newval = sum(value))
 
-##repeat_capacities_new: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
 
 #Load data
 input_capacities_delta = read.csv("capacity_delta_y.csv")
@@ -378,26 +331,20 @@ input_capacities_delta = read.csv("capacity_delta_y.csv")
 #Creating dataframe and processing data
 input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "offshore wind"] <- "offshore wind fixed"
 input_capacities_delta["tech..outputs_group_detailed"][input_capacities_delta["tech..outputs_group_detailed"] == "new nuclear"] <- "Nuclear New"
-#input_capacities_delta$tech..outputs_group_detailed <- gsub("gas production", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("naturalgas_ccavgcf", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("naturalgas_ctavgcf", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("offshore wind fixed", "offshore wind", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("offshore wind floating", "offshore wind", input_capacities_delta$tech..outputs_group_detailed)
 print(unique(input_capacities_delta$tech..outputs_group_detailed))
-#input_capacities_delta$tech..outputs_group_detailed <- gsub("lng production", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combined cycle", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas combustion turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("existing_gas steam turbine", "Gas", input_capacities_delta$tech..outputs_group_detailed)
 input_capacities_delta$tech..outputs_group_detailed <- gsub("rooftop solar", "utility-scale solar pv", input_capacities_delta$tech..outputs_group_detailed)
 
-
-
-
-
 repeat_capacities_new <- subset(input_capacities_delta, run.name %in% repeat_scenarios & type == "new" & tech..outputs_group_detailed %in% repeat_technologies) %>%
   group_by(run.name, year, tech..outputs_group_detailed) %>%
   summarise(newval = sum(value))
-
+#annualization 
 repeat_capacities_new <- rename(repeat_capacities_new, technology = tech..outputs_group_detailed)
 repeat_capacities_new <- filter(repeat_capacities_new, year %in% c("2026", "2030", "2035"))
 repeat_capacities_new <- mutate(repeat_capacities_new, newval = case_when(
@@ -406,7 +353,6 @@ repeat_capacities_new <- mutate(repeat_capacities_new, newval = case_when(
   year == 2035 ~ newval / 3
 ))
 repeat_capacities_new <- mutate(repeat_capacities_new, year = ifelse(year == 2026, 2025, year))
-
 repeat_capacities_new <- group_by(repeat_capacities_new, year, run.name, technology) %>%
   summarise(newval = sum(newval), .groups = 'drop')
 new_rows <- data.frame(
@@ -415,18 +361,15 @@ new_rows <- data.frame(
   technology = c('Nuclear New', 'Nuclear New'),
   newval = c(0, 0)
 )
-
-
-
 ```
+**Initial Year Data Processing :** this code adds the initial year (2021 to the Multi_model data frame)
 ```{r}
-#adding initial year to multi model df
 melted_initial_year <- melt(initial_year, id.vars = c("year"), variable.name = "technology")
 melted_initial_year <- melted_initial_year[-1,]
 
 names(melted_initial_year)[names(melted_initial_year) == "value"] <- "newval"
 melted_initial_year <- melted_initial_year %>%
-                         mutate(scenario = NA)
+  mutate(scenario = NA)
 summary(melted_initial_year)
 melted_initial_year$newval <- as.numeric(melted_initial_year$newval)
 
@@ -436,17 +379,6 @@ melted_initial_year$technology <- gsub("NGCC.CCS", " Gas CCS", melted_initial_ye
 melted_initial_year$technology <- gsub("Hydrogen.Green", "Hydrogen Green", melted_initial_year$technology)
 melted_initial_year$technology <- gsub("Solar.Utility", "utility-scale solar pv", melted_initial_year$technology)
 melted_initial_year$technology <- gsub("Wind", "onshore wind", melted_initial_year$technology)
-
-
-
-# Print the updated data frame
-print(melted_initial_year)
-
-
-print(melted_initial_year)
-print(multi_model_capacities)
-#combined_df <- rbind(melted_initial_year, multi_model_capacities)
-#multi_model_capacities<-combined_df
 
 ```
 
@@ -466,14 +398,6 @@ write.csv(initial_year, file = file_path1, row.names = FALSE)
 write.csv(multi_model_capacities, file = file_path2, row.names = FALSE)
 write.csv(repeat_capacities_new, file = file_path3, row.names = FALSE)
 write.csv(capacities_y_all_models, file = file_path4, row.names = FALSE)
-print(unique(multi_model_capacities$technology))
-print("---")
-print(unique(capacities_y_all_models$technology))
-
-```
-```{r}
-
-
 
 ```
 

@@ -15,6 +15,7 @@ library(dplyr)
 library(tidyverse)
 library(stringr)
 library(knitr)
+library(fitdistrplus)
 
 knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Raw Data")
 
@@ -41,18 +42,16 @@ flow = subset(input_usgs, Variable %in%usgs_variables)
 **Material intensity (Liang et al., 202X; Wang et al., 202X):** This code uploads and processes material intensity values from Liang et al. (202X) and Wang et al. (202X).
 
 ```{r message=FALSE, warning=FALSE}
-##repeat_capacities_delta: annualized added capacity for each technology and year under reference and IRA scenarios (units: gigawatts)
-
 #Load data
 material_intensity = read_excel("Final Intensity Values.xlsx", sheet = "Intensity Values", range = cell_cols(1:6))
 unique(material_intensity$technology)
+
 #Creating dataframe and processing data
 colnames(material_intensity)[1] ="technology"
 colnames(material_intensity)[3] ="value"
 material_intensity <- material_intensity[!duplicated(material_intensity), ]
 material_intensity <- material_intensity[material_intensity$`Year of the data` <= 2025, 
                                   !(names(material_intensity) %in% c('Year of the data', 'Authors', 'Publish year'))]
-###NTS:data processing, worth checking some of these 
 material_intensity["technology"][material_intensity["technology"] == "Nuclear"] <- "Nuclear New"
 material_intensity["technology"][material_intensity["technology"] == "Onshore_AG"] <- "onshore wind"
 material_intensity["technology"][material_intensity["technology"] == "Onshore_DD_PMG"] <- "onshore wind"
@@ -65,23 +64,18 @@ material_intensity["technology"][material_intensity["technology"] == "Offshore W
 material_intensity["technology"][material_intensity["technology"] == "CoalCCS"] <- "Coal CCS"
 material_intensity["technology"][material_intensity["technology"] == "GasCCS"] <- "Gas CCS"
 material_intensity["technology"][material_intensity["technology"] == "Gas"] <- "NGCC"
-
-
 material_intensity["technology"][material_intensity["technology"] == "CSI_PV"] <- "utility-scale solar pv"
 material_intensity["technology"][material_intensity["technology"] == "BiomassCCS"] <- "Bio CCS"
-
 material_intensity$technology[material_intensity$technology == "Offshore_DD_PMG"] <- "offshore wind"
 material_intensity$technology[material_intensity$technology == "Offshore_AG"] <- "offshore wind"
 material_intensity$Material[material_intensity$Material == "Neodymium "] <-  "Neodymium"
 material_intensity$Material <- gsub("\\s+", "", material_intensity$Material)
 material_intensity$Material <- gsub("[^[:alnum:]]", "", material_intensity$Material)
 
-print(unique(material_intensity$technology))
-
+#mutating rows for additional technologies 
 solar_pv_rows <- material_intensity %>%
   filter(technology == 'utility-scale solar pv') %>%
   mutate(technology = 'Solar Distributed')
-
 
 NGCC_rows <- material_intensity %>%
   filter(technology == 'NGCC') %>%
@@ -90,63 +84,10 @@ Gas_rows <- material_intensity %>%
   filter(technology == 'NGCC') %>%
   mutate(technology = 'Gas')
 
-
-
-
-
 material_intensity <- bind_rows(material_intensity, solar_pv_rows)
 material_intensity <- bind_rows(material_intensity, NGCC_rows)
 material_intensity <- bind_rows(material_intensity, Gas_rows)
-
-print(unique(material_intensity$technology))
-
 ```
-```{r}
-library(fitdistrplus)
-test = subset(material_intensity, technology == "utility-scale solar pv" & Material == "Silver")
-fw <- fitdist(test$value, "weibull", "mge")
-summary(fw)
-```
-
-```{r}
-library(dplyr)
-
-# Sensitivity analysis plots
-par(mfrow = c(3, 3))
-par(mar = c(2, 2, 2, 2))
-
-# Filter dataframe to only include specified technologies
-filtered_df <- filter(material_intensity, technology %in% c("onshore wind", "offshore wind", "utility-scale solar pv", "nuclear"))
-
-for (tech in unique(filtered_df$technology)) {
-  for (material in unique(filtered_df$Material)) {
-    tryCatch(
-      expr = {
-        combo_type <- paste(material, tech, sep = ".")
-        combo_type <- gsub(" ", ".", combo_type)
-        combo_type <- gsub("-", ".", combo_type)
-
-        hist_type <- gsub("-", ".", combo_type)
-        hist_type <- gsub(" ", ".", hist_type)
-
-        axis_labels <- subset(filtered_df, technology == tech & Material == material)
-        hist_df <- subset(filtered_df, technology == tech & Material == material, select = c("value"))
-
-        hist(hist_df$value, col = "antiquewhite1", cex.main = 1.4, xaxt = 'n', xlab = '', main = combo_type, xlim = c(min(axis_labels$value), max(axis_labels$value)))
-        axis(1, at = c(mean(axis_labels$value), min(axis_labels$value), max(axis_labels$value)),
-             labels = c(round(mean(axis_labels$value), digits = 5), round(min(axis_labels$value), digits = 5), round(max(axis_labels$value), digits = 5)))
-      },
-      error = function(e) {
-        dummy <- '1'
-      }
-    )
-  }
-}
-
-
-```
-
-
 **Saving data frames to "inputs" folder:** This code saves the dataframes for use in the model 
 ```{r}
 folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs"
@@ -158,14 +99,8 @@ write.csv(material_intensity, file = file_path2, row.names = FALSE)
 
 ```
 
-
+**Material intensity distribution fitting plots code setup**
 ```{r}
-
-library(dplyr)
-library(fitdistrplus)
-
-
-# Group by technology and Material and count the number of entries
 count_table <- material_intensity %>%
   group_by(technology, Material) %>%
   summarise(count = n())
@@ -173,113 +108,14 @@ material_intensity_dist_df <- material_intensity %>%
   inner_join(count_table, by = c("technology", "Material")) %>%
   filter(count >= 30)
 
-solarsilver <- material_intensity_dist_df %>%
-  filter(technology == "onshore wind" & Material == "Steel")
-
-descdist(solarsilver$value, boot = 1000)
-
-fw <- fitdist(solarsilver$value, "weibull")
-summary(fw)
-
-par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
-#fg <- fitdist(solarsilver$value, "gamma")
-fln <- fitdist(solarsilver$value, "lnorm")
-plot.legend <- c("Weibull", "lognormal", "gamma")
-denscomp(list(fw, fln, fg), legendtext = plot.legend)
-qqcomp(list(fw, fln, fg), legendtext = plot.legend)
-cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-ppcomp(list(fw, fln, fg), legendtext = plot.legend)
-
-
-
-
-
 ```
 
+*Distribution Fitting Plots*
 ```{r}
-#solar and silver
-count_table <- material_intensity %>%
-  group_by(technology, Material) %>%
-  summarise(count = n())
-material_intensity_dist_df <- material_intensity %>%
-  inner_join(count_table, by = c("technology", "Material")) %>%
-  subset(count >= 30)
-
-solarsilver <- subset(material_intensity, technology == "utility-scale solar pv" & Material == "Silver")
-
-#descdist(solarsilver$value, boot = 1000)
-
-#fitting distributions
-fw <- fitdist(solarsilver$value, "weibull")
-summary(fw)
-#fg <- fitdist(solarsilver$value, "gamma")
-#fln <- fitdist(solarsilver$value, "lnorm")
-#fe <- fitdist(solarsilver$value, "exp")
-
-#plotting
-#plot.legend <- c("Weibull", "lognormal", "gamma", "exponential")
-#denscomp(list(fw, fln, fg), legendtext = plot.legend)
-#qqcomp(list(fw, fln, fg,fe), legendtext = plot.legend)
-#cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-#ppcomp(list(fw, fln, fg,fe), legendtext = plot.legend)
-
-
-```
-
-```{r}
-
-```
-
-```{r}
-#onshore wind and copper
-onshorewindcopper <- material_intensity_dist_df %>%
-  filter(technology == "onshore wind" & Material == "Copper")
-library(fitdistrplus)
-descdist(onshorewindcopper$value, boot = 1000)
-
-#fitting distributions
-fw <- fitdist(onshorewindcopper$value, "weibull")
-#fg <- fitdist(onshorewindcopper$value, "gamma")gamma doesn't work 
-fln <- fitdist(onshorewindcopper$value, "lnorm")
-#fe <- fitdist(onshorewindcopper$value, "exp") exp doesn't work either
-
-#plotting
-plot.legend <- c("Weibull", "lognormal", "gamma")
-#denscomp(list(fw, fln, fg), legendtext = plot.legend)
-qqcomp(list(fw, fln), legendtext = plot.legend)
-#cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-ppcomp(list(fw, fln), legendtext = plot.legend)
-
-
-```
-```{r}
-#offshore wind and copper
-
-dist_df <- material_intensity_dist_df %>%
-  filter(technology == "offshore wind" & Material == "Copper")
-library(fitdistrplus)
-descdist(dist_df$value, boot = 1000)
-#fitting distributions
-fw <- fitdist(dist_df$value, "weibull")
-#fe <- fitdist(dist_df$value, "exp")
-#fg <- fitdist(dist_df$value, "gamma") #gamma doesn't work 
-fln <- fitdist(dist_df$value, "lnorm")
-
-#plotting
-plot.legend <- c("Weibull", "lognormal")
-#denscomp(list(fw, fln, fg), legendtext = plot.legend)
-qqcomp(list(fw, fln), legendtext = plot.legend)
-#cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-ppcomp(list(fw, fln), legendtext = plot.legend)
-
-```
-```{r}
-#onshore wind neodymium
 
 dist_df <- material_intensity_dist_df %>%
   filter(technology == "offshore wind" & Material == "Neodymium")
 library(fitdistrplus)
-#descdist(dist_df$value, boot = 1000)
 
 #fitting distributions
 fw <- fitdist(dist_df$value, "weibull")
@@ -290,140 +126,10 @@ fe <- fitdist(dist_df$value, "exp")
 
 #plotting
 plot.legend <- c("Weibull","Gamma", "Lognormal","Normal","Exponential")
-denscomp(list(fw,fg, fln, fn,fe), main = "Neodymium, Offshore Wind", legendtext= NULL)
-
-```
-```{r}
-
-```
-
-```{r}
-#onshore wind steel
-
-dist_df <- material_intensity_dist_df %>%
-  filter(technology == "onshore wind" & Material == "Steel")
-library(fitdistrplus)
-descdist(dist_df$value, boot = 1000)
-
-#fitting distributions
-fw <- fitdist(dist_df$value, "weibull")
-#fe <- fitdist(dist_df$value, "exp")
-#fg <- fitdist(dist_df$value, "gamma") #gamma doesn't work 
-fln <- fitdist(dist_df$value, "lnorm")
-
-#plotting
-plot.legend <- c("Weibull", "lognormal")
-#denscomp(list(fw, fln, fg), legendtext = plot.legend)
-qqcomp(list(fw, fln), legendtext = plot.legend)
-#cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-ppcomp(list(fw, fln), legendtext = plot.legend)
-
-```
-
-```{r}
-#onshore wind dysprosium 
-
-dist_df <- material_intensity_dist_df %>%
-  filter(technology == "onshore wind" & Material == "Dysprosium")
-library(fitdistrplus)
-descdist(dist_df$value, boot = 1000)
-
-#fitting distributions
-fw <- fitdist(dist_df$value, "weibull")
-fe <- fitdist(dist_df$value, "exp")
-fg <- fitdist(dist_df$value, "gamma") 
-fln <- fitdist(dist_df$value, "lnorm")
-
-#plotting
-plot.legend <- c("Weibull", "lognormal", "gamma","exponential")
-denscomp(list(fw, fln, fg), legendtext = plot.legend)
-qqcomp(list(fw, fln,fg,fe), legendtext = plot.legend)
-cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-ppcomp(list(fw, fln,fg,fe), legendtext = plot.legend)
-
-```
-```{r}
-#offshore wind neodymium
-
-dist_df <- material_intensity_dist_df %>%
-  filter(technology == "Wind Offshore" & Material == "Neodymium")
-library(fitdistrplus)
-descdist(dist_df$value, boot = 1000)
-
-#fitting distributions
-fw <- fitdist(dist_df$value, "weibull")
-fe <- fitdist(dist_df$value, "exp")
-fg <- fitdist(dist_df$value, "gamma") 
-fln <- fitdist(dist_df$value, "lnorm")
-
-#plotting
-plot.legend <- c("Weibull", "lognormal", "gamma","exponential")
-denscomp(list(fw, fln, fg,fe), legendtext = plot.legend)
-qqcomp(list(fw, fln,fg,fe), legendtext = plot.legend)
-cdfcomp(list(fw, fln, fg,fe), legendtext = plot.legend)
-ppcomp(list(fw, fln,fg,fe), legendtext = plot.legend)
-
-```
-```{r}
-#onshore wind aluminum 
-
-dist_df <- material_intensity_dist_df %>%
-  filter(technology == "onshore wind" & Material == "Aluminum")
-library(fitdistrplus)
-descdist(dist_df$value, boot = 1000)
-
-#fitting distributions
-fw <- fitdist(dist_df$value, "weibull")
-#fe <- fitdist(dist_df$value, "exp")
-#fg <- fitdist(dist_df$value, "gamma") #gamma doesn't work 
-fln <- fitdist(dist_df$value, "lnorm")
-
-#plotting
-plot.legend <- c("Weibull", "lognormal")
-#denscomp(list(fw, fln, fg), legendtext = plot.legend)
-qqcomp(list(fw, fln), legendtext = plot.legend)
-#cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
-ppcomp(list(fw, fln), legendtext = plot.legend)
-
-```
-
-```{r}
-
-#data processing for under 30 technology/material combinations
-library(dplyr)
-
-subset_material_intensity <- material_intensity %>%
-  filter(technology %in% c("Wind Offshore", "Onshore Wind", "Utility-Scale Solar PV", "Nuclear New"))
-
-count_table <- subset_material_intensity %>%
-  group_by(technology, Material) %>%
-  tally()
-
-under30_material_intensity <- subset_material_intensity %>%
-  inner_join(count_table, by = c("technology", "Material")) %>%
-  filter(n <= 30) 
-
-# Now material_intensity_dist_df contains the subsetted data with combinations having 30 or fewer occurrences for the specified technologies
-
-```
-
-```{r}
-#test version of bootstrapping 
-under30_dist_df <- under30_material_intensity %>%
-  filter(technology == "Wind Offshore" & Material == "Dysprosium")
-#fendo.ln <- fitdist(under30_dist_df$value, "lnorm")
-bootstrappedvalues <- sample(under30_dist_df$value, 100, replace = TRUE)
-
-fendo.ln <- fitdist(bootstrappedvalues, "lnorm", lower = c(0, 1))
-
-#bootstrap_dist_df <- bootdist(fendo.ln, niter = 1001)
-#summary(bootstrap_dist_df)
-
-
+denscomp(list(fw,fg, fln, fn,fe), main = "Neodymium, Offshore Wind", legendtext= plot.legend)
 
 ```
 
 
 
-```
 

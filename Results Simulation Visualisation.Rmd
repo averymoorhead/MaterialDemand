@@ -11,63 +11,40 @@ knitr::opts_knit$set(root.dir = "C:/Users/avery/OneDrive/Desktop/MaterialDemand/
 
 library(readxl)
 library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales) 
+library(patchwork)
+library(cowplot)
+
 ```
 
 ```{r}
-print(getwd())
 setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs")
-#repeat_mc_material_demand<- read.csv("repeat_mc_material_demand.csv")
-#multi_model_mc_material_demand<- read.csv("multi_model_mc_material_demand.csv")
 repeat_materials_demand<- read.csv("repeat_materials_demand.csv")
-
 materials_demand<-read.csv("materials_demand.csv")
-#multi_model_mc_material_demand_total<-read.csv("multi_model_mc_material_demand_total.csv")
 transmission_material_sum<-read.csv("transmission_material_sum.csv")
 materials_demand <- materials_demand %>%
   mutate(technology = case_when(
     technology == "utility-scale solar pv" ~ "Solar",
     technology == "onshore wind" ~ "Onshore Wind",
-    TRUE ~ technology  # Keep all other values unchanged
+    TRUE ~ technology 
   ))
-
-
-#repeat_mc_material_demand_total<-read.csv("repeat_mc_material_demand_total.csv")
-
-setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Inputs")
-
-#material_intensity <- read.csv("intensity_data.csv")
-#initial_year<-read.csv("initial_year.csv")
-#multi_model_capacities<-read.csv("multi_model_capacities.csv")
-#repeat_capacities_new<-read.csv("repeat_capacities_new.csv")
-
-
-```
-```{r}
-# Assuming df is your dataframe
-# Replace 'mc_material_demand_total' with your dataframe name
-
-library(dplyr)
-
-# Now df$Gas and df$Nuclear New contain the values divided by 1000
-
 ```
 
 ```{r}
-library(tidyr)
-
+#data processing 
 transmission_for_plot <- transmission_material_sum %>%
   mutate(
-    technology = "transmission",  # Add a new column "technology" with value "transmission"
-    Aluminum_mean = Aluminum,     # Rename Aluminum column
-    Copper_mean = Cu,             # Rename Cu column to Copper_mean
-    Steel_mean = Steel,           # Rename Steel column
-    Cement_mean = Cement,         # Rename Cement column
+    technology = "transmission",  
+    Aluminum_mean = Aluminum,     
+    Copper_mean = Cu,            
+    Steel_mean = Steel,          
+    Cement_mean = Cement,         
     Glass_mean = Glass,
-    scenario = if_else(scenario == "REF", "Ref", scenario)  # Rename "REF" to "Ref" in the scenario column
+    scenario = if_else(scenario == "REF", "Ref", scenario)  
   ) %>%
-  select(-Aluminum, -Cu, -Steel, -Cement,-Glass)  # Remove original columns
-
-
+  select(-Aluminum, -Cu, -Steel, -Cement,-Glass)  
 
 missing_columns <- setdiff(names(repeat_materials_demand), names(transmission_for_plot))
 
@@ -77,92 +54,62 @@ for (col in missing_columns) {
   }
 }
 
-print(transmission_for_plot)
-
 repeat_materials_demand<-rbind(transmission_for_plot,repeat_materials_demand)
 missing_columns <- setdiff(names(repeat_materials_demand), names(transmission_for_plot))
-
-library(dplyr)
-
-library(dplyr)
-
-# Print the missing columns
-print(missing_columns)
 missing_columns <- setdiff(names(transmission_for_plot), names(repeat_materials_demand))
-print(missing_columns)
-
-
-print(ncol(repeat_materials_demand))
-print(ncol(transmission_for_plot))
 
 
 ```
 
 ```{r}
-# Load required library
-library(ggplot2)
-library(scales)  # For number formatting
-library(patchwork)
-library(cowplot)
-
-
-plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
-trans_plot_df<- subset(transmission_material_sum, select = c('scenario', 'year', 'Aluminum'))
-trans_plot_df <- trans_plot_df %>%
-  mutate(technology = "transmission") %>%
-  rename(Aluminum_mean = Aluminum)
-plot_df <- rbind(plot_df, trans_plot_df)
-
-plot_df <- subset(plot_df, scenario == "IRA" | is.na(scenario))
-#plot_df$year <- ifelse(is.na(plot_df$year), 2021, plot_df$year)
-#plot_df <- subset(materials_demand, year != 2021, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
-
-head(plot_df)
-plot_df <- plot_df %>%
-  filter(scenario == "IRA")
-plot_df <- plot_df %>%
-  mutate(
-    technology = case_when(
-      technology == "Nuclear New" ~ "Nuclear",
-      technology == "onshore wind" ~ "Wind",
-      technology == "offshore wind" ~ "Offshore Wind",
-      technology == "transmission" ~ "Transmission",
-      technology == "Solar" ~ "Solar",
-      TRUE ~ technology
-    )
-  )
-
-repeat_materials_demand <- repeat_materials_demand %>% 
-  mutate(
-    scenario = case_when(
-      scenario == "REF" ~ "Ref",
-      TRUE ~ scenario
-    )
-  )
-
-
-
-
-plot_df$year <- as.integer(plot_df$year)
-
-
-# Create the plot
-ggplot(plot_df, aes(x = year, y = Aluminum_mean, fill = technology)) +
-  geom_area() +
-  labs(title = "IRA Aluminum Material Demand",
-       x = "Year",
-       y = "Material Demand") +
-  theme_minimal() +
-  scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
-  scale_x_continuous(breaks = c(2025, 2030, 2035))  # Set specific x-axis breaks
-
-
-
+# plot_df <- subset(materials_demand, select = c('scenario', 'year', 'technology', 'Aluminum_mean'))
+# trans_plot_df<- subset(transmission_material_sum, select = c('scenario', 'year', 'Aluminum'))
+# trans_plot_df <- trans_plot_df %>%
+#   mutate(technology = "transmission") %>%
+#   rename(Aluminum_mean = Aluminum)
+# plot_df <- rbind(plot_df, trans_plot_df)
+# 
+# plot_df <- subset(plot_df, scenario == "IRA" | is.na(scenario))
+# plot_df <- plot_df %>%
+#   filter(scenario == "IRA")
+# plot_df <- plot_df %>%
+#   mutate(
+#     technology = case_when(
+#       technology == "Nuclear New" ~ "Nuclear",
+#       technology == "onshore wind" ~ "Wind",
+#       technology == "offshore wind" ~ "Offshore Wind",
+#       technology == "transmission" ~ "Transmission",
+#       technology == "Solar" ~ "Solar",
+#       TRUE ~ technology
+#     )
+#   )
+# 
+# repeat_materials_demand <- repeat_materials_demand %>% 
+#   mutate(
+#     scenario = case_when(
+#       scenario == "REF" ~ "Ref",
+#       TRUE ~ scenario
+#     )
+#   )
+# 
+# plot_df$year <- as.integer(plot_df$year)
+# 
+# 
+# # Create the plot
+# ggplot(plot_df, aes(x = year, y = Aluminum_mean, fill = technology)) +
+#   geom_area() +
+#   labs(title = "IRA Aluminum Material Demand",
+#        x = "Year",
+#        y = "Material Demand") +
+#   theme_minimal() +
+#   scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
+#   scale_x_continuous(breaks = c(2025, 2030, 2035))  # Set specific x-axis breaks
 
 ```
 
 
 ```{r}
+#data processing 
 materials_demand <- materials_demand %>%
   mutate(
     technology = case_when(
@@ -190,6 +137,8 @@ repeat_materials_demand <- repeat_materials_demand %>%
 
 ```
 
+
+**Jenkins et al. (2023) plot, Reference scenario **
 ```{r}
 tech_colors <- c(
                  "Gas" = "#C49A00", 
@@ -201,36 +150,99 @@ tech_colors <- c(
 
 materials <- c("Aluminum", "Boron",  "Cement", "Chromium", "Copper", "Dysprosium", "Fiberglass", "Glass", "Lead", "Magnesium", "Manganese","Molybdenum","Neodymium", "Nickel", "Niobium", "Praseodymium",  "Silicon", "Silver", "Steel",  "Terbium", "Tin", "Vanadium", "Yttrium", "Zinc")
 
-# Create an empty list to store plots
 plot_list <- list()
 
 # Loop through each material
 for (material in materials) {
-  # Subset the data for the current material and scenario "IRA"
   plot_df <- subset(repeat_materials_demand, scenario == "Ref", select = c('year', 'technology', paste0(material, "_mean")))
   
   plot_df$year <- as.integer(plot_df$year)
   
-  # Create the plot for the current material
   p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
     geom_area() +
     labs(title = paste(material),
          x = "",
          y = "") +
     theme_minimal() +
-    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
-    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+    scale_y_continuous(labels = comma) +  
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  
     theme(
-      legend.position = "none",  # Remove the legend
-             axis.text.x = element_text(size = 14), # Increase size of x-axis text
-      axis.text.y = element_text(size = 14), # Increase size of y-axis text
-      axis.title.x = element_text(size = 16), # Increase size of x-axis title
-      axis.title.y = element_text(size = 16), # Increase size of y-axis title
-      plot.title = element_text(size = 20, hjust = 0.5)# Adjust the size of the plot title
+      legend.position = "none", 
+             axis.text.x = element_text(size = 14),
+      axis.text.y = element_text(size = 14), 
+      axis.title.x = element_text(size = 16), 
+      axis.title.y = element_text(size = 16), 
+      plot.title = element_text(size = 20, hjust = 0.5)
     ) +
-    scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
+    scale_fill_manual(values = tech_colors) 
+    plot_list[[material]] <- p
+}
+
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
+
+legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
+
+final_plot <- cowplot::ggdraw() +
+  cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
+  cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
+
+print(final_plot)
+
+plot_width <- 10 
+
+final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
+
+common_y_axis_title <- ggdraw() +
+  draw_label("Thousand Metric Tonnes/year", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
+
+final_plot_with_title <- cowplot::plot_grid(
+  common_y_axis_title,
+  final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
+  nrow = 1,
+  rel_widths = c(0.1, 0.9)
+)
+ggsave("repeatresultsplotREF.jpg", plot = final_plot_with_title, width = 13.5, height = 15, units = "in", dpi = 300)
+
+```
+**Jenkins et al. (2023) plot, IRA scenario **
+```{r}
+tech_colors <- c(
+  "Gas" = "#C49A00",
+  "Nuclear" = "#00C094",
+  "Offshore Wind" = "#EA8331",  
+  "Transmission" = "#A58AFF",
+  "Solar" = "#FB61D7",
+  "Onshore Wind" = "#00B6EB"
+)
+
+plot_list <- list()
+
+for (material in materials) {
+  plot_df <- subset(repeat_materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
+
+  plot_df$year <- as.integer(plot_df$year)
   
-  # Store the plot in the plot list
+  unique_technologies <- unique(plot_df$technology)
+
+  p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
+    geom_area() +
+    labs(title = paste(material),
+         x = "",
+         y = "") +
+    theme_minimal() +
+    scale_y_continuous(labels = comma) + 
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  
+    theme(
+      legend.position = "none", 
+      axis.text.x = element_text(size = 14),
+      axis.text.y = element_text(size = 14), 
+      axis.title.x = element_text(size = 16), 
+      axis.title.y = element_text(size = 16),
+      plot.title = element_text(size = 20, hjust = 0.5)  
+    ) +
+    scale_fill_manual(values = tech_colors)  
+
   plot_list[[material]] <- p
 }
 
@@ -246,7 +258,6 @@ print(final_plot)
 
 plot_width <- 10 
 
-
 final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
 
 common_y_axis_title <- ggdraw() +
@@ -261,121 +272,24 @@ final_plot_with_title <- cowplot::plot_grid(
 )
 
 print(final_plot_with_title)
-# Save the combined plot as a PNG file
-print(getwd())
-ggsave("repeatresultsplotREF.jpg", plot = final_plot_with_title, width = 13.5, height = 15, units = "in", dpi = 300)
-
-```
-
-```{r}
-library(dplyr)
-library(ggplot2)
-library(cowplot)
-library(scales)
-
-tech_colors <- c(
-  "Gas" = "#C49A00",
-  "Nuclear" = "#00C094",
-  "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
-  "Transmission" = "#A58AFF",
-  "Solar" = "#FB61D7",
-  "Onshore Wind" = "#00B6EB"
-)
-
-
-plot_list <- list()
-
-# Loop through each material
-for (material in materials) {
-  plot_df <- subset(repeat_materials_demand, scenario == "IRA", select = c('year', 'technology', paste0(material, "_mean")))
-
-  plot_df$year <- as.integer(plot_df$year)
-  
-  # Ensure technology names match exactly
-  unique_technologies <- unique(plot_df$technology)
-  print(unique_technologies)  # Print to debug
-  
-  # Check for unmatched technologies
-  unmatched_tech <- setdiff(unique_technologies, names(tech_colors))
-  if(length(unmatched_tech) > 0) {
-    warning("Unmatched technologies: ", paste(unmatched_tech, collapse = ", "))
-  }
-
-  p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
-    geom_area() +
-    labs(title = paste(material),
-         x = "",
-         y = "") +
-    theme_minimal() +
-    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
-    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
-    theme(
-      legend.position = "none",  # Remove the legend
-      axis.text.x = element_text(size = 14), # Increase size of x-axis text
-      axis.text.y = element_text(size = 14), # Increase size of y-axis text
-      axis.title.x = element_text(size = 16), # Increase size of x-axis title
-      axis.title.y = element_text(size = 16), # Increase size of y-axis title
-      plot.title = element_text(size = 20, hjust = 0.5)  # Adjust the size of the plot title
-    ) +
-    scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
-
-  plot_list[[material]] <- p
-}
-
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
-
-legend_plot <- cowplot::get_legend(plot_list[["Aluminum"]] + theme(legend.position = "right"))
-
-final_plot <- cowplot::ggdraw() +
-  cowplot::draw_plot(combined_plot, 0, 0, 0.8, 1) +
-  cowplot::draw_plot(legend_plot, 0.8, 0, 0.2, 1)
-
-print(final_plot)
-
-plot_width <- 10  # Adjust this value as needed
-
-final_plot_with_title <- wrap_plots(plotlist = plot_list, ncol = 3, widths = rep(plot_width, length(plot_list)))
-
-common_y_axis_title <- ggdraw() +
-  draw_label("Thousand Metric Tonnes/year", angle = 90, size = 20, hjust = 0.5, vjust = 0.5) +
-  theme(plot.margin = margin(5.5, 5.5, 5.5, 0, "pt"))
-
-final_plot_with_title <- cowplot::plot_grid(
-  common_y_axis_title,
-  final_plot_with_title + theme(plot.margin = margin(5.5, 0, 5.5, 5.5, "pt")),
-  nrow = 1,
-  rel_widths = c(0.1, 0.9)
-)
-
-print(final_plot_with_title)
-print(getwd())
 ggsave("repeatresultsplotIRA.jpg", plot = final_plot_with_title, width = 13.5, height = 15, units = "in", dpi = 300)
 
 
 ```
+**Bistline et al (2023) plot, reference scenario **
 
 ```{r}
-library(ggplot2)
-library(scales)  # For number formatting
-library(cowplot)
-library(patchwork)
 
-# Define colors for each technology
-# Define colors for each technology
 tech_colors <- c("Biomass" = "#d3d3d3",
 
                 "Coal" = "#F8766D", 
                  "Gas" = "#C49A00", 
                  "Hydro" = "#53B400", 
                  "Nuclear" = "#00C094", 
-                 "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
+                 "Offshore Wind" = "#EA8331",  
                  "Transmission" = "#A58AFF", 
                  "Solar" = "#FB61D7",
                  "Onshore Wind" = "#00B6EB")
-
- #show_col(hue_pal()(20))
-
-
 
 plot_list <- list()
 
@@ -384,29 +298,27 @@ for (material in materials) {
 
   plot_df$year <- as.integer(plot_df$year)
   
-  # Create the plot for the current material
   p <- ggplot(plot_df, aes(x = year, y = !!sym(paste0(material, "_mean")), fill = technology)) +
     geom_area() +
     labs(title = paste(material),
          x = "",
          y = "") +
     theme_minimal() +
-    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
-    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+    scale_y_continuous(labels = comma) +  
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) + 
     theme(
-      legend.position = "none",  # Remove the legend
-             axis.text.x = element_text(size = 14), # Increase size of x-axis text
-      axis.text.y = element_text(size = 14), # Increase size of y-axis text
-      axis.title.x = element_text(size = 16), # Increase size of x-axis title
-      axis.title.y = element_text(size = 16), # Increase size of y-axis title
-      plot.title = element_text(size = 20, hjust = 0.5)# Adjust the size of the plot title
+      legend.position = "none",  
+      axis.text.x = element_text(size = 14),
+      axis.text.y = element_text(size = 14), 
+      axis.title.x = element_text(size = 16), 
+      axis.title.y = element_text(size = 16), 
+      plot.title = element_text(size = 20, hjust = 0.5)
     ) +
-    scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
+    scale_fill_manual(values = tech_colors)  
   
   plot_list[[material]] <- p
 }
 
-# Combine all plots in the plot list
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 5, align = "h", rel_widths = rep(1, length(materials)))
 
 legend_plot <- cowplot::get_legend(plot_list[["Nickel"]] + theme(legend.position = "right"))
@@ -438,26 +350,18 @@ print(getwd())
 ggsave("multimodelresultsplotREF.jpg", plot = final_plot_with_title, width = 13, height = 15, units = "in", dpi = 300)
 
 ```
+**Bistline et al (2023) plot, IRA scenario **
 
 ```{r}
-library(ggplot2)
-library(scales)  # For number formatting
-library(cowplot)
-library(patchwork)
-
-
 tech_colors <- c("Biomass" = "#d3d3d3",
   "Coal" = "#F8766D", 
                  "Gas" = "#C49A00", 
                  "Hydro" = "#53B400", 
                  "Nuclear" = "#00C094", 
-                 "Offshore Wind" = "#EA8331",  # New color for Offshore Wind
+                 "Offshore Wind" = "#EA8331", 
                  "Transmission" = "#A58AFF", 
                  "Solar" = "#FB61D7",
                  "Onshore Wind" = "#00B6EB")
-
- #show_col(hue_pal()(20))
-
 
 plot_list <- list()
 
@@ -472,17 +376,17 @@ for (material in materials) {
          x = "",
          y = "") +
     theme_minimal() +
-    scale_y_continuous(labels = comma) +  # Format y-axis labels without scientific notation
-    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  # Set specific x-axis breaks
+    scale_y_continuous(labels = comma) +  
+    scale_x_continuous(breaks = c(2025, 2030, 2035)) +  
     theme(
-      legend.position = "none",  # Remove the legend
-       axis.text.x = element_text(size = 1), # Increase size of x-axis text
-      axis.text.y = element_text(size = 1), # Increase size of y-axis text
-      axis.title.x = element_text(size = 1), # Increase size of x-axis title
-      axis.title.y = element_text(size = 1), # Increase size of y-axis title
-      plot.title = element_text(size = 2, hjust = 0.5)# Adjust the size of the plot title
+      legend.position = "none",  
+       axis.text.x = element_text(size = 1),
+      axis.text.y = element_text(size = 1), 
+      axis.title.x = element_text(size = 1), 
+      axis.title.y = element_text(size = 1),
+      plot.title = element_text(size = 2, hjust = 0.5)
     ) +
-    scale_fill_manual(values = tech_colors)  # Manually assign colors to technologies
+    scale_fill_manual(values = tech_colors)  
   
   plot_list[[material]] <- p
 }

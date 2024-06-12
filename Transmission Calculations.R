@@ -52,27 +52,18 @@ Spur_Dist_Sum <- Spur_Dist_Sum %>%
     TRUE ~ as.character(scenario)
   ))
            
-
-#currently only including the spur lines as there are high levels of uncertainty with the tranmission lines 
-# Trans_Dist_Delta = read_excel("transmission_cost_distribution_results_delta_y.xlsx")
-# Trans_Dist_Delta <- Trans_Dist_Delta %>% select(run_name, dist_km_Difference)
-# Trans_Dist_Delta <- subset(Trans_Dist_Delta, run_name %in% c("baseline", "ira_mid"))
-# Trans_Dist_Delta <- Trans_Dist_Delta %>% group_by(run_name) %>% summarise(totaltransdistance = sum(dist_km_Difference)) #averaging the different model results 
+#Only including the spur lines as there are high levels of uncertainty with the transmission lines 
 Transmission_material_sum <- Spur_Dist_Sum %>%
   group_by(year, scenario) %>%
   summarise(Cu= sum(Cu), Cement = sum(Cement), Steel = sum(Steel), Aluminum = sum(Aluminum),Glass=sum(Glass) )
-
-
-
 Transmission_material_sum <- Transmission_material_sum %>%
   mutate_at(vars(Cu, Cement, Steel,Aluminum,Glass), ~ . / 1000)
 
-#saving to inputs folder
+#saving to outputs folder
 folder_path <- "C:/Users/avery/OneDrive/Desktop/MaterialDemand/Outputs"
 file_path1 <- file.path(folder_path, "spur_dist_sum.csv")
 file_path2 <- file.path(folder_path, "transmission_material_sum.csv")
 
-# Write each dataframe to its respective CSV file in the specified folder
 write.csv(Spur_Dist_Sum, file = file_path1, row.names = FALSE)
 write.csv(Transmission_material_sum, file = file_path2, row.names = FALSE)
 
