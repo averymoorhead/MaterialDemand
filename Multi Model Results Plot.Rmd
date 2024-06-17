@@ -28,6 +28,7 @@ multi_model_mc_material_demand_total<-read.csv("multi_model_mc_material_demand_t
 transmission_material_sum<-read.csv("transmission_material_sum.csv")
 all_models<-read.csv("all_models_material_demand.csv")
 repeat_mc_material_demand_total<-read.csv("repeat_mc_material_demand_total.csv")
+test <- all_models %>% subset(year %in% 2035 & scenario %in% "IRA") %>% select(year,technology, Aluminum_mean, model) 
 ```
 
 
@@ -147,25 +148,31 @@ for (material in materials) {
       !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")))
     )
   
-  sum_material_columns <- function(data, material) {
-    material_demand_sum_df <- data %>%
-      select(year, scenario, technology, model, 
-             matches(paste0(material, "_mean")), 
-             matches(paste0(material, "_max")), 
-             matches(paste0(material, "_min"))) %>%
-      group_by(year, scenario, model) %>%
-      summarise(
-        !!paste0(material, "_min") := sum(!!sym(paste0(material, "_min")), na.rm = TRUE),
-        !!paste0(material, "_max") := sum(!!sym(paste0(material, "_max")), na.rm = TRUE)
-      ) %>%
-      group_by(year, scenario) %>%
-      summarise(
-        !!paste0(material, "_min") := min(!!sym(paste0(material, "_min")), na.rm = TRUE),
-        !!paste0(material, "_max") := max(!!sym(paste0(material, "_max")), na.rm = TRUE)
-      )
-    
-    return(material_demand_sum_df)
-  }
+sum_material_columns <- function(data, material) {
+  material_mean_col <- paste0(material, "_mean")
+  material_min_col <- paste0(material, "_min")
+  material_max_col <- paste0(material, "_max")
+  
+  material_demand_sum_df <- data %>%
+    select(year, scenario, technology, model, 
+           matches(material_mean_col), 
+           matches(material_max_col), 
+           matches(material_min_col)) %>%
+    group_by(year, scenario, model) %>%
+    summarise(
+      !!material_mean_col := sum(!!sym(material_mean_col), na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    group_by(year, scenario) %>%
+    summarise(
+      !!material_min_col := min(!!sym(material_mean_col), na.rm = TRUE),
+      !!material_max_col := max(!!sym(material_mean_col), na.rm = TRUE),
+      .groups = 'drop'
+    )
+  
+  return(material_demand_sum_df)
+}
+
   
   material_demand_sum <- sum_material_columns(all_models, material)
   material_demand_sum_ira <- material_demand_sum %>%
@@ -179,34 +186,34 @@ for (material in materials) {
   
   material_demand_sum_ref_mean <-  material_demand_sum_mean %>%
     filter(scenario == "Ref")
-  
-  
+ 
+
   # Plot the data for IRA scenario
   p <- ggplot() +
-    geom_line(data = material_demand_sum_ira_mean, aes(x = year, 
-                                                       y = !!sym(paste0(material, "_mean")), 
-                                                       color = "mean IRA"), 
+    geom_line(data = material_demand_sum_ira_mean, aes(x = year,
+                                                       y = !!sym(paste0(material, "_mean")),
+                                                       color = "mean IRA"),
               linetype = "solid") +
-    geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_min")), 
-                                                  color = "min IRA"), 
+    geom_line(data = material_demand_sum_ira, aes(x = year,
+                                                  y = !!sym(paste0(material, "_min")),
+                                                  color = "min IRA"),
               linetype = "dashed") +
-    geom_line(data = material_demand_sum_ira, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_max")), 
-                                                  color = "max IRA"), 
+    geom_line(data = material_demand_sum_ira, aes(x = year,
+                                                  y = !!sym(paste0(material, "_max")),
+                                                  color = "max IRA"),
               linetype = "dotted") +
     # Plot the data for Ref scenario
-    geom_line(data = material_demand_sum_ref_mean, aes(x = year, 
-                                                       y = !!sym(paste0(material, "_mean")), 
-                                                       color = "mean Ref"), 
+    geom_line(data = material_demand_sum_ref_mean, aes(x = year,
+                                                       y = !!sym(paste0(material, "_mean")),
+                                                       color = "mean Ref"),
               linetype = "solid") +
-    geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_min")), 
-                                                  color = "min Ref"), 
+    geom_line(data = material_demand_sum_ref, aes(x = year,
+                                                  y = !!sym(paste0(material, "_min")),
+                                                  color = "min Ref"),
               linetype = "dashed") +
-    geom_line(data = material_demand_sum_ref, aes(x = year, 
-                                                  y = !!sym(paste0(material, "_max")), 
-                                                  color = "max Ref"), 
+    geom_line(data = material_demand_sum_ref, aes(x = year,
+                                                  y = !!sym(paste0(material, "_max")),
+                                                  color = "max Ref"),
               linetype = "dotted") +
     labs(title = paste(material),
          x = "",
@@ -220,28 +227,28 @@ for (material in materials) {
     theme_minimal() +
     theme(legend.position = "none",
           axis.text.x = element_text(size = 14),
-          axis.text.y = element_text(size = 14), 
-          axis.title.x = element_text(size = 16), 
+          axis.text.y = element_text(size = 14),
+          axis.title.x = element_text(size = 16),
           axis.title.y = element_text(size = 16),
           plot.title = element_text(size = 20, hjust = 0.5))
-  
+
   material_subset_ira <- multi_model_mc_material_demand_total %>%
-    
+
     filter(Material == material, year == 2035, scenario == "IRA") %>%
     select(total_demand, year, -scenario, -Material, -row_id) #%>%
-  
+
   material_subset_ref <- multi_model_mc_material_demand_total %>%
     filter(Material == material, year == 2035, scenario == "Ref") %>%
     select(total_demand, year, -scenario, -Material, -row_id) #%>%
-  
+
   # Create box plots for IRA and Ref scenarios
   boxplot_ira <- geom_boxplot(data = material_subset_ira, aes(x = year, y = total_demand/1000), fill = "red", alpha = 0.5, width = 0.5)
   boxplot_ref <- geom_boxplot(data = material_subset_ref, aes(x = year, y = total_demand/1000), fill = "blue", alpha = 0.5, width = 0.5)
-  
+
   # Combine boxplots with the lines
   p <- p + boxplot_ira + boxplot_ref
   plot_list[[material]] <- p
-}
+ }
 print(p)
 # Combine all material subplots together
 combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 4)
@@ -250,6 +257,7 @@ setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Figures")
 
 ggsave("multi_model_complete_boxplot.jpg", plot = combined_plot, width = 13, height = 17, units = "in", dpi = 300)
 ```
+
 
 ```
 
