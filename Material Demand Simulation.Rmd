@@ -31,7 +31,7 @@ input_usgs<- read.csv("input_usgs.csv")
 material_intensity<- read.csv("intensity_data.csv")
 initial_year<- read.csv("initial_year.csv")
 multi_model_capacities<- read.csv("multi_model_capacities.csv")
-all_multi_model_capacities<- read.csv("mutli_model_capacities_all_models.csv")
+all_multi_model_capacities<- read.csv("multi_model_capacities_all_models.csv")
 repeat_capacities_new<- read.csv("repeat_capacities_new.csv")
 distribution_fits<- read.csv("distribution_fitting_results.csv")
 scenarios = c("Ref", "IRA")#Define the REPEAT scenarios to be included

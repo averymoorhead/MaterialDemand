@@ -117,5 +117,9 @@ print(combined_plot2)
 combined_subplot <- combined_plot2+combined_plot3 +plot_layout(guides = "collect") 
 
 print(combined_subplot)
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Figures")
+
+ggsave("multi_model_capacity_plot.jpg", plot = combined_subplot, width = 18, height = 12, units = "in", dpi = 300)
+
 ```
 

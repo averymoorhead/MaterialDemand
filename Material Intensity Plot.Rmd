@@ -154,7 +154,9 @@ final_plot_with_title_1 <- cowplot::plot_grid(
 
 final_plot_with_title_1
 
-ggsave("materialintensityplot.png", plot = final_plot_with_title_1, width = 13, height = 17, units = "in", dpi = 300)
+setwd("C:/Users/avery/OneDrive/Desktop/MaterialDemand/Figures")
+
+ggsave("material_intensity_plot.png", plot = final_plot_with_title_1, width = 13, height = 17, units = "in", dpi = 300)
 
 ```
 
