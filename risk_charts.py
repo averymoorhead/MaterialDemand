@@ -23,9 +23,9 @@ input_usgs_reserves = pd.read_excel(input_usgs, sheet_name = 'reserves', index_c
 input_crc = pd.read_excel(input_usgs, sheet_name = 'crc').iloc[:, 0:2]
 input_aggregate = pd.read_excel(input_usgs, sheet_name = 'aggregate').replace('-', float('nan'))
 
-materials_demand = pd.read_csv(f'{r_outputs_dir}materials_demand.csv').replace({'Ref' : 'REF'})
-repeat_materials_demand = pd.read_csv(f'{r_outputs_dir}repeat_materials_demand.csv')
-spur_dist_sum = pd.read_csv(f'{r_outputs_dir}spur_dist_sum.csv')
+materials_demand = pd.read_csv(f'{r_outputs_dir}materials_demand.csv')
+repeat_materials_demand = pd.read_csv(f'{r_outputs_dir}repeat_materials_demand.csv').replace({'REF' : 'Ref'})
+spur_dist_sum = pd.read_csv(f'{r_outputs_dir}spur_dist_sum.csv').replace({'REF' : 'Ref'})
 
 rare_earths = ['Dysprosium', 'Neodymium', 'Praseodymium', 'Terbium', 'Yttrium']
     
@@ -342,7 +342,7 @@ for output_name, input_df in input_dfs.items():
         n=0
         
         for mat in data['material'].unique():
-            for scen in ['IRA', 'REF']:
+            for scen in ['IRA', 'Ref']:
                 bottom = 0
                             
                 if scen == 'IRA':
@@ -369,7 +369,7 @@ for output_name, input_df in input_dfs.items():
                         
                     else:
                         if col == 'United States':
-                            #label = 'REF'
+                            #label = 'Ref'
                             label = ''
                         else:
                             label = ''
@@ -403,7 +403,7 @@ for output_name, input_df in input_dfs.items():
         labels.append('Production'), labels.append('Consumption'), labels.append('Net Import')
         
         fig.legend(handles, labels, loc='lower center', ncols = 5, bbox_to_anchor = [0.18,0.045,1,1], frameon=False)
-        fig.text(0, 0.5, 'Thousand Metric ton/year', va='center', rotation='vertical')
+        fig.text(0, 0.5, 'Thousand Metric Tonnes/year', va='center', rotation='vertical')
         plt.tight_layout()
         
         # adds x axis labels/ticks for the shared x axis. Haven't figured out to
