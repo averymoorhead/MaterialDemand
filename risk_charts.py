@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors
+import matplotlib as mpl
 from matplotlib.lines import Line2D
 import math
 
@@ -332,7 +333,7 @@ for output_name, input_df in input_dfs.items():
         data = input_df.copy()
         data['stack'], data['value'] = data['year'].astype(str) + '-' + data['scenario'], data['value']
         
-        cols = 3
+        cols = 4
         entries = len(data['material'].unique())
         rows = int(np.ceil(entries / cols))
         
@@ -342,14 +343,14 @@ for output_name, input_df in input_dfs.items():
         n=0
         
         for mat in data['material'].unique():
-            for scen in ['IRA', 'Ref']:
+            for scen in ['Ref', 'IRA']:
                 bottom = 0
                             
                 if scen == 'IRA':
-                    offset = -0.47
+                    offset = 0.8
                     alpha = 1
                 else:
-                    offset = 0.47
+                    offset = -0.8
                     alpha = 0.5
                 
                 plot_loc = data.loc[(data['material'] == mat) & (data['scenario'] == scen)
@@ -362,6 +363,15 @@ for output_name, input_df in input_dfs.items():
                 
                 axs[n].set_title(mat)
                 axs[n].set_yscale(ytype)
+
+                set_decimal = plot_loc.sum(axis =1, numeric_only = True).max()
+                
+                if set_decimal >= 1:
+                    
+                    axs[n].yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
+                    
+                else:
+                    axs[n].yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.2f}'))
                 
                 for col in plot_loc.columns:
                     if scen == 'IRA':
@@ -375,7 +385,8 @@ for output_name, input_df in input_dfs.items():
                             label = ''
                         
                     axs[n].bar(x = plot_loc.index + offset, height = plot_loc[col], 
-                            bottom = bottom, color = col_dict.get(col), alpha = alpha, label = label)
+                            bottom = bottom, color = col_dict.get(col), 
+                            alpha = alpha, label = label, width = 1.5)
      
                     bottom = bottom + plot_loc[col]
                     
@@ -389,21 +400,21 @@ for output_name, input_df in input_dfs.items():
                 input_aggregate_avg['year'] == 'avg')].iloc[0]
     
             if math.isnan(prod) == False:    
-                axs[n].axhline(y = prod, color = 'red')
-                axs[n].axhline(y = cons, color = 'blue')
-                axs[n].axhline(y = trade, color = 'green')
+                axs[n].axhline(y = prod, color = 'black', linestyle = '-')
+                axs[n].axhline(y = cons, color = 'black', linestyle = '--')
+                axs[n].axhline(y = trade, color = 'black', linestyle = ':')
             n = n + 1
         
         handles, labels = axs[0].get_legend_handles_labels()
-        prod_leg = Line2D([0], [0], color= 'red', linewidth=1.5, linestyle='-')
-        cons_leg = Line2D([0], [0], color= 'blue', linewidth=1.5, linestyle='-')
-        trade_leg = Line2D([0], [0], color= 'green', linewidth=1.5, linestyle='-')
+        prod_leg = Line2D([0], [0], color= 'black', linewidth=1.5, linestyle='-')
+        cons_leg = Line2D([0], [0], color= 'black', linewidth=1.5, linestyle='--')
+        trade_leg = Line2D([0], [0], color= 'black', linewidth=1.5, linestyle=':')
         
         handles.append(prod_leg), handles.append(cons_leg), handles.append(trade_leg)
         labels.append('Production'), labels.append('Consumption'), labels.append('Net Import')
         
-        fig.legend(handles, labels, loc='lower center', ncols = 5, bbox_to_anchor = [0.18,0.045,1,1], frameon=False)
-        fig.text(0, 0.5, 'Thousand Metric Tonnes/year', va='center', rotation='vertical')
+        fig.legend(handles, labels, loc='lower center', ncols = 2, bbox_to_anchor = [0.37,0.045,1,1], frameon=False)
+        fig.text(0, 0.5, 'Annual material demand (thousand mt)', va='center', rotation='vertical', fontsize = 13)
         plt.tight_layout()
         
         # adds x axis labels/ticks for the shared x axis. Haven't figured out to
@@ -411,6 +422,7 @@ for output_name, input_df in input_dfs.items():
     
         for ax in axs.flat[n:]:
             ax.remove()
+            
             
         plt.savefig(f'{fig_outputs_dir}fig3_{output_name}_{ytype}.png', dpi = 1000)
                 
@@ -421,6 +433,7 @@ for output_name, input_df in input_dfs.items():
 # 3 REPEAT + Spur lines linear
 
 col_dict = {'United States' : (0.50196078, 0.16535179, 0.50196078, 1. ),
+            'China' : (0.56796617, 0.34854287, 0.34854287, 1.        ),
             'OECD' : (0.04313725, 0.52344483, 0.        , 1.),
             1 : (0.59215686, 0.79687812, 0.        , 1),
             2 : (1.        , 0.94048443, 0.        , 1),
@@ -429,85 +442,85 @@ col_dict = {'United States' : (0.50196078, 0.16535179, 0.50196078, 1. ),
             5 : (1.        , 0.10149942, 0.        , 1.        ),
             6 : (0.85190311, 0.06911188, 0.06911188, 1.        ),
             7 : (0.65813149, 0.15953864, 0.15953864, 1.        ),
-            'China' : (0.56796617, 0.34854287, 0.34854287, 1.        ),
             'Undefined' : (0.50196078, 0.45471742, 0.50196078, 1.        ),
             }
 
 input_dfs = {'multi_model' : mat_dem_mm_group_stack, 'repeat' : mat_dem_repeat_group_stack, 
              'repeat_spur_lines' : mat_dem_repeat_spur_stack}
 
-ytypes = ['log', 
-          'linear'
-          ]
-
 for output_name, input_df in input_dfs.items():
-    for ytype in ytypes:
         
-        data = input_df.copy()
-        data2 = reserves_stack.copy()
-        data2['share'] = pd.to_numeric(data2['share'])
-        data2 = data2.groupby(['material', 'crc']).sum('share').reset_index()
-        data2 = crc_fill(data2)
-        
-        data_us = data2.loc[data2['crc'] == 'United States']
-        data_other = data2.loc[data2['crc'] != 'United States']
-        
-        cols = 7
-        entries = len(data2['material'].unique())
-        rows = int(np.ceil(entries / cols))
-        
-        fig, axs = plt.subplots(nrows=rows,ncols=cols,figsize=(12, 6), sharex = True)
-        axs = axs.ravel()
-        
-        n=0
-        
-        for mat in data2['material'].unique():
+    data = input_df.copy()
+    data2 = reserves_stack.copy()
+    data2['share'] = pd.to_numeric(data2['share'])
+    data2 = data2.groupby(['material', 'crc']).sum('share').reset_index()
+    data2 = crc_fill(data2)
+    
+    data_us = data2.loc[data2['crc'] == 'United States']
+    data_other = data2.loc[data2['crc'] != 'United States']
+    
+    cols = 7
+    entries = len(data2['material'].unique())
+    rows = int(np.ceil(entries / cols))
+    
+    fig, axs = plt.subplots(nrows=rows,ncols=cols,figsize=(12, 6), sharex = True)
+    axs = axs.ravel()
+    
+    n=0
+    
+    for mat in data2['material'].unique():
 
-            bottom = 0
+        bottom = 0
 
-            plot_loc = data.loc[(data['material'] == mat)].reset_index(drop = True)
-            plot_loc_us = data_us.loc[(data_us['material'] == mat)].reset_index(drop = True)
-            plot_loc_other = data_other.loc[(data_other['material'] == mat)]
-            plot_loc_other = pd.pivot_table(plot_loc_other, columns = 'crc', 
-                                      values = 'share').reset_index(drop = True)
-            plot_loc_other = plot_loc_other[list(col_dict.keys())[1:]]
+        plot_loc = data.loc[(data['material'] == mat)].reset_index(drop = True)
+        plot_loc_us = data_us.loc[(data_us['material'] == mat)].reset_index(drop = True)
+        plot_loc_other = data_other.loc[(data_other['material'] == mat)]
+        plot_loc_other = pd.pivot_table(plot_loc_other, columns = 'crc', 
+                                  values = 'share').reset_index(drop = True)
+        plot_loc_other = plot_loc_other[list(col_dict.keys())[1:]]
+        
+        axs[n].set_title(mat)
+        axs[n].set_yscale(ytype)            
+        
+        dem = plot_loc.value.max()
+        
+        for col in plot_loc_other.columns:
             
-            axs[n].set_title(mat)
-            axs[n].set_yscale(ytype)
-            
-            dem = plot_loc.value.max()
-            
-            for col in plot_loc_other.columns:
-                
-                if type(col) is float:
-                    label = str(col)[0]
-                else:
-                    label = col
-                         
-                axs[n].bar(x = plot_loc_other.index + -0.47, height = int(plot_loc_other[col] / dem), 
-                        bottom = bottom, color = col_dict.get(col), label = label)
+            if type(col) is float:
+                label = str(col)[0]
+            else:
+                label = col
+                     
+            axs[n].bar(x = plot_loc_other.index + -0.35, height = int(plot_loc_other[col] / dem), 
+                    bottom = bottom, color = col_dict.get(col), label = label, width = 0.6)
  
-                bottom = bottom + int(plot_loc_other[col] / dem)
-                
-            axs[n].bar(x = plot_loc_us.index + 0.47, height = int(plot_loc_us['share'] / dem), 
-                       color = col_dict.get('United States'), label = 'United States')
-            axs[n].bar_label(axs[n].containers[-1], label_type ='edge')
+            bottom = bottom + int(plot_loc_other[col] / dem)
             
-            if ytype == 'linear':
-                
-                axs[n].yaxis.get_major_formatter().set_scientific(False)
+        axs[n].bar(x = plot_loc_us.index + 0.35, height = int(plot_loc_us['share'] / dem), 
+                   color = col_dict.get('United States'), label = 'United States', width = 0.6)
+        axs[n].set_ylim([0, bottom * 1.1])
+        
+        if mat != 'Boron':
+            axs[n].bar_label(axs[n].containers[-1], label_type ='edge', fmt = '{:,.0f}', fontsize = 8)
+            axs[n].bar_label(axs[n].containers[-2], label_type ='edge', fmt = '{:,.0f}', fontsize = 8)
+            
+        else:
+            axs[n].bar_label(axs[n].containers[-1], label_type ='edge', fmt = '{:,.0f}', fontsize = 8)
+            
+        axs[n].yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
 
-            n = n + 1
-            
-        handles, labels = axs[0].get_legend_handles_labels()
+        n = n + 1
         
-        fig.legend(handles, labels, loc='lower center', ncols = 1, bbox_to_anchor = [0.42,0.06,1,1], frameon=False)
-        fig.text(-0.01, 0.5, 'Economic reserves/Max annual material demand', va='center', rotation='vertical')
+    handles, labels = axs[0].get_legend_handles_labels()
+    
+    fig.legend(handles, labels, loc='lower center', ncols = 1, bbox_to_anchor = [0.42,0.1,1,1], frameon=False)
+    fig.text(-0.01, 0.5, 'Economic reserves / maximum annual material demand (years)', va='center', rotation='vertical')
+    
+    plt.xticks([-0.35, 0.35], ['Global', 'Domestic'])
+    fig.autofmt_xdate(rotation=45)
+    plt.tight_layout()
+    
+    for ax in axs.flat[n:]:
+        ax.remove()
         
-        plt.xticks([])
-        plt.tight_layout()
-        
-        for ax in axs.flat[n:]:
-            ax.remove()
-            
-        fig.savefig(f'{fig_outputs_dir}fig4_{output_name}_{ytype}.png', dpi = 1000, bbox_inches='tight')
+    fig.savefig(f'{fig_outputs_dir}fig4_{output_name}_{ytype}.png', dpi = 1000, bbox_inches='tight')
